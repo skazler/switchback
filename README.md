@@ -21,6 +21,7 @@ programs/           compositions — one markdown file per program
 log/                runtime data (volume history CSV; D1 schema notes)
 TAXONOMY.md         tag vocabulary + review notes
 DESIGN.md           UI design language for milestones 2-3
+FLOWS.md            implementation flow spec (hand to implementing agent)
 ```
 
 ## Conventions
@@ -45,11 +46,56 @@ Point Claude (Code or a Project with this repo) at the repo:
 exercises.yaml and blocks/, follow the conventions in programs/."
 Review the diff, commit.
 
+
+## Access model (decided 2026-07-07)
+
+Two roles, one gate. Single-tenant by design.
+
+| Capability | Owner | Everyone else |
+|---|---|---|
+| View programs, library, blocks | yes | yes |
+| View logs, records, summit register | yes | yes (public by default; `public_logs` flag exists from day one) |
+| Log sessions -> synced to D1 | yes (passkey per device) | no — guest logging writes to their own IndexedDB only, never syncs; UI shows a persistent "local only" badge |
+| Edit programs / library | via git commits only (GitHub creds) | no |
+| Mutate D1 in any way | authenticated server routes only | 401 |
+
+Notes:
+- D1 is the canonical store of logs; any authenticated browser sees
+  the same history. Devices are disposable.
+- Programs have no in-app write path for anyone, owner included —
+  documents change only through the repo. Two write doors, two keys.
+- Mid-session deviations (substitutions, cut sets, notes) are LOG
+  data, not program edits: "performed instead" + notes fields in the
+  logging client. Plan vs actual stays separate and queryable.
+- Phone program edits: Claude Code remote session against the repo
+  (preferred) or github.dev / GitHub mobile. An owner-only structured
+  edit route that commits via the GitHub API is deferred Tier 3 —
+  build only if the above proves too slow in practice.
+- Guest mode doubles as the portfolio demo: full product feel,
+  zero accounts, zero stored data.
+
 ## Roadmap (agreed architecture)
 
 1. ✅ This substrate
-2. SvelteKit app on Cloudflare Pages — renders active program,
-   hyperlinks exercises via the library (visual spec: DESIGN.md)
+2. ✅ SvelteKit app on Cloudflare Pages — renders active program,
+   hyperlinks exercises via the library (visual spec: DESIGN.md).
+   Read-only routes, today resolution, elevation profile, `/get`.
 3. PWA logging client — IndexedDB buffer → server route → D1
    (schema sketch in `log/README.md`)
 4. Volume/progression analytics as SQL over D1; retire manual AAR grid
+
+## App (milestone 2)
+
+SvelteKit lives at the repo root; the content substrate is parsed at
+build time (no separate content DB). Commands:
+
+```
+npm install
+npm run dev        # local dev
+npm run build      # prerender all routes (fails on the §1 guardrails)
+npm run preview    # serve the production build
+npm test           # content pipeline + today-resolution tests
+```
+
+Deploy to Cloudflare Pages: see `DEPLOY.md`. Build health (including the
+unresolved-name warnings from the pipeline) is exposed at `/api/health`.

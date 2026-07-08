@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" data-mode="dark">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.svg" type="image/svg+xml" />
+		<link rel="manifest" href="%sveltekit.assets%/manifest.webmanifest" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<meta name="theme-color" content="#131312" />
+		<meta name="color-scheme" content="dark light" />
+		<script>
+			// Set paper mode before first paint if the device prefers light.
+			// Dark is the default per DESIGN; this only flips when asked.
+			try {
+				const saved = localStorage.getItem('mode');
+				const mode =
+					saved || (matchMedia('(prefers-color-scheme: light)').matches ? 'paper' : 'dark');
+				document.documentElement.setAttribute('data-mode', mode);
+			} catch (e) {
+				/* dark stays */
+			}
+		</script>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

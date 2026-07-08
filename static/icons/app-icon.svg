@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Maskable-safe: mark sits inside the central 80% safe zone. -->
+  <rect width="512" height="512" fill="#131312"/>
+  <g transform="translate(106,106) scale(3.0)">
+    <path d="M 18,86 L 68,71 L 24,50 L 76,26" fill="none" stroke="#E8590C" stroke-width="12" stroke-linejoin="miter" stroke-miterlimit="6" stroke-linecap="butt"/>
+    <path d="M 0,-9 L 20,0 L 0,9 Z" transform="translate(76,26) rotate(-25)" fill="#E8590C"/>
+  </g>
+</svg>

@@ -1,0 +1,200 @@
+/* SWITCHBACK design system — authoritative source is DESIGN.md.
+   Athletic, clean, sharp, fast. One accent (blaze), worked hard, capped. */
+
+:root {
+	--field: #131312;
+	--field-raised: #1b1b19;
+	--ink: #fafaf8;
+	--muted: #8a8983;
+	--hairline: #33322f;
+	--blaze: #e8590c;
+	--blaze-lit: #f1661a;
+	--on-blaze: #131312;
+
+	/* trail markers — intensity as ski difficulty */
+	--marker-green: #97c459;
+	--marker-blue: #85b7eb;
+	--marker-black: #131312;
+	--marker-stroke: var(--ink);
+
+	--radius: 0;
+
+	--font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+	--font-body: 'Archivo', system-ui, sans-serif;
+
+	--rule: 2px; /* section break */
+	--tap: 44px; /* min tap target for chalked thumbs */
+}
+
+[data-mode='paper'] {
+	--field: #fafaf8;
+	--field-raised: #ffffff;
+	--ink: #111110;
+	--muted: #6b6a66;
+	--hairline: #d6d4ce;
+	--blaze-lit: #e8590c; /* orange numerals dimmed to blaze in light */
+	--on-blaze: #fafaf8;
+
+	--marker-green: #3b6d11;
+	--marker-blue: #185fa5;
+	--marker-black: #111110;
+	--marker-stroke: var(--field);
+}
+
+* {
+	box-sizing: border-box;
+	border-radius: 0 !important; /* sharp, globally */
+}
+
+/* Fast is an aesthetic: nothing eases past 100ms. */
+*,
+*::before,
+*::after {
+	transition-duration: 0ms;
+	transition-timing-function: linear;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: var(--field);
+	color: var(--ink);
+	font-family: var(--font-body);
+	font-variant-numeric: tabular-nums;
+	font-weight: 400;
+	line-height: 1.45;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+.display,
+.numeral {
+	font-family: var(--font-display);
+	font-weight: 600;
+	line-height: 1.02;
+	letter-spacing: 0.005em;
+	margin: 0;
+}
+
+h1 {
+	font-size: clamp(2.1rem, 7vw, 3.4rem);
+	text-transform: none;
+}
+h2 {
+	font-size: clamp(1.5rem, 5vw, 2.1rem);
+}
+h3 {
+	font-size: 1.15rem;
+	font-weight: 500;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: none;
+}
+
+/* Microlabel: the small caps tracking-wide label used throughout. */
+.microlabel {
+	font-family: var(--font-body);
+	font-size: 0.66rem;
+	font-weight: 500;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--muted);
+}
+
+.numeral {
+	font-variant-numeric: tabular-nums;
+}
+
+.muted {
+	color: var(--muted);
+}
+.blaze {
+	color: var(--blaze);
+}
+
+/* Structural rules */
+.rule {
+	border: 0;
+	border-top: var(--rule) solid var(--blaze);
+	margin: 0;
+}
+[data-mode='paper'] .rule {
+	border-top-color: var(--ink); /* orange reserved for active/done/action in light */
+}
+.hairline {
+	border: 0;
+	border-top: 0.5px solid var(--hairline);
+	margin: 0;
+}
+
+/* Layout container — whitespace is the container; no cards. */
+.wrap {
+	width: 100%;
+	max-width: 720px;
+	margin: 0 auto;
+	padding: 0 clamp(16px, 5vw, 28px);
+}
+
+/* Primary action — blaze fill, ink text. The highest-contrast object. */
+.btn-primary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: var(--tap);
+	padding: 0 1.2rem;
+	background: var(--blaze);
+	color: var(--on-blaze);
+	font-family: var(--font-display);
+	font-weight: 600;
+	font-size: 1.1rem;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	border: none;
+	cursor: pointer;
+}
+.btn-primary:hover {
+	background: var(--blaze-lit);
+}
+
+/* Ghost action — hairline outline, no fill. */
+.btn-ghost {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: var(--tap);
+	padding: 0 1.2rem;
+	background: transparent;
+	color: var(--ink);
+	border: 1px solid var(--hairline);
+	font-family: var(--font-display);
+	font-weight: 500;
+	font-size: 1rem;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	cursor: pointer;
+}
+.btn-ghost:hover {
+	border-color: var(--ink);
+}
+
+:focus-visible {
+	outline: 2px solid var(--blaze);
+	outline-offset: 2px;
+}
+
+::selection {
+	background: var(--blaze);
+	color: var(--on-blaze);
+}

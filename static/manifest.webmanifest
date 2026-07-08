@@ -1,0 +1,25 @@
+{
+	"name": "Switchback",
+	"short_name": "Switchback",
+	"description": "Training system — plans, exercise library, logging.",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"orientation": "portrait",
+	"background_color": "#131312",
+	"theme_color": "#131312",
+	"icons": [
+		{
+			"src": "/icons/app-icon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "any"
+		},
+		{
+			"src": "/icons/app-icon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "maskable"
+		}
+	]
+}
