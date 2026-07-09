@@ -2,6 +2,9 @@
 id: ff-strength-conditioning
 title: "Firefighter Strength & Conditioning"
 status: archived
+purpose: Firefighter S&C
+level: build
+series: ff-s-and-c
 source: FF_S_C_v4.xlsx
 ---
 
