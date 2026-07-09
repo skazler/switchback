@@ -15,17 +15,17 @@
 	});
 	const today = $derived(clientToday ?? data.today);
 
-	// Rotating hero: pick a fresh photo per load. Two pools so each mode gets a
-	// fitting shot (paper = daylight; dark also gets the night Sierra). Both
-	// pre-picked and handed to CSS as vars, so toggling mode swaps cleanly.
-	const HEROES = {
-		dark: ['/heroes/night.jpg', '/heroes/snow.jpg', '/heroes/summit.jpg', '/heroes/moab.jpg', '/heroes/canyon.jpg'],
-		paper: ['/heroes/snow.jpg', '/heroes/summit.jpg', '/heroes/moab.jpg', '/heroes/canyon.jpg']
-	};
-	const pick = (a: string[]) => a[Math.floor(Math.random() * a.length)];
-	let heroStyle = $state('');
+	// Rotating hero: one pool of every photo, a fresh one per load, shown in
+	// both modes (the scrim adapts). Rendered as an <img> so browser EXIF
+	// orientation applies — portrait / phone-rotated shots come out upright.
+	const HEROES = [
+		'night', 'snow', 'moab', 'canyon', 'summit', 'bryce', 'cloudpeak', 'forest',
+		'autumn-valley', 'autumn-trail', 'foggy-road', 'mtb-carry', 'snowboard',
+		'chicago-run', 'sunset-run'
+	].map((n) => `/heroes/${n}.jpg`);
+	let heroSrc = $state(HEROES[0]);
 	$effect(() => {
-		heroStyle = `--hero-dark:url("${pick(HEROES.dark)}");--hero-paper:url("${pick(HEROES.paper)}")`;
+		heroSrc = HEROES[Math.floor(Math.random() * HEROES.length)];
 	});
 
 	function longDate(iso: string): string {
@@ -44,7 +44,8 @@
 	<meta name="description" content="Training system — plans, exercise library, logging." />
 </svelte:head>
 
-<section class="hero" style={heroStyle}>
+<section class="hero">
+	<img class="hero-photo" src={heroSrc} alt="" decoding="async" />
 	<div class="hero-inner">
 		<p class="microlabel htag">Trailhead · Today</p>
 
@@ -101,25 +102,27 @@
 	   it into the page so the card stays legible. */
 	.hero {
 		position: relative;
+		isolation: isolate;
 		width: 100vw;
 		margin-left: calc(50% - 50vw);
 		margin-top: -22px;
 		min-height: min(58vh, 540px);
 		display: flex;
-		background-size: cover;
-		background-position: center 28%;
-		background-repeat: no-repeat;
 	}
-	:global([data-mode='dark']) .hero {
-		background-image: var(--hero-dark, url(/heroes/night.jpg));
-	}
-	:global([data-mode='paper']) .hero {
-		background-image: var(--hero-paper, url(/heroes/snow.jpg));
+	.hero-photo {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center 30%;
 	}
 	.hero::after {
 		content: '';
 		position: absolute;
 		inset: 0;
+		z-index: 1;
 		pointer-events: none;
 		background: linear-gradient(
 			to bottom,
@@ -140,7 +143,7 @@
 	}
 	.hero-inner {
 		position: relative;
-		z-index: 1;
+		z-index: 2;
 		width: 100%;
 		max-width: 720px;
 		margin: 0 auto;
