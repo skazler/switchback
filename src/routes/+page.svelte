@@ -1,5 +1,4 @@
 <script lang="ts">
-	import BlazeSign from '$lib/components/BlazeSign.svelte';
 	import TrailMarker from '$lib/components/TrailMarker.svelte';
 	import { resolveToday } from '$lib/today';
 	import type { PageData } from './$types';
@@ -15,6 +14,19 @@
 		if (program) clientToday = resolveToday(program, new Date());
 	});
 	const today = $derived(clientToday ?? data.today);
+
+	// Rotating hero: pick a fresh photo per load. Two pools so each mode gets a
+	// fitting shot (paper = daylight; dark also gets the night Sierra). Both
+	// pre-picked and handed to CSS as vars, so toggling mode swaps cleanly.
+	const HEROES = {
+		dark: ['/heroes/night.jpg', '/heroes/snow.jpg', '/heroes/summit.jpg', '/heroes/moab.jpg', '/heroes/canyon.jpg'],
+		paper: ['/heroes/snow.jpg', '/heroes/summit.jpg', '/heroes/moab.jpg', '/heroes/canyon.jpg']
+	};
+	const pick = (a: string[]) => a[Math.floor(Math.random() * a.length)];
+	let heroStyle = $state('');
+	$effect(() => {
+		heroStyle = `--hero-dark:url("${pick(HEROES.dark)}");--hero-paper:url("${pick(HEROES.paper)}")`;
+	});
 
 	function longDate(iso: string): string {
 		const [y, m, d] = iso.split('-').map(Number);
@@ -32,7 +44,7 @@
 	<meta name="description" content="Training system — plans, exercise library, logging." />
 </svelte:head>
 
-<section class="hero">
+<section class="hero" style={heroStyle}>
 	<div class="hero-inner">
 		<p class="microlabel htag">Trailhead · Today</p>
 
@@ -67,13 +79,20 @@
 	</div>
 </section>
 
-<nav class="wayfinding" aria-label="Wayfinding">
-	<BlazeSign href="/route" label="Route" meta={program?.title ?? 'no active program'} />
-	<BlazeSign href="/library" label="Library" meta="{counts.moves} moves" />
-	<BlazeSign href="/summits" label="Summits" meta="PRs & goals" />
-	<BlazeSign href="/log" label="Log" meta="session history" />
-	<BlazeSign href="/routes" label="All programs" meta="{counts.programs} incl. {counts.archived} archived" />
-	<BlazeSign href="/get" label="Install" meta="add to home screen" />
+{#snippet tile(href: string, label: string, meta: string)}
+	<a class="tile" {href}>
+		<span class="tl display">{label}</span>
+		<span class="tm microlabel">{meta}</span>
+	</a>
+{/snippet}
+
+<nav class="sections" aria-label="Sections">
+	{@render tile('/route', 'Route', program?.title ?? 'no active program')}
+	{@render tile('/library', 'Library', `${counts.moves} moves`)}
+	{@render tile('/summits', 'Summits', 'PRs & goals')}
+	{@render tile('/log', 'Log', 'session history')}
+	{@render tile('/routes', 'Programs', `${counts.programs} total`)}
+	{@render tile('/get', 'Install', 'add to home')}
 </nav>
 
 <style>
@@ -92,10 +111,10 @@
 		background-repeat: no-repeat;
 	}
 	:global([data-mode='dark']) .hero {
-		background-image: url(/hero-dark.jpg);
+		background-image: var(--hero-dark, url(/heroes/night.jpg));
 	}
 	:global([data-mode='paper']) .hero {
-		background-image: url(/hero-paper.jpg);
+		background-image: var(--hero-paper, url(/heroes/snow.jpg));
 	}
 	.hero::after {
 		content: '';
@@ -104,9 +123,9 @@
 		pointer-events: none;
 		background: linear-gradient(
 			to bottom,
-			rgba(19, 19, 18, 0.15) 0%,
-			rgba(19, 19, 18, 0.5) 50%,
-			rgba(19, 19, 18, 0.88) 82%,
+			rgba(19, 19, 18, 0.32) 0%,
+			rgba(19, 19, 18, 0.62) 52%,
+			rgba(19, 19, 18, 0.9) 82%,
 			var(--field) 100%
 		);
 	}
@@ -154,9 +173,31 @@
 	.go {
 		margin-top: 16px;
 	}
-	.wayfinding {
+	/* Compact section grid — 2 columns on a phone, more when there's room.
+	   Keeps every section one tap away without a tall stacked list. */
+	.sections {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+		gap: 8px;
+		margin-top: 20px;
+	}
+	.tile {
 		display: flex;
 		flex-direction: column;
-		margin-top: 22px;
+		justify-content: space-between;
+		gap: 8px;
+		min-height: 64px;
+		padding: 12px 14px;
+		border: 1px solid var(--hairline);
+	}
+	.tile:hover {
+		border-color: var(--ink);
+	}
+	.tl {
+		font-size: 1.25rem;
+		font-weight: 600;
+	}
+	.tm {
+		color: var(--muted);
 	}
 </style>

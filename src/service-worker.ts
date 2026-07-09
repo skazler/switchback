@@ -14,8 +14,10 @@ const sw = self as unknown as ServiceWorkerGlobalScope;
 const CACHE = `switchback-${version}`;
 
 // Precache built assets + static files. Content JSON is baked into the
-// prerendered pages for M2, so the shell is enough.
-const PRECACHE = [...build, ...files];
+// prerendered pages for M2, so the shell is enough. Hero photos are excluded
+// — only one shows per load, so they cache on demand (stale-while-revalidate)
+// instead of bloating every install.
+const PRECACHE = [...build, ...files.filter((f) => !f.startsWith('/heroes/'))];
 
 sw.addEventListener('install', (event) => {
 	event.waitUntil(

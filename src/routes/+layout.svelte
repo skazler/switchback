@@ -43,7 +43,7 @@
 
 <header class="topbar">
 	<div class="wrap bar">
-		<div class="left">
+		<div class="left" class:inner={!!back}>
 			{#if back}
 				<a class="back" href={back.href} aria-label="Back to {back.label}">
 					<span class="chev" aria-hidden="true">‹</span><span class="backlabel">{back.label}</span>
@@ -150,8 +150,12 @@
 	.footer .bar {
 		min-height: 44px;
 	}
-	/* On a narrow phone: keep the back chevron + label; drop the wordmark so
-	   the back affordance stays prominent. Logo mark still links home. */
+	/* On inner pages the back affordance is the primary left element, so the
+	   brand collapses to just the logo mark — no wordmark to squish against. */
+	.left.inner .wordmark {
+		display: none;
+	}
+	/* On a narrow phone, drop the wordmark on the home page too. */
 	@media (max-width: 520px) {
 		.wordmark {
 			display: none;
