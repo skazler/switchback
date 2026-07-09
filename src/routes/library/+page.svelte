@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -6,6 +7,16 @@
 	let q = $state('');
 	let category = $state('');
 	let equip = $state('');
+
+	// Seed filters from the URL (?q / ?category / ?equipment) so links from a
+	// program's "choice" cells land pre-filtered. Reruns only on navigation,
+	// so it doesn't clobber the user's own typing.
+	$effect(() => {
+		const p = page.url.searchParams;
+		q = p.get('q') ?? '';
+		category = p.get('category') ?? '';
+		equip = p.get('equipment') ?? '';
+	});
 
 	const filtered = $derived(
 		data.rows.filter((r) => {

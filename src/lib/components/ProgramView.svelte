@@ -17,13 +17,22 @@
 		open?: boolean;
 		todaySlug?: string | null;
 	} = $props();
+
+	const meta = $derived(
+		[
+			mode === 'active' ? 'Active route' : 'Archived route',
+			program.purpose,
+			program.level,
+			program.schedule === 'rotation' ? 'rotation' : null
+		].filter(Boolean) as string[]
+	);
 </script>
 
 <header class="phead">
-	<p class="microlabel">
-		{mode === 'active' ? 'Active route' : 'Archived route'}{program.purpose
-			? ` · ${program.purpose}`
-			: ''}{program.level ? ` · ${program.level}` : ''}
+	<p class="meta">
+		{#each meta as m, i}
+			{#if i > 0}<span class="sep" aria-hidden="true">/</span>{/if}<span class="microlabel">{m}</span>
+		{/each}
 	</p>
 	<h1 class="display">{program.title}</h1>
 </header>
@@ -35,7 +44,10 @@
 {/if}
 
 {#if program.overviewHtml}
-	<div class="overview">{@html program.overviewHtml}</div>
+	<section class="overview">
+		<p class="microlabel ohead">Overview</p>
+		<div class="obody">{@html program.overviewHtml}</div>
+	</section>
 {/if}
 
 <hr class="rule wide" />
@@ -59,7 +71,9 @@
 	{#each program.days as day}
 		<section class="dayblock">
 			<div class="dayhead">
-				<h2 class="display">{#if day.weekday >= 0}<span class="code numeral">{day.code}</span> {/if}{day.label}</h2>
+				<h2 class="display">
+					{#if day.weekday >= 0}<span class="code numeral">{day.code}</span>{/if}<span class="dl">{day.label}</span>
+				</h2>
 				<TrailMarker marker={day.marker} size={18} />
 			</div>
 			<SessionTable {day} />
@@ -68,6 +82,19 @@
 {/if}
 
 <style>
+	.phead {
+		margin-bottom: 4px;
+	}
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+		margin: 0 0 4px;
+	}
+	.meta .sep {
+		color: var(--hairline);
+	}
 	.phead h1 {
 		font-size: clamp(2rem, 7vw, 3.2rem);
 		margin-top: 2px;
@@ -75,40 +102,80 @@
 	.profile {
 		margin: 18px 0 22px;
 	}
-	.overview :global(h2),
-	.overview :global(h3) {
-		margin: 18px 0 6px;
+
+	/* Overview — a deliberate panel, not a dump. */
+	.overview {
+		margin: 20px 0 4px;
+		border-left: 2px solid var(--hairline);
+		padding: 4px 0 4px 16px;
 	}
-	.overview :global(p) {
-		margin: 8px 0;
+	.ohead {
+		color: var(--blaze);
+		margin: 0 0 8px;
 	}
-	.overview :global(ul) {
-		margin: 8px 0;
-		padding-left: 20px;
+	:global([data-mode='paper']) .ohead {
+		color: var(--muted);
 	}
-	.overview :global(table) {
+	/* Bold labels that sit alone in a paragraph become section microheads. */
+	.obody :global(p > strong:only-child) {
+		display: block;
+		font: inherit;
+		font-family: var(--font-body);
+		font-weight: 500;
+		font-size: 0.7rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--muted);
+		margin-top: 14px;
+	}
+	.obody :global(p) {
+		margin: 6px 0;
+	}
+	.obody :global(ul) {
+		margin: 6px 0;
+		padding-left: 18px;
+	}
+	.obody :global(li) {
+		margin: 2px 0;
+	}
+	.obody :global(blockquote) {
+		border: 0;
+		margin: 0 0 10px;
+		padding: 0;
+		font-family: var(--font-display);
+		font-size: 1.15rem;
+		font-weight: 500;
+		font-style: normal;
+		color: var(--ink);
+	}
+	/* Weekly grid — render as a clean schedule table. */
+	.obody :global(table) {
+		display: block;
+		overflow-x: auto;
 		width: 100%;
 		border-collapse: collapse;
-		font-size: 0.85rem;
-		margin: 10px 0;
+		font-size: 0.8rem;
+		margin: 12px 0;
+		white-space: nowrap;
 	}
-	.overview :global(th),
-	.overview :global(td) {
+	.obody :global(th),
+	.obody :global(td) {
 		border: 0.5px solid var(--hairline);
-		padding: 5px 8px;
+		padding: 6px 9px;
 		text-align: left;
+		vertical-align: top;
 	}
-	.overview :global(th) {
-		color: var(--muted);
+	.obody :global(thead th) {
+		color: var(--blaze);
 		font-weight: 500;
+		font-size: 0.62rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
 	}
-	.overview :global(blockquote) {
-		border-left: 2px solid var(--hairline);
-		margin: 10px 0;
-		padding-left: 12px;
+	:global([data-mode='paper']) .obody :global(thead th) {
 		color: var(--muted);
-		font-style: italic;
 	}
+
 	.rule.wide {
 		margin: 20px 0 16px;
 	}
@@ -163,7 +230,11 @@
 	:global([data-mode='paper']) .dayhead {
 		border-bottom-color: var(--ink);
 	}
+	.dayhead h2 {
+		text-transform: capitalize;
+	}
 	.dayhead h2 .code {
 		font-size: 1.4rem;
+		margin-right: 0.4em;
 	}
 </style>
