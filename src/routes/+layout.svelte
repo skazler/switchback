@@ -24,33 +24,39 @@
 		}
 	}
 
-	const nav = [
-		{ href: '/route', label: 'Route' },
-		{ href: '/library', label: 'Library' },
-		{ href: '/summits', label: 'Summits' },
-		{ href: '/log', label: 'Log' }
-	];
+	// Context "up" target so mobile / installed-PWA users (no browser chrome)
+	// always have a reliable way back. Parent = one path segment up.
+	const PARENT_LABEL: Record<string, string> = {
+		'': 'Trailhead',
+		route: 'Route',
+		routes: 'Programs'
+	};
+	const back = $derived.by(() => {
+		const path = page.url.pathname.replace(/\/+$/, '');
+		if (path === '' || path === '/') return null;
+		const segs = path.split('/').filter(Boolean);
+		segs.pop();
+		const parentKey = segs[segs.length - 1] ?? '';
+		return { href: '/' + segs.join('/'), label: PARENT_LABEL[parentKey] ?? 'Trailhead' };
+	});
 </script>
 
 <header class="topbar">
 	<div class="wrap bar">
-		<a class="brand" href="/" aria-label="Switchback — home">
-			<img src="/logo.svg" alt="" width="26" height="26" />
-			<span class="wordmark display">Switchback</span>
-		</a>
-		<nav class="nav">
-			{#each nav as item}
-				<a
-					class="navlink microlabel"
-					class:current={page.url.pathname === item.href ||
-						(item.href !== '/' && page.url.pathname.startsWith(item.href))}
-					href={item.href}>{item.label}</a
-				>
-			{/each}
-			<button class="modebtn microlabel" onclick={toggleMode} aria-label="Toggle light / dark">
-				{mode === 'dark' ? 'Paper' : 'Dark'}
-			</button>
-		</nav>
+		<div class="left">
+			{#if back}
+				<a class="back" href={back.href} aria-label="Back to {back.label}">
+					<span class="chev" aria-hidden="true">‹</span><span class="backlabel">{back.label}</span>
+				</a>
+			{/if}
+			<a class="brand" href="/" aria-label="Switchback — home">
+				<img src="/logo.svg" alt="" width="24" height="24" />
+				<span class="wordmark display">Switchback</span>
+			</a>
+		</div>
+		<button class="modebtn microlabel" onclick={toggleMode} aria-label="Toggle light / dark">
+			{mode === 'dark' ? 'Paper' : 'Dark'}
+		</button>
 	</div>
 	<hr class="rule" />
 </header>
@@ -81,38 +87,57 @@
 		min-height: 52px;
 		gap: 16px;
 	}
+	.left {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		min-width: 0;
+	}
+	.back {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		min-height: 44px;
+		padding-right: 6px;
+		color: var(--muted);
+	}
+	.back:hover {
+		color: var(--blaze);
+	}
+	.chev {
+		font-family: var(--font-display);
+		font-size: 1.8rem;
+		line-height: 1;
+		margin-top: -2px;
+	}
+	.backlabel {
+		font-family: var(--font-body);
+		font-size: 0.72rem;
+		font-weight: 500;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
 	.brand {
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: 9px;
+		min-width: 0;
 	}
 	.wordmark {
-		font-size: 1.35rem;
+		font-size: 1.3rem;
 		font-weight: 600;
 		letter-spacing: 0.04em;
-	}
-	.nav {
-		display: flex;
-		align-items: center;
-		gap: 4px;
-	}
-	.navlink,
-	.modebtn {
-		padding: 8px 10px;
-		color: var(--muted);
-	}
-	.navlink:hover,
-	.modebtn:hover {
-		color: var(--ink);
-	}
-	.navlink.current {
-		color: var(--ink);
 	}
 	.modebtn {
 		background: none;
 		border: 1px solid var(--hairline);
 		cursor: pointer;
 		min-height: 32px;
+		padding: 6px 10px;
+		color: var(--muted);
+	}
+	.modebtn:hover {
+		color: var(--ink);
 	}
 	.page {
 		padding-top: 22px;
@@ -125,12 +150,11 @@
 	.footer .bar {
 		min-height: 44px;
 	}
+	/* On a narrow phone: keep the back chevron + label; drop the wordmark so
+	   the back affordance stays prominent. Logo mark still links home. */
 	@media (max-width: 520px) {
 		.wordmark {
 			display: none;
-		}
-		.navlink {
-			padding: 8px 7px;
 		}
 	}
 </style>

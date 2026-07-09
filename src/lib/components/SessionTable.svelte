@@ -39,7 +39,7 @@
 				<div class="line">
 					<span class="name display">
 						{#if isChoice(row.name)}
-							<a class="choice" href={choiceHref(row)}>{displayName(row.name)}<span class="pick microlabel">pick</span></a>
+							<a class="choice" href={choiceHref(row)}>{displayName(row.name)}<span class="opt" aria-label="choose from library">↗</span></a>
 						{:else if row.ref?.kind === 'exercise' && row.ref.url}
 							<a href={row.ref.url} target="_blank" rel="noopener noreferrer">{displayName(row.name)}</a>
 						{:else}
@@ -131,12 +131,11 @@
 	.name a.choice {
 		border-bottom-color: var(--blaze);
 	}
-	.pick {
-		margin-left: 7px;
+	.opt {
 		color: var(--blaze);
-		border: 0.5px solid var(--blaze);
-		padding: 0 5px;
-		vertical-align: middle;
+		font-size: 0.8em;
+		margin-left: 3px;
+		vertical-align: baseline;
 	}
 	.tag {
 		margin-left: 8px;
