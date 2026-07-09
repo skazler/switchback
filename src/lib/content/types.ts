@@ -77,7 +77,16 @@ export interface Program {
 	id: string;
 	title: string;
 	status: 'active' | 'archived';
-	/** ISO date, a Monday — enables week numbering (FLOWS §1) */
+	/** what the plan is for — used to group the library of plans, e.g.
+	 *  "Firefighter S&C", "Hypertrophy + conditioning", "Snowboard base" */
+	purpose?: string;
+	/** relative demand / experience level, e.g. "base", "build", "peak",
+	 *  "intro", "advanced" — used as a facet on /routes */
+	level?: string;
+	/** lineage slug grouping versions of the SAME plan as it evolves over
+	 *  time. Programs sharing a series are ordered by `start` (newest first). */
+	series?: string;
+	/** ISO date, a Monday — enables week numbering (FLOWS §1) and version order */
 	start?: string;
 	source?: string;
 	phases?: Phase[];

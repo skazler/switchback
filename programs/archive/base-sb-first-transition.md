@@ -2,6 +2,9 @@
 id: base-sb-first-transition
 title: "Base — Snowboard First Transition"
 status: archived
+purpose: Snowboard prep
+level: base
+series: sb-transition
 source: Base_SB1stTransition_v3.xlsx
 ---
 

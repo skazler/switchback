@@ -21,7 +21,9 @@
 
 <header class="phead">
 	<p class="microlabel">
-		{mode === 'active' ? 'Active route' : 'Archived route'}{program.source ? ` · ${program.source}` : ''}
+		{mode === 'active' ? 'Active route' : 'Archived route'}{program.purpose
+			? ` · ${program.purpose}`
+			: ''}{program.level ? ` · ${program.level}` : ''}
 	</p>
 	<h1 class="display">{program.title}</h1>
 </header>
