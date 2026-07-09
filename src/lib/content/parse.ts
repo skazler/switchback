@@ -61,16 +61,18 @@ interface DayHeading {
 	valid: boolean;
 }
 
-/** Parse a `## heading  <!-- code label -->` raw line. */
-function parseDayHeading(raw: string): DayHeading | null {
+/** Parse a `## heading  <!-- code label -->` raw line. `rot` is the
+ *  rotation-day sentinel (valid only when the program is schedule: rotation). */
+function parseDayHeading(raw: string, rotation: boolean): DayHeading | null {
 	const m = raw.match(DAY_COMMENT);
 	if (!m) return null;
-	const inner = m[1].trim(); // "Th athletic enh"
+	const inner = m[1].trim(); // "Th athletic enh" | "rot Legs 1"
 	const [code, ...rest] = inner.split(/\s+/);
+	const isWeekday = code.toLowerCase() in WEEKDAY;
 	return {
 		code,
 		label: rest.join(' ') || inner,
-		valid: code.toLowerCase() in WEEKDAY
+		valid: isWeekday || (rotation && code.toLowerCase() === 'rot')
 	};
 }
 
@@ -88,6 +90,7 @@ export function parseProgram(
 ): ParseProgramResult {
 	const { data, content } = matter(fileText);
 	const tokens = marked.lexer(content);
+	const rotation = data.schedule === 'rotation';
 
 	const overviewTokens: typeof tokens = [] as never;
 	const days: ProgramDay[] = [];
@@ -124,7 +127,7 @@ export function parseProgram(
 	for (const token of tokens) {
 		if (token.type === 'heading' && (token as { depth: number }).depth === 2) {
 			flush();
-			const heading = parseDayHeading((token as { raw: string }).raw);
+			const heading = parseDayHeading((token as { raw: string }).raw, rotation);
 			if (heading) {
 				if (!heading.valid) badDayFormats.push(heading.code);
 				current = { heading, tokens: [] as never };
@@ -143,6 +146,7 @@ export function parseProgram(
 		id: String(data.id ?? ''),
 		title: String(data.title ?? data.id ?? ''),
 		status: data.status === 'active' ? 'active' : 'archived',
+		schedule: rotation ? 'rotation' : 'weekly',
 		purpose: data.purpose ? String(data.purpose) : undefined,
 		level: data.level ? String(data.level) : undefined,
 		series: data.series ? String(data.series) : undefined,

@@ -10,6 +10,7 @@ const program: Program = {
 	id: '2026-q2',
 	title: 'Test',
 	status: 'active',
+	schedule: 'weekly',
 	start: '2025-12-29', // a Monday
 	overviewHtml: '',
 	phases: [

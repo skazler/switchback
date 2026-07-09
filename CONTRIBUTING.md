@@ -88,6 +88,16 @@ weekday is encoded in an HTML comment — `M · T/Tu · W · Th · F · Sa · Su
 The six columns are fixed (matched by header, order-tolerant). Exercise
 cells resolve to the library / blocks as above.
 
+**Rotation plans:** a plan you cycle through by slot rather than weekday
+(a 4-day split, or upper/lower A/B) sets `schedule: rotation` in front
+matter and uses the `rot` sentinel in day headings —
+`## upper A  <!-- rot upper A -->`. Rotation days don't participate in
+today-resolution. Weekly plans (the default) bind each day to a weekday.
+
+**Bulk import from spreadsheets:** `scripts/import-xlsx.mjs` converts the
+original `.xlsx` plans to this format (weekly / rotation / reference
+auto-detected). See its header for usage; edit `MANIFEST` to add files.
+
 **Evolving a plan over time:** give the new version the same `series` and a
 new `start`; keep one file per version if you want to browse the history on
 `/routes`, or (per README) keep one file per lineage and let git history

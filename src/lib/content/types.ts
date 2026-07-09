@@ -77,6 +77,9 @@ export interface Program {
 	id: string;
 	title: string;
 	status: 'active' | 'archived';
+	/** weekly = days bound to weekdays (today-resolution applies);
+	 *  rotation = ordered slots you cycle through (no weekday binding) */
+	schedule: 'weekly' | 'rotation';
 	/** what the plan is for — used to group the library of plans, e.g.
 	 *  "Firefighter S&C", "Hypertrophy + conditioning", "Snowboard base" */
 	purpose?: string;

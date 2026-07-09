@@ -59,7 +59,7 @@
 	{#each program.days as day}
 		<section class="dayblock">
 			<div class="dayhead">
-				<h2 class="display"><span class="code numeral">{day.code}</span> {day.label}</h2>
+				<h2 class="display">{#if day.weekday >= 0}<span class="code numeral">{day.code}</span> {/if}{day.label}</h2>
 				<TrailMarker marker={day.marker} size={18} />
 			</div>
 			<SessionTable {day} />
