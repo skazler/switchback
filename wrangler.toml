@@ -1,0 +1,17 @@
+# Cloudflare Pages + bindings config. Used by `wrangler` and by the dev
+# server (adapter-cloudflare surfaces these bindings on `platform.env`).
+#
+# One-time setup (see DEPLOY.md):
+#   wrangler d1 create switchback        → paste the returned database_id below
+#   wrangler d1 migrations apply switchback
+name = "switchback"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".svelte-kit/cloudflare"
+
+# D1 — runtime store for logs/credentials (FLOWS §11). M3.
+[[d1_databases]]
+binding = "DB"
+database_name = "switchback"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+migrations_dir = "migrations"

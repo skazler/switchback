@@ -68,13 +68,29 @@ static/icons/icon-512.png`) and add them to the manifest `icons` array.
 Pages project → **Custom domains → Set up a domain**. Cloudflare manages
 the cert automatically. No app change needed.
 
-## Coming in M3 (not yet wired — noted so the project is ready)
+## M3 — logging (D1 + auth)
 
-Logging needs a D1 database and auth secrets:
+Config lives in `wrangler.toml` (binding `DB`) and `migrations/`.
 
-- **D1:** create a database, then bind it as `DB` (Pages → Settings →
-  Functions → D1 database bindings). Schema is in FLOWS §11.
-- **Secrets:** `BOOTSTRAP_TOKEN` (passkey registration gate, FLOWS §4).
-- `/api/*` routes will opt out of prerender (`export const prerender =
-  false`) and run as Pages Functions — that's what `nodejs_compat` above
-  is for.
+**Create the database and apply the schema:**
+
+```sh
+wrangler d1 create switchback          # copy the database_id into wrangler.toml
+wrangler d1 migrations apply switchback --local    # local dev sqlite
+wrangler d1 migrations apply switchback            # remote (production)
+```
+
+**Bind it to Pages:** Pages project → Settings → Functions → **D1 database
+bindings** → add `DB` → the `switchback` database. (The `wrangler.toml`
+binding drives local dev; the dashboard binding drives the deployed site.)
+
+**Secrets:** set `BOOTSTRAP_TOKEN` (the passkey-registration gate, FLOWS §4)
+in Pages → Settings → Environment variables (encrypted), and locally in a
+gitignored `.dev.vars` file:
+
+```
+BOOTSTRAP_TOKEN=some-long-random-string
+```
+
+`/api/*` routes opt out of prerender (`export const prerender = false`) and
+run as Pages Functions — that's what `nodejs_compat` is for.

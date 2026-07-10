@@ -1,14 +1,20 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
+/// <reference types="@cloudflare/workers-types" />
 declare global {
 	namespace App {
 		// interface Error {}
-		// interface Locals {}
+		interface Locals {
+			/** set by hooks when a valid owner session cookie is present */
+			owner: boolean;
+		}
 		// interface PageData {}
 		// interface PageState {}
 		interface Platform {
 			env?: {
-				DB?: unknown; // D1 binding — wired in M3
+				DB?: D1Database; // runtime store (logs, credentials) — M3
 			};
+			cf?: CfProperties;
+			ctx?: ExecutionContext;
 		}
 	}
 }
