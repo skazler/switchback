@@ -93,6 +93,7 @@
 	{@render tile('/summits', 'Summits', 'PRs & goals')}
 	{@render tile('/log', 'Log', 'session history')}
 	{@render tile('/routes', 'Programs', `${counts.programs} total`)}
+	{@render tile('/notes', 'Notes', 'training reference')}
 	{@render tile('/get', 'Install', 'add to home')}
 </nav>
 

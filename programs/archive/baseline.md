@@ -24,9 +24,7 @@ source: baseline.xlsx
 |   | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday |   |   |   |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Session | upper A | lower A | R&R | upper B | lower B | cardio/circuit | AR/R&R |   |   |   |
-**REFERENCES** — Exercise compilation
 
-- Notes on training
 
 ## upper A  <!-- rot upper A -->
 

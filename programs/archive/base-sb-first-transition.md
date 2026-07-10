@@ -39,11 +39,6 @@ Session 1
 
 | Session 2 | full fireground circuit | upper | complex training legs | sprints + athleticism | bench + upper power | deadlift + lower power | agility & power legs |
 - posterior chain acc mobility & p/rehab upper acc mobility & p/rehab
-- REFERENCES AAR
-- SB skills
-- CPAT events
-- Exercise compilation
-- Notes on training
 
 
 ## conditioning  <!-- M conditioning -->

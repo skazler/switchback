@@ -33,11 +33,6 @@ source: Base+SBSeason_v3.xlsx
 | Session 2 | posterior chain acc | upper | agility & power legs | sprints + athleticism | bench + upper power | deadlift + lower power | barn |
 |   | full fireground circuit |   | complex training legs | mobility & p/rehab |   | upper acc | big uphill |
 |   | mobility & p/rehab |   |   |   |   |   |   |
-| REFERENCES | AAR |   |   |   |   |   |   |
-|   | SB skills |   |   |   |   |   |   |
-|   | CPAT events |   |   |   |   |   |   |
-|   | Exercise compilation |   |   |   |   |   |   |
-|   | Notes on training |   |   |   |   |   |   |
 
 ## conditioning  <!-- M conditioning -->
 

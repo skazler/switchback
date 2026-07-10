@@ -25,11 +25,6 @@ source: Firecamp Mod.xlsx
 | Morning Session |   |   |   |   |   |   |   |
 | Evening Session | bench + upper power | deadlift + lower power | functional legs | bike/hike/run | full fireground circuit | full fireground circuit | long zone 2 |
 |   | posterior chain acc | upper acc | core |   |   |   |   |
-| REFERENCES | AAR |   |   |   |   |   |   |
-|   | CPAT events |   |   |   |   |   |   |
-|   | Exercise compilation |   |   |   |   |   |   |
-|   | Notes on training |   |   |   |   |   |   |
-|   | Running |   |   |   |   |   |   |
 
 ## bench+upper  <!-- M bench+upper -->
 

@@ -41,11 +41,6 @@ source: FF_S_C_v4.xlsx
 | Evening Session | bench + upper power | deadlift + lower power | sprints | upper | agility & power | full fireground circuit | (sprints & legs) |
 |   | posterior chain acc | upper acc | mobility & p/rehab |   | functional legs | upper acc | long zone 2 |
 - mobility & p/rehab
-- REFERENCES AAR
-- CPAT events
-- Exercise compilation
-- Notes on training
-- Running
 
 
 ## upper s&p + pc  <!-- M upper s&p + pc -->

@@ -36,10 +36,6 @@ source: H&FFC_v5.xlsx
 |   | Lower (plyos, sprints, power, hypertrophy) | 7 |   |   |   |   |   |
 |   | Upper (power, hypertrophy) | 5 |   |   |   |   |   |
 |   | Aerobic zone, p/rehab, activation, mobility, & core | 7 |   |   |   |   |   |
-| REFERENCES | AAR |   |   |   |   |   |   |
-|   | CPAT events |   |   |   |   |   |   |
-|   | Exercise compilation |   |   |   |   |   |   |
-|   | Notes on training |   |   |   |   |   |   |
 
 ## Full  <!-- M Full -->
 

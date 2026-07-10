@@ -30,11 +30,6 @@ source: Base+CPAT.xlsx
 | Session 1 |   | zone 2 |   | zone 2 stairs |   |   |   |
 | Session 2 | fireground circuit | upper | complex training legs | athleticism | bench + upper power | deadlift + lower power | agility & power legs |
 |   | posterior chain acc |   |   |   |   | upper acc | zone 2 stairs |
-| REFERENCES | AAR |   |   |   |   |   |   |
-|   | SB skills |   |   |   |   |   |   |
-|   | CPAT events |   |   |   |   |   |   |
-|   | Exercise compilation |   |   |   |   |   |   |
-|   | Notes on training |   |   |   |   |   |   |
 
 ## conditioning  <!-- M conditioning -->
 

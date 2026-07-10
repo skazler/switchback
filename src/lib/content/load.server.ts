@@ -40,6 +40,14 @@ function read(rel: string): string {
 	return readFileSync(join(ROOT, rel), 'utf-8');
 }
 
+function readOptional(rel: string): string {
+	try {
+		return readFileSync(join(ROOT, rel), 'utf-8');
+	} catch {
+		return '';
+	}
+}
+
 function listMarkdown(dir: string): string[] {
 	try {
 		return readdirSync(join(ROOT, dir))
@@ -60,8 +68,13 @@ let cache: Content | null = null;
 export function loadContent(): Content {
 	if (cache) return cache;
 
-	// Atoms — deduped: cross-listed moves collapse to one identity.
-	const { exercises, merged } = dedupeExercises(parseExercises(read('exercises.yaml')));
+	// Atoms — the exercise library plus the sport-skill compilations
+	// (skills.yaml: snowboard / hockey), merged into one deduped catalog.
+	const rawExercises = [
+		...parseExercises(read('exercises.yaml')),
+		...parseExercises(readOptional('skills.yaml'))
+	];
+	const { exercises, merged } = dedupeExercises(rawExercises);
 	const warnings: string[] = [];
 	if (merged.length) {
 		warnings.push(`Merged ${merged.length} cross-listed exercise id(s): ${merged.join(', ')}`);

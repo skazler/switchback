@@ -82,6 +82,12 @@ function referenceTable(rows) {
 	return out.join('\n');
 }
 
+// Dead cross-sheet references (the old Google-Sheets links). The exercise
+// compilation is now the library, notes on training is /notes, and the AAR /
+// CPAT sheets are gone — drop these rows from the overview entirely.
+const DEAD_REF = /^(references|aar|cpat events|exercise compilation|notes on training|running)$/i;
+const isDeadRef = (cells) => cells.some((c) => DEAD_REF.test(clean(c)));
+
 function overviewMd(ws) {
 	if (!ws) return '';
 	const rows = rowsOf(ws);
@@ -95,14 +101,15 @@ function overviewMd(ws) {
 			for (let j = i + 1; j < rows.length; j++) {
 				const cells = rows[j].map(clean);
 				if (cells.every((x) => !x)) break;
+				i = j;
+				if (isDeadRef(cells)) continue;
 				while (cells.length < w) cells.push('');
 				lines.push('| ' + cells.slice(0, w).map((x) => x || ' ').join(' | ') + ' |');
-				i = j;
 			}
 			continue;
 		}
 		const cells = rows[i].map(clean);
-		if (cells.every((x) => !x)) continue;
+		if (cells.every((x) => !x) || isDeadRef(cells)) continue;
 		const label = cells[0];
 		const value = cells.slice(1).filter(Boolean).join(' — ');
 		if (i === 0 && /^".*"$/.test(label)) lines.push(`> ${label}`, '');

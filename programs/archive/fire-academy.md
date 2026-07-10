@@ -36,10 +36,6 @@ source: In-Season-Fire-Academy.xlsx
 |   | Lower (plyos, sprints, power, strengthening) | 8 |   |   |   |   |   |
 |   | Upper (power, strengthening) | 4 |   |   |   |   |   |
 |   | Aerobic zone, p/rehab, activation, mobility, & core | 6 |   |   |   |   |   |
-| REFERENCES | AAR |   |   |   |   |   |   |
-|   | CPAT events |   |   |   |   |   |   |
-|   | Exercise compilation |   |   |   |   |   |   |
-|   | Notes on training |   |   |   |   |   |   |
 
 ## Core & Plyos  <!-- M Core & Plyos -->
 
