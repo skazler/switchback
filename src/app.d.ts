@@ -12,6 +12,7 @@ declare global {
 		interface Platform {
 			env?: {
 				DB?: D1Database; // runtime store (logs, credentials) — M3
+				BOOTSTRAP_TOKEN?: string; // gates passkey registration (Workers secret)
 			};
 			cf?: CfProperties;
 			ctx?: ExecutionContext;

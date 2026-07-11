@@ -5,8 +5,12 @@
 	import '@fontsource/archivo/500.css';
 	import '../app.css';
 	import { page } from '$app/state';
+	import { onMount } from 'svelte';
+	import { initSync, syncState } from '$lib/client/sync.svelte';
 
 	let { children } = $props();
+
+	onMount(initSync);
 
 	let mode = $state<'dark' | 'paper'>('dark');
 
@@ -68,8 +72,14 @@
 <footer class="footer">
 	<hr class="rule" />
 	<div class="wrap bar">
-		<span class="microlabel">Switchback</span>
-		<span class="microlabel muted">Plain-text training substrate</span>
+		<a class="microlabel ownerlink" href="/auth">{syncState.owner ? 'Owner ✓' : 'Owner sign-in'}</a>
+		{#if syncState.pending > 0}
+			<span class="microlabel pending" title="Sets buffered on this device, not yet synced">
+				▲ {syncState.pending} local{syncState.syncing ? ' · syncing…' : ''}
+			</span>
+		{:else}
+			<span class="microlabel muted">Plain-text training substrate</span>
+		{/if}
 	</div>
 </footer>
 
@@ -149,6 +159,15 @@
 	}
 	.footer .bar {
 		min-height: 44px;
+	}
+	.ownerlink {
+		color: var(--muted);
+	}
+	.ownerlink:hover {
+		color: var(--blaze);
+	}
+	.pending {
+		color: var(--blaze);
 	}
 	/* On inner pages the back affordance is the primary left element, so the
 	   brand collapses to just the logo mark — no wordmark to squish against. */

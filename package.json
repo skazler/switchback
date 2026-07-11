@@ -27,6 +27,8 @@
   "dependencies": {
     "@fontsource/archivo": "^5.2.8",
     "@fontsource/barlow-condensed": "^5.2.8",
+    "@simplewebauthn/browser": "^13.3.0",
+    "@simplewebauthn/server": "^13.3.2",
     "gray-matter": "^4.0.3",
     "marked": "^18.0.5",
     "yaml": "^2.9.0"

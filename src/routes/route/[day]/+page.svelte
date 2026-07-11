@@ -1,6 +1,8 @@
 <script lang="ts">
 	import SessionTable from '$lib/components/SessionTable.svelte';
 	import TrailMarker from '$lib/components/TrailMarker.svelte';
+	import { goto } from '$app/navigation';
+	import { startSession } from '$lib/client/session';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -8,6 +10,17 @@
 	const program = $derived(data.program);
 	const week = $derived(data.week);
 	const isToday = $derived(data.isToday);
+
+	let starting = $state(false);
+	async function start() {
+		starting = true;
+		try {
+			await startSession(program.id, day.label, day.rows);
+			await goto('/session');
+		} finally {
+			starting = false;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -29,6 +42,9 @@
 
 	{#if day.rows.length > 0}
 		<SessionTable {day} />
+		<button class="start" onclick={start} disabled={starting}>
+			{starting ? 'Starting…' : 'Start session ▸'}
+		</button>
 	{:else}
 		<p class="muted empty">No prescription recorded for this day.</p>
 	{/if}
@@ -36,7 +52,7 @@
 	<hr class="hairline foot" />
 	<div class="footrow">
 		<a class="back microlabel" href="/route">← Full route</a>
-		<span class="microlabel muted">Logging arrives in milestone 3</span>
+		<span class="microlabel muted">Logs stay on this device until synced</span>
 	</div>
 </article>
 
@@ -57,6 +73,23 @@
 	}
 	.empty {
 		padding: 20px 0;
+	}
+	.start {
+		margin-top: 22px;
+		width: 100%;
+		background: var(--blaze);
+		color: var(--field);
+		border: none;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 1.15rem;
+		letter-spacing: 0.04em;
+		padding: 15px;
+		cursor: pointer;
+	}
+	.start:disabled {
+		opacity: 0.6;
+		cursor: default;
 	}
 	.foot {
 		margin-top: 28px;
