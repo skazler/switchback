@@ -75,8 +75,14 @@ function parseSbDate(v) {
 	return `${m[3]}-${String(mo(m[2])).padStart(2, '0')}-${String(m[1]).padStart(2, '0')}`;
 }
 function parseRecord(rec) {
+	// Records are written both "sets×reps" (e.g. 3x12) and "reps×sets" (e.g.
+	// 8x3) across eras. Reps are always the higher count, sets the lower — so
+	// take max/min rather than trusting position.
 	const m = clean(rec).match(/^(\d+)\s*[x×]\s*(\d+)$/i);
-	return m ? { sets: +m[1], reps: +m[2] } : { sets: null, reps: null };
+	if (!m) return { sets: null, reps: null };
+	const a = +m[1];
+	const b = +m[2];
+	return { sets: Math.min(a, b), reps: Math.max(a, b) };
 }
 function parseWeight(meas) {
 	const m = clean(meas).match(/(-?\d+(?:\.\d+)?)\s*lb/i);
