@@ -17,11 +17,14 @@ Runtime data lands here (and eventually in D1 — see repo README).
     (e.g. `8x3`). `exercise_id` resolves to `exercises.yaml` where the name
     matches (~30%); the rest keep a slug + the raw cell in the set's notes.
   - `seed.sql` — the same data as D1 `sessions` + `sets` inserts
-    (`program_id = 'history:<sheet>'`). NOTE: historical cells are per-
-    exercise *summaries*, not per-set logs — the seed keeps one `sets` row
-    per entry with the raw `measure/record` in `notes` and best-effort
-    `reps`/`weight`. Apply once D1 exists:
-    `wrangler d1 execute switchback --file log/history/seed.sql`.
+    (`program_id = 'history:<sheet>'`). Each record is a per-set list and is
+    **expanded to one `sets` row per set** (matching the live logger's shape):
+    `NxM` = N sets of M reps (reps are the larger number), comma lists like
+    `12,9,6,6` become four rows, `3x1min` → 3 rows in `duration_s`, `2Lx3` →
+    3 sets noted "level 2". The raw cell always rides in each row's `notes`.
+    ~10.8k sets from ~3.7k entries; ~96% carry structured reps/duration, the
+    rest (laps, week/day refs, unknown-load sled) are note-only. Apply once D1
+    exists: `wrangler d1 execute switchback --file log/history/seed.sql`.
   - `snowboard-sessions.csv` (`date,board,location,focus,conditions`) and
     `snowboard-tricks.csv` (`date,trick,landed,confidence,notes`) — from the
     `snowboard` sheet's session-overview + trick blocks. In `seed.sql` these

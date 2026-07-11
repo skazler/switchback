@@ -74,15 +74,39 @@ function parseSbDate(v) {
 	if (!m || !mo(m[2])) return null;
 	return `${m[3]}-${String(mo(m[2])).padStart(2, '0')}-${String(m[1]).padStart(2, '0')}`;
 }
-function parseRecord(rec) {
-	// Records are written both "sets×reps" (e.g. 3x12) and "reps×sets" (e.g.
-	// 8x3) across eras. Reps are always the higher count, sets the lower — so
-	// take max/min rather than trusting position.
-	const m = clean(rec).match(/^(\d+)\s*[x×]\s*(\d+)$/i);
-	if (!m) return { sets: null, reps: null };
-	const a = +m[1];
-	const b = +m[2];
-	return { sets: Math.min(a, b), reps: Math.max(a, b) };
+const toSec = (v, u) => (/^hr/i.test(u) ? v * 3600 : /^min/i.test(u) ? v * 60 : v);
+
+// A record is a per-set list. Split on commas; each segment is one or more
+// sets. `NxM` = N sets of M reps (run-length); standalone `M` = one set of M
+// reps; `s/min/hr` → duration; `NLxM` → N sets at level M; etc. For a lone
+// `NxM` reps are the larger number (both notations exist; see git history).
+// Returns a flat array of per-set { reps? | duration_s?, note? }.
+function expandRecord(rec, bareIsSets = false) {
+	const out = [];
+	for (const seg of clean(rec).split(',').map((s) => s.trim()).filter(Boolean)) {
+		let m;
+		if ((m = seg.match(/^(\d+)\s*[x×]\s*(\d+)\s*(s|sec|secs|min|mins|hr|hrs)\*?$/i))) {
+			for (let k = 0; k < +m[1]; k++) out.push({ duration_s: toSec(+m[2], m[3]) }); // Nx Ms/min
+		} else if ((m = seg.match(/^(\d+)\s*[lL]\s*[x×]\s*(\d+)\*?$/))) {
+			for (let k = 0; k < +m[2]; k++) out.push({ note: `level ${m[1]}` }); // NLxM → M sets @ level N
+		} else if ((m = seg.match(/^(\d+)\s*[x×]\s*(\d+)\*?$/))) {
+			const sets = Math.min(+m[1], +m[2]);
+			const reps = Math.max(+m[1], +m[2]);
+			for (let k = 0; k < sets; k++) out.push({ reps }); // NxM reps
+		} else if ((m = seg.match(/^(\d+)\s*(s|sec|secs|min|mins|hr|hrs)\*?$/i))) {
+			out.push({ duration_s: toSec(+m[1], m[2]) }); // standalone duration
+		} else if ((m = seg.match(/^(\d+)\s*laps?\*?$/i))) {
+			out.push({ note: `${m[1]} laps` });
+		} else if ((m = seg.match(/^(\d+)\s*(each|repeats?)\*?$/i))) {
+			out.push({ reps: +m[1], note: /each/i.test(m[2]) ? 'each side' : undefined });
+		} else if ((m = seg.match(/^(\d+)\*?$/))) {
+			if (bareIsSets) for (let k = 0; k < +m[1]; k++) out.push({}); // sled: N sets, load unknown
+			else out.push({ reps: +m[1] }); // one set of N reps
+		} else {
+			out.push({ note: seg }); // week/day refs, freeform — keep, no numbers
+		}
+	}
+	return out;
 }
 function parseWeight(meas) {
 	const m = clean(meas).match(/(-?\d+(?:\.\d+)?)\s*lb/i);
@@ -144,14 +168,18 @@ for (const sheet of ['hypertrophy&strength', 'athleticism&conditioning']) {
 				sessionId.set(date, sid);
 				sqlSessions.push(`INSERT INTO sessions (id,date,program_id,day,notes) VALUES ('${sid}','${date}','history:${slug}',NULL,${sqlStr(notes)});`);
 			}
-			const { sets, reps } = parseRecord(record);
 			const weight = parseWeight(measure);
-			const raw = clean(`${g.label}: ${name} ${measure} ${record}`);
 			const eid = exId || slugify(name) || `unknown-${slugify(g.label)}`; // never NULL (schema)
-			sqlSets.push(
-				`INSERT INTO sets (id,session_id,exercise_id,set_num,reps,weight,notes,logged_at) VALUES ` +
-					`('${nextId('s')}','${sessionId.get(date)}','${eid}',${sets ?? 'NULL'},${reps ?? 'NULL'},${weight ?? 'NULL'},${sqlStr(raw)},'${date}');`
-			);
+			const base = clean(`${g.label}: ${name} ${measure} ${record}`);
+			// One sets row per actual set (matches the live logger's shape).
+			const perSet = expandRecord(record, /sled/i.test(name));
+			(perSet.length ? perSet : [{}]).forEach((s, k) => {
+				const note = base + (s.note ? ` [${s.note}]` : '');
+				sqlSets.push(
+					`INSERT INTO sets (id,session_id,exercise_id,set_num,reps,weight,duration_s,notes,logged_at) VALUES ` +
+						`('${nextId('s')}','${sessionId.get(date)}','${eid}',${k + 1},${s.reps ?? 'NULL'},${weight ?? 'NULL'},${s.duration_s ?? 'NULL'},${sqlStr(note)},'${date}');`
+				);
+			});
 		}
 	}
 
