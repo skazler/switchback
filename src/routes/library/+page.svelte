@@ -19,16 +19,18 @@
 	});
 
 	const filtered = $derived(
-		data.rows.filter((r) => {
-			if (category && r.category !== category) return false;
-			if (equip && !r.equipment.includes(equip)) return false;
-			if (q) {
-				const needle = q.toLowerCase();
-				if (!r.name.toLowerCase().includes(needle) && !(r.group ?? '').toLowerCase().includes(needle))
-					return false;
-			}
-			return true;
-		})
+		data.rows
+			.filter((r) => {
+				if (category && r.category !== category) return false;
+				if (equip && !r.equipment.includes(equip)) return false;
+				if (q) {
+					const needle = q.toLowerCase();
+					if (!r.name.toLowerCase().includes(needle) && !(r.group ?? '').toLowerCase().includes(needle))
+						return false;
+				}
+				return true;
+			})
+			.sort((a, b) => a.name.localeCompare(b.name)) // always alphabetical
 	);
 
 	function reset() {

@@ -5,28 +5,28 @@
 	type Row = PageData['programs'][number];
 
 	let level = $state('');
-	let purpose = $state('');
+	let category = $state('');
 
 	const levels = $derived([...new Set(data.programs.map((p) => p.level).filter(Boolean))] as string[]);
-	const purposes = $derived(
-		[...new Set(data.programs.map((p) => p.purpose).filter(Boolean))] as string[]
+	const categories = $derived(
+		[...new Set(data.programs.map((p) => p.category).filter(Boolean))].sort((a, b) => a.localeCompare(b)) as string[]
 	);
 
 	const shown = $derived(
-		data.programs.filter((p) => (!level || p.level === level) && (!purpose || p.purpose === purpose))
+		data.programs.filter((p) => (!level || p.level === level) && (!category || p.category === category))
 	);
 
-	// Group by purpose → then by series (a plan's evolution). Within a series,
+	// Group by category → then by series (a plan's evolution). Within a series,
 	// newest `start` is the head; older versions are its history.
 	const grouped = $derived.by(() => {
-		const byPurpose = new Map<string, Row[]>();
+		const byCategory = new Map<string, Row[]>();
 		for (const p of shown) {
-			const key = p.purpose ?? 'Other';
-			(byPurpose.get(key) ?? byPurpose.set(key, []).get(key)!).push(p);
+			const key = p.category ?? 'Other';
+			(byCategory.get(key) ?? byCategory.set(key, []).get(key)!).push(p);
 		}
-		return [...byPurpose.entries()]
+		return [...byCategory.entries()]
 			.sort((a, b) => a[0].localeCompare(b[0]))
-			.map(([purposeName, rows]) => {
+			.map(([categoryName, rows]) => {
 				const bySeries = new Map<string, Row[]>();
 				for (const r of rows) {
 					const key = r.series ?? r.id;
@@ -41,7 +41,7 @@
 				lineages.sort((a, b) =>
 					a.head.status === b.head.status ? 0 : a.head.status === 'active' ? -1 : 1
 				);
-				return { purpose: purposeName, lineages };
+				return { category: categoryName, lineages };
 			});
 	});
 
@@ -55,12 +55,12 @@
 <p class="microlabel">All programs · {data.programs.length}</p>
 <h1 class="display">Routes</h1>
 
-{#if levels.length || purposes.length}
+{#if levels.length || categories.length}
 	<div class="filters">
-		{#if purposes.length}
-			<select bind:value={purpose} aria-label="Filter by purpose">
-				<option value="">All purposes</option>
-				{#each purposes as p}<option value={p}>{p}</option>{/each}
+		{#if categories.length}
+			<select bind:value={category} aria-label="Filter by category">
+				<option value="">All categories</option>
+				{#each categories as c}<option value={c}>{c}</option>{/each}
 			</select>
 		{/if}
 		{#if levels.length}
@@ -76,7 +76,7 @@
 
 {#each grouped as group}
 	<section class="purpose">
-		<h2 class="phead display">{group.purpose}</h2>
+		<h2 class="phead display">{group.category}</h2>
 		<ol class="list">
 			{#each group.lineages as { head, history }}
 				<li class="lineage">

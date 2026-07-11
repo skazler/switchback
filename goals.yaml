@@ -1,0 +1,9 @@
+# Unclimbed summits — the objectives you're training toward (FLOWS §8).
+# Two shapes:
+#   objective/event → id + summit (+ optional detail)
+#   lift PR target  → exercise + target (+ unit)
+# `id` anchors the entry so programs can deep-link to it (/summits#<id>).
+goals:
+  - id: reveille-peak-ranch
+    summit: Reveille Peak Ranch
+    detail: 20-mile MTB loop · race 14 NOV 2026

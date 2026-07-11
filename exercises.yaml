@@ -1603,11 +1603,6 @@ exercises:
     subgroup: "Regular sprints"
     urls:
       - "https://www.physio-pedia.com/Agility_T-Test"
-  - name: "Follow link."
-    id: follow-link
-    category: conditioning
-    group: "Fireground conditioning"
-    note: "link"
   - name: "Footwork drills"
     id: footwork-drills
     category: conditioning

@@ -18,13 +18,10 @@ phases:
 
 > Build to race day on a base of climbing and prehab-focused lifting.
 
-**Target** — Reveille Peak Ranch, 20-mile loop · 14 NOV 2026 (week 20)
+**Target** [Reveille Peak Ranch — 20-mile loop](/summits#reveille-peak-ranch), 14 NOV 2026
 
-A weekly microcycle: climb Mon/Wed/Fri, prehab lift Tue/Thu (A/B alternating,
-lateral raises each session), the Zone 2 endurance ride Saturday, and skills /
-bike park Sunday. The lift days below carry both **Week A** and **Week B**; do
-the one for the current week. The Saturday ride and midweek intensity ramp by
-week — see the progression table.
+A weekly microcycle: climb Mon/Wed/Fri, prehab lift Tue/Thu, the Zone 2
+endurance ride Saturday, skills / bike park Sunday.
 
 **Phases**
 
@@ -34,7 +31,7 @@ week — see the progression table.
   threshold / over-unders, and the RPR pre-ride recon.
 - **Taper** (wk 19–20, 02–14NOV) — sharpen and shed fatigue into race day.
 
-**Endurance progression** — Saturday long ride + midweek intensity
+**Endurance progression:** Saturday long ride + midweek intensity
 
 | Week | Phase | Long ride | Midweek intensity |
 |---|---|---|---|
@@ -59,9 +56,6 @@ week — see the progression table.
 | 19 | taper | 90 min Z2 + 4×2 race pace | — |
 | 20 | taper | **RACE (14 NOV)** | 25 min easy + 3×1 race pace (wk of) |
 
-_Full day-by-day plan lives in `sources/Adv Log.xlsx`; completed sessions log to
-D1 (`sessions` / `sets`)._
-
 ## Monday — R&R / easy climb  <!-- m R&R / Climb -->
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
@@ -75,7 +69,7 @@ Alternates A / B by week; lateral raises added each session.
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
 |  | Week A |  |  |  |  |
-| PC | SL RDL |  |  |  |  |
+| Posterior chain | SL RDL |  |  |  |  |
 | | Lunge pattern |  |  |  |  |
 | | Reverse nordics |  |  |  |  |
 | | Zercher jefferson curls | 2 | 10–15 | :60 |  |

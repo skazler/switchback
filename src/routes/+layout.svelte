@@ -170,14 +170,9 @@
 		color: var(--blaze);
 	}
 	/* On inner pages the back affordance is the primary left element, so the
-	   brand collapses to just the logo mark — no wordmark to squish against. */
+	   brand collapses to just the logo mark — no wordmark to squish against.
+	   On the home page (no back chevron) the wordmark always shows. */
 	.left.inner .wordmark {
 		display: none;
-	}
-	/* On a narrow phone, drop the wordmark on the home page too. */
-	@media (max-width: 520px) {
-		.wordmark {
-			display: none;
-		}
 	}
 </style>

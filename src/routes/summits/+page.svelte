@@ -23,12 +23,17 @@
 	{#if data.goals.length > 0}
 		<ol class="peaks">
 			{#each data.goals as g}
-				<li class="peak">
+				<li class="peak" id={g.id}>
 					<svg class="glyph" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
 						<path d="M2 21 L12 4 L22 21 Z" fill="none" stroke="var(--muted)" stroke-width="1.6" />
 					</svg>
-					<span class="num numeral">{g.target}<span class="unit">{g.unit ?? 'lb'}</span></span>
-					<span class="lift display">{g.exercise}</span>
+					{#if g.summit}
+						<span class="lift display objective">{g.summit}</span>
+						{#if g.detail}<span class="detail microlabel">{g.detail}</span>{/if}
+					{:else}
+						<span class="num numeral">{g.target}<span class="unit">{g.unit ?? 'lb'}</span></span>
+						<span class="lift display">{g.exercise}</span>
+					{/if}
 					<span class="tag microlabel">unclimbed</span>
 				</li>
 			{/each}
@@ -76,6 +81,18 @@
 		gap: 14px;
 		padding: 12px 4px;
 		border-top: 0.5px solid var(--hairline);
+		scroll-margin-top: 70px; /* clear the sticky topbar when deep-linked */
+	}
+	.peak:target {
+		background: var(--field-raised);
+		border-left: 3px solid var(--blaze);
+		padding-left: 10px;
+	}
+	.objective {
+		text-transform: none;
+	}
+	.detail {
+		color: var(--muted);
 	}
 	.num {
 		font-size: 1.8rem;

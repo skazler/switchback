@@ -1,7 +1,6 @@
 # Notes on training
 
-General training notes and reminders. Referenced from programs; edit this
-file to change what shows at `/notes`.
+General training notes and reminders. Referenced from programs.
 
 ## How to make things harder (when you're feeling good)
 
