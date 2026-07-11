@@ -1,8 +1,10 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import SessionTable from '$lib/components/SessionTable.svelte';
 	import TrailMarker from '$lib/components/TrailMarker.svelte';
 	import { goto } from '$app/navigation';
-	import { startSession } from '$lib/client/session';
+	import { startSession, today } from '$lib/client/session';
+	import { allSessions, setsForSession, type LocalSession, type LocalSet } from '$lib/client/idb';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -10,6 +12,34 @@
 	const program = $derived(data.program);
 	const week = $derived(data.week);
 	const isToday = $derived(data.isToday);
+
+	// Detect a session already started/logged for this day today.
+	let existing = $state<LocalSession | null>(null);
+	let existingSets = $state<LocalSet[]>([]);
+	onMount(refreshExisting);
+	async function refreshExisting() {
+		try {
+			const all = (await allSessions()).filter((s) => s.day === day.label && s.date === today());
+			all.sort((a, b) => b.started_at.localeCompare(a.started_at));
+			existing = all[0] ?? null;
+			existingSets = existing ? await setsForSession(existing.id) : [];
+		} catch {
+			existing = null;
+		}
+	}
+
+	function tok(s: LocalSet): string {
+		if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' ✓' : ''}`;
+		if (s.distance != null || (s.duration_s != null && s.weight == null && s.reps == null))
+			return [s.duration_s != null ? `${Math.round(s.duration_s / 60)}m` : '', s.distance != null ? `${s.distance}mi` : ''].filter(Boolean).join(' ');
+		if (s.weight != null && s.reps != null) return `${s.weight}×${s.reps}`;
+		return s.reps != null ? `${s.reps}` : '·';
+	}
+	const logged = $derived.by(() => {
+		const m = new Map<string, LocalSet[]>();
+		for (const s of existingSets) m.set(s.exercise_id, [...(m.get(s.exercise_id) ?? []), s]);
+		return [...m.values()];
+	});
 
 	let starting = $state(false);
 	async function start() {
@@ -42,9 +72,28 @@
 
 	{#if day.rows.length > 0}
 		<SessionTable {day} />
-		<button class="start" onclick={start} disabled={starting}>
-			{starting ? 'Starting…' : 'Start session ▸'}
-		</button>
+
+		{#if existing?.completed_at}
+			<div class="loggedcard">
+				<p class="microlabel done">✓ Logged today</p>
+				{#if logged.length}
+					<ul class="loglist">
+						{#each logged as g}
+							<li><span class="lname">{g[0].exercise_id.replace(/^x-/, '').replace(/-/g, ' ')}</span><span class="ltok numeral">{g.map(tok).join('  ')}</span></li>
+						{/each}
+					</ul>
+				{:else}
+					<p class="muted">Session completed — no sets recorded.</p>
+				{/if}
+				<button class="start again" onclick={start} disabled={starting}>{starting ? '…' : 'Log another session'}</button>
+			</div>
+		{:else if existing}
+			<button class="start" onclick={() => goto('/session')}>Resume session →</button>
+		{:else}
+			<button class="start" onclick={start} disabled={starting}>
+				{starting ? 'Starting…' : 'Start session ▸'}
+			</button>
+		{/if}
 	{:else}
 		<p class="muted empty">No prescription recorded for this day.</p>
 	{/if}
@@ -90,6 +139,47 @@
 	.start:disabled {
 		opacity: 0.6;
 		cursor: default;
+	}
+	.loggedcard {
+		margin-top: 22px;
+		border-left: 3px solid var(--blaze);
+		background: var(--field-raised);
+		padding: 14px 16px;
+	}
+	.done {
+		color: var(--blaze);
+		margin: 0 0 10px;
+	}
+	.loglist {
+		list-style: none;
+		margin: 0 0 14px;
+		padding: 0;
+	}
+	.loglist li {
+		display: flex;
+		justify-content: space-between;
+		gap: 14px;
+		padding: 3px 0;
+		align-items: baseline;
+	}
+	.lname {
+		text-transform: capitalize;
+	}
+	.ltok {
+		color: var(--muted);
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
+	}
+	.again {
+		margin-top: 0;
+		background: none;
+		border: 1px solid var(--hairline);
+		color: var(--ink);
+		font-size: 1rem;
+	}
+	.again:hover {
+		border-color: var(--blaze);
+		color: var(--blaze);
 	}
 	.foot {
 		margin-top: 28px;

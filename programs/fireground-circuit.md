@@ -1,14 +1,21 @@
 ---
 id: fireground-circuit
 title: Fireground Simulation Circuit
-type: conditioning-block
-rule: ALL WEIGHTS MIN 70LBS OR DO IN GEAR
+status: archived
+purpose: Firefighter conditioning
+level: peak
+series: fireground-circuit
+source: Fireground Conditioning.xlsx
 ---
 
 # Fireground Simulation Circuit
 
-For a simulation day, combine in order (no rest between segments):
+A slot-in conditioning circuit — drop it into a larger program on a simulation
+day. Combine the segments in order, **no rest between them**:
+
 Pre-fatigue → Loaded Movement [5] → Loaded Movement [4] → Max Effort Burst [3] → Chaos [2] → Grip & Core Under Fatigue [1]
+
+**Rule** — all weights min 70 lbs, or do it in gear.
 
 ## Pre-Fatigue
 | Exercise | Work | Notes |

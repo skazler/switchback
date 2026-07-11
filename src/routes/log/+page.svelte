@@ -125,7 +125,7 @@
 
 	const fmtDate = (d: string) => {
 		const [y, m, day] = d.split('-').map(Number);
-		return new Date(y, m - 1, day).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+		return new Date(y, m - 1, day).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 	};
 </script>
 

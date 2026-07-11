@@ -55,6 +55,19 @@ export function parseBlock(fileText: string): Block {
 /** Comment embedded in a day heading, e.g. `<!-- Th athletic enh -->`. */
 const DAY_COMMENT = /<!--\s*(.+?)\s*-->/;
 
+// Slot-in programs referenced by name in other programs' overviews → link them
+// to their own page. Skips the referenced program's own overview.
+const SLOT_INS: { re: RegExp; id: string }[] = [
+	{ re: /\b(fireground(?:\s+simulation)?\s+circuit)\b/gi, id: 'fireground-circuit' }
+];
+function linkSlotIns(html: string, selfId: string): string {
+	for (const { re, id } of SLOT_INS) {
+		if (id === selfId) continue;
+		html = html.replace(re, `<a href="/routes/${id}">$1</a>`);
+	}
+	return html;
+}
+
 interface DayHeading {
 	code: string;
 	label: string;
@@ -142,6 +155,11 @@ export function parseProgram(
 	}
 	flush();
 
+	// Drop a leading H1 — it's the program title, which the page renders itself.
+	while (overviewTokens.length && (overviewTokens[0] as { type: string }).type === 'space') overviewTokens.shift();
+	const first = overviewTokens[0] as { type: string; depth?: number } | undefined;
+	if (first?.type === 'heading' && first.depth === 1) overviewTokens.shift();
+
 	const program: Program = {
 		id: String(data.id ?? ''),
 		title: String(data.title ?? data.id ?? ''),
@@ -153,7 +171,7 @@ export function parseProgram(
 		start: isoDate(data.start),
 		source: data.source ? String(data.source) : undefined,
 		phases: Array.isArray(data.phases) ? data.phases : undefined,
-		overviewHtml: marked.parser(overviewTokens as never) as string,
+		overviewHtml: linkSlotIns(marked.parser(overviewTokens as never) as string, String(data.id ?? '')),
 		days
 	};
 

@@ -29,6 +29,7 @@
 	let distance = $state('');
 	let grade = $state('');
 	let sent = $state(true);
+	let showFormats = $state(false);
 
 	const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 	const keyOf = (p: PlannedExercise) => p.exercise_id || `x-${slug(p.name)}`;
@@ -76,11 +77,13 @@
 
 	async function selectExercise(p: PlannedExercise) {
 		activeKey = keyOf(p);
+		showFormats = false;
 		await prefill();
 	}
 
 	function setFormat(f: LogFormat) {
 		if (activeExercise) fmtOverride = { ...fmtOverride, [keyOf(activeExercise)]: f };
+		showFormats = false;
 	}
 
 	async function logSet() {
@@ -187,11 +190,6 @@
 
 				{#if key === activeKey}
 					<div class="entry">
-						<div class="fmts">
-							{#each FORMATS as f}
-								<button class="fmt" class:on={activeFmt === f.id} onclick={() => setFormat(f.id)}>{f.label}</button>
-							{/each}
-						</div>
 						<div class="fields">
 							{#if activeFmt === 'strength'}
 								<label>weight<input inputmode="decimal" bind:value={weight} /></label>
@@ -208,6 +206,16 @@
 							{/if}
 							<button class="log" onclick={logSet}>Log</button>
 						</div>
+						<button class="fmt-toggle microlabel" onclick={() => (showFormats = !showFormats)}>
+							{FORMATS.find((f) => f.id === activeFmt)?.label ?? activeFmt} ▾
+						</button>
+						{#if showFormats}
+							<div class="fmts">
+								{#each FORMATS as f}
+									<button class="fmt" class:on={activeFmt === f.id} onclick={() => setFormat(f.id)}>{f.label}</button>
+								{/each}
+							</div>
+						{/if}
 					</div>
 				{/if}
 			</li>
@@ -328,10 +336,21 @@
 	.entry {
 		padding: 2px 14px 14px;
 	}
+	.fmt-toggle {
+		background: none;
+		border: none;
+		color: var(--muted);
+		cursor: pointer;
+		padding: 8px 0 0;
+		text-transform: capitalize;
+	}
+	.fmt-toggle:hover {
+		color: var(--blaze);
+	}
 	.fmts {
 		display: flex;
 		gap: 4px;
-		margin-bottom: 10px;
+		margin-top: 8px;
 	}
 	.fmt {
 		background: none;
