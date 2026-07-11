@@ -11,7 +11,11 @@ export interface PlannedExercise {
 	reps?: string;
 	rest?: string;
 	notes?: string;
+	week?: string; // "A" / "B" when the day has Week dividers
+	format?: LogFormat; // inferred logging format
 }
+
+export type LogFormat = 'strength' | 'ride' | 'climb' | 'time';
 
 export interface LocalSession {
 	id: string;
@@ -36,6 +40,8 @@ export interface LocalSet {
 	unit?: string;
 	rpe?: number;
 	duration_s?: number;
+	distance?: number; // miles (ride / run)
+	grade?: string; // climbing grade, e.g. "V4"
 	notes?: string;
 	logged_at: string;
 	synced: 0 | 1;
@@ -96,6 +102,7 @@ export async function activeSession(): Promise<LocalSession | undefined> {
 
 // ── sets ──────────────────────────────────────────────────────────────
 export const putSet = (s: LocalSet) => tx('sets', 'readwrite', (t) => t.objectStore('sets').put(s));
+export const deleteSet = (id: string) => tx('sets', 'readwrite', (t) => t.objectStore('sets').delete(id));
 
 export async function setsForSession(sessionId: string): Promise<LocalSet[]> {
 	const db = await open();

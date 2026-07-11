@@ -7,6 +7,27 @@
 
 	const items = $derived(toRenderItems(day.rows));
 
+	// Week A / Week B alternate week to week — render as a toggle and show only
+	// the selected week's rows (dividers themselves are dropped).
+	const weekLabels = $derived(items.filter((i) => i.kind === 'week').map((i) => i.label));
+	let activeWeek = $state('');
+	$effect(() => {
+		if (weekLabels.length && !weekLabels.includes(activeWeek)) activeWeek = weekLabels[0];
+	});
+	const shown = $derived.by(() => {
+		if (!weekLabels.length) return items;
+		const out: typeof items = [];
+		let cur: string | null = null;
+		for (const it of items) {
+			if (it.kind === 'week') {
+				cur = it.label;
+				continue;
+			}
+			if (cur === null || cur === activeWeek) out.push(it);
+		}
+		return out;
+	});
+
 	// "6 to 8" → "6–8"; join sets/reps/rest into a muted prescription line.
 	function prescription(r: SessionRow): string {
 		const parts: string[] = [];
@@ -19,18 +40,24 @@
 	}
 </script>
 
+{#if weekLabels.length}
+	<div class="weeks">
+		{#each weekLabels as w}
+			<button class="wk" class:on={activeWeek === w} onclick={() => (activeWeek = w)}>{w}</button>
+		{/each}
+		<span class="wknote microlabel">weekly rotation</span>
+	</div>
+{/if}
+
 <ol class="session">
-	{#each items as item}
+	{#each shown as item}
 		{#if item.kind === 'session'}
 			<li class="sessionband">
 				<span class="display">{item.label}</span>
 				<span class="microlabel">two-a-day</span>
 			</li>
 		{:else if item.kind === 'week'}
-			<li class="weekband microlabel">
-				<span class="rot" aria-hidden="true">⟲</span>
-				{item.label}<span class="rotnote">weekly rotation</span>
-			</li>
+			<!-- dividers handled by the toggle above -->
 		{:else if item.kind === 'group'}
 			<li class="grouphead microlabel">{item.label}</li>
 		{:else}
@@ -86,26 +113,35 @@
 	.sessionband .microlabel {
 		color: var(--muted);
 	}
-	/* Weekly rotation marker — Week A / Week B alternate week to week. */
-	.weekband {
+	/* Weekly rotation toggle — Week A / Week B alternate week to week. */
+	.weeks {
 		display: flex;
 		align-items: center;
-		gap: 8px;
-		margin: 12px 0 2px;
-		padding: 5px 10px;
-		border-left: 3px solid var(--blaze);
-		background: var(--field-raised);
-		color: var(--ink);
-		text-transform: uppercase;
+		gap: 6px;
+		margin: 4px 0 14px;
 	}
-	.weekband .rot {
-		color: var(--blaze);
-		font-size: 1rem;
+	.wk {
+		background: none;
+		border: 1px solid var(--hairline);
+		color: var(--muted);
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.95rem;
+		letter-spacing: 0.04em;
+		text-transform: capitalize;
+		padding: 8px 16px;
+		cursor: pointer;
 	}
-	.rotnote {
+	.wk.on {
+		background: var(--blaze);
+		border-color: var(--blaze);
+		color: var(--on-blaze, var(--field));
+	}
+	.wknote {
 		margin-left: auto;
 		color: var(--muted);
 		letter-spacing: 0.12em;
+		text-transform: uppercase;
 	}
 	.row {
 		padding: 10px 0;

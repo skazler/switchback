@@ -26,6 +26,8 @@ interface InSet {
 	unit?: string;
 	rpe?: number;
 	duration_s?: number;
+	distance?: number;
+	grade?: string;
 	notes?: string;
 	logged_at: string;
 }
@@ -35,7 +37,11 @@ const nn = <T>(v: T | undefined | null): T | null => (v === undefined ? null : (
 export const POST: RequestHandler = async ({ request, platform, locals }) => {
 	if (!locals.owner) throw error(401, 'Owner session required');
 	const db = getDB(platform);
-	const { sessions = [], sets = [] } = (await request.json().catch(() => ({}))) as { sessions?: InSession[]; sets?: InSet[] };
+	const { sessions = [], sets = [], deleteSets = [] } = (await request.json().catch(() => ({}))) as {
+		sessions?: InSession[];
+		sets?: InSet[];
+		deleteSets?: string[];
+	};
 
 	const stmts: D1PreparedStatement[] = [];
 	for (const s of sessions) {
@@ -50,9 +56,12 @@ export const POST: RequestHandler = async ({ request, platform, locals }) => {
 		if (!x?.id || !x?.session_id || !x?.exercise_id) continue;
 		stmts.push(
 			db
-				.prepare('INSERT OR REPLACE INTO sets (id,session_id,exercise_id,performed_instead,set_num,reps,weight,unit,rpe,duration_s,notes,logged_at) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12)')
-				.bind(x.id, x.session_id, x.exercise_id, nn(x.performed_instead), nn(x.set_num), nn(x.reps), nn(x.weight), x.unit ?? 'lb', nn(x.rpe), nn(x.duration_s), nn(x.notes), x.logged_at)
+				.prepare('INSERT OR REPLACE INTO sets (id,session_id,exercise_id,performed_instead,set_num,reps,weight,unit,rpe,duration_s,distance,grade,notes,logged_at) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14)')
+				.bind(x.id, x.session_id, x.exercise_id, nn(x.performed_instead), nn(x.set_num), nn(x.reps), nn(x.weight), x.unit ?? 'lb', nn(x.rpe), nn(x.duration_s), nn(x.distance), nn(x.grade), nn(x.notes), x.logged_at)
 		);
+	}
+	for (const id of deleteSets) {
+		if (typeof id === 'string') stmts.push(db.prepare('DELETE FROM sets WHERE id = ?1').bind(id));
 	}
 	if (stmts.length) await db.batch(stmts);
 

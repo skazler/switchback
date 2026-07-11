@@ -1,6 +1,6 @@
 // Sync orchestration (FLOWS §6). Reactive state for the footer badge, plus the
 // flush itself. Single writer, append-only, ULID-keyed → no conflict handling.
-import { pending, markSynced } from './idb';
+import { pending, markSynced, deleteSet } from './idb';
 
 export const syncState = $state({
 	pending: 0, // unsynced set count (the number the footer shows)
@@ -48,6 +48,19 @@ export async function syncNow(): Promise<void> {
 	} finally {
 		syncState.syncing = false;
 		await refreshPending();
+	}
+}
+
+/** Delete a set locally and, best-effort, from D1 (owner + online). */
+export async function removeSet(id: string): Promise<void> {
+	await deleteSet(id);
+	await refreshPending();
+	if (syncState.owner && (typeof navigator === 'undefined' || navigator.onLine)) {
+		fetch('/api/sync', {
+			method: 'POST',
+			headers: { 'content-type': 'application/json' },
+			body: JSON.stringify({ deleteSets: [id] })
+		}).catch(() => {});
 	}
 }
 

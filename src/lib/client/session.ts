@@ -1,6 +1,6 @@
 // Session start + small helpers shared by the day page and the session screen.
 import { ulid } from './ulid';
-import { putSession, type LocalSession, type PlannedExercise } from './idb';
+import { putSession, type LocalSession, type PlannedExercise, type LogFormat } from './idb';
 
 interface DayRow {
 	group?: string;
@@ -18,21 +18,42 @@ export function today(): string {
 	return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-/** Snapshot the day's prescription into a new local session and persist it. */
+const WEEK_ROW = /^week\s+(\w+)$/i;
+const SESSION_ROW = /^session\s*\d+/i;
+
+/** Infer how a movement is logged from its name + the day label. */
+export function inferFormat(name: string, dayLabel = ''): LogFormat {
+	const s = `${name} ${dayLabel}`.toLowerCase();
+	if (/climb|hangboard|boulder|\bv\d/.test(s)) return 'climb';
+	if (/ride|bike|cycl|\bz2\b|zone 2|endurance|tempo|vo2|threshold|\brun\b|jog|hike/.test(s)) return 'ride';
+	return 'strength';
+}
+
+/** Snapshot the day's prescription into a new local session and persist it.
+ *  Week A/B dividers tag the exercises that follow (dropped as rows). */
 export async function startSession(programId: string, dayLabel: string, rows: DayRow[]): Promise<string> {
-	// Skip Week A/B and Session dividers — they're layout, not exercises.
-	const isDivider = (n: string) => /^week\s+\w+$/i.test(n) || /^session\s*\d+/i.test(n);
-	const planned: PlannedExercise[] = rows
-		.filter((r) => r.name && !isDivider(r.name))
-		.map((r) => ({
+	let week: string | undefined;
+	const planned: PlannedExercise[] = [];
+	for (const r of rows) {
+		if (!r.name) continue;
+		const wm = r.name.match(WEEK_ROW);
+		if (wm) {
+			week = wm[1].toUpperCase();
+			continue;
+		}
+		if (SESSION_ROW.test(r.name)) continue;
+		planned.push({
 			exercise_id: r.ref?.id ?? '',
 			name: r.name,
 			group: r.group || undefined,
 			sets: r.sets || undefined,
 			reps: r.reps || undefined,
 			rest: r.rest || undefined,
-			notes: r.notes || undefined
-		}));
+			notes: r.notes || undefined,
+			week,
+			format: inferFormat(r.name, dayLabel)
+		});
+	}
 	const session: LocalSession = {
 		id: ulid(),
 		date: today(),
@@ -44,20 +65,4 @@ export async function startSession(programId: string, dayLabel: string, rows: Da
 	};
 	await putSession(session);
 	return session.id;
-}
-
-/** Rest prescription → seconds. Accepts ":90", "90", "3:00", "1:30". */
-export function restSeconds(rest?: string): number {
-	if (!rest) return 0;
-	const t = rest.trim();
-	const m = t.match(/^(\d*):(\d{1,2})$/);
-	if (m) return (parseInt(m[1] || '0', 10) || 0) * 60 + parseInt(m[2], 10);
-	const n = parseInt(t, 10);
-	return Number.isFinite(n) ? n : 0;
-}
-
-/** Seconds → "m:ss" (or "0:ss"). */
-export function clock(totalSeconds: number): string {
-	const s = Math.max(0, Math.round(totalSeconds));
-	return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 }
