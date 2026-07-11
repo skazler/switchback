@@ -68,29 +68,48 @@ static/icons/icon-512.png`) and add them to the manifest `icons` array.
 Pages project → **Custom domains → Set up a domain**. Cloudflare manages
 the cert automatically. No app change needed.
 
-## M3 — logging (D1 + auth)
+## M3 — logging (D1 + auth) — **LIVE**
 
-Config lives in `wrangler.toml` (binding `DB`) and `migrations/`.
+Deployed 2026-07-11 via CLI Direct Upload (no Git connection):
+**https://switchback-c99.pages.dev**. Config lives in `wrangler.toml`
+(binding `DB`, `database_id` filled) and `migrations/`.
 
-**Create the database and apply the schema:**
+Reproduce from scratch:
 
 ```sh
-wrangler d1 create switchback          # copy the database_id into wrangler.toml
-wrangler d1 migrations apply switchback --local    # local dev sqlite
-wrangler d1 migrations apply switchback            # remote (production)
+wrangler d1 create switchback                        # database_id → wrangler.toml (auto-filled)
+wrangler d1 migrations apply switchback --local      # local dev sqlite
+wrangler d1 migrations apply switchback --remote      # remote (production)
+# seed history + current-block sessions (idempotent-once; see log/README.md)
+wrangler d1 execute switchback --remote --file log/history/seed.sql
+wrangler d1 execute switchback --remote --file log/adv-log-seed.sql
+
+wrangler pages project create switchback --production-branch main   # one-time
+npm run build
+wrangler pages deploy .svelte-kit/cloudflare --project-name switchback --branch main
 ```
 
-**Bind it to Pages:** Pages project → Settings → Functions → **D1 database
-bindings** → add `DB` → the `switchback` database. (The `wrangler.toml`
-binding drives local dev; the dashboard binding drives the deployed site.)
+- **D1 binding:** the `[[d1_databases]]` block in `wrangler.toml` is applied
+  automatically on `wrangler pages deploy` (no dashboard step needed). Verify
+  with `curl -X POST <url>/api/auth/register/options -d '{"token":"x"}'` — a
+  `403` (not `503`) means `DB` is bound.
+- **`BOOTSTRAP_TOKEN`** (passkey-registration gate, FLOWS §4) is set as a
+  Pages **secret**, and locally in gitignored `.dev.vars`:
+  ```sh
+  printf '%s' "$TOKEN" | wrangler pages secret put BOOTSTRAP_TOKEN --project-name switchback
+  ```
+  Rotate anytime with the same command; it only gates NEW device registrations.
 
-**Secrets:** set `BOOTSTRAP_TOKEN` (the passkey-registration gate, FLOWS §4)
-in Pages → Settings → Environment variables (encrypted), and locally in a
-gitignored `.dev.vars` file:
-
-```
-BOOTSTRAP_TOKEN=some-long-random-string
-```
+**First-run (per device):** open the site → footer **Owner sign-in** → enter
+the bootstrap token → register the passkey (Touch ID / Face ID). After that,
+"Start session" on any route day logs offline into IndexedDB and syncs to D1
+whenever you're online and signed in.
 
 `/api/*` routes opt out of prerender (`export const prerender = false`) and
-run as Pages Functions — that's what `nodejs_compat` is for.
+run as Pages Functions — that's what `nodejs_compat` is for. Local dev with
+bindings: `npx wrangler pages dev .svelte-kit/cloudflare` (reads `.dev.vars`).
+
+### Not yet built (M4)
+`/log` and `/summits` still render M2 empty states — the D1 read-side
+(history list, volume rollup, PR register) is the next milestone. The write
+path (log → sync) is complete.
