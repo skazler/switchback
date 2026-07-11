@@ -20,8 +20,10 @@ export function today(): string {
 
 /** Snapshot the day's prescription into a new local session and persist it. */
 export async function startSession(programId: string, dayLabel: string, rows: DayRow[]): Promise<string> {
+	// Skip Week A/B and Session dividers — they're layout, not exercises.
+	const isDivider = (n: string) => /^week\s+\w+$/i.test(n) || /^session\s*\d+/i.test(n);
 	const planned: PlannedExercise[] = rows
-		.filter((r) => r.name)
+		.filter((r) => r.name && !isDivider(r.name))
 		.map((r) => ({
 			exercise_id: r.ref?.id ?? '',
 			name: r.name,

@@ -5,9 +5,7 @@ status: active
 purpose: Race prep
 level: build
 series: race-prep
-start: 2026-06-29        # ISO date, a Monday — enables week numbering (FLOWS §1)
-schedule: rotation      # the structured sessions are the A/B lift templates; the
-                        # climb / ride / Z2 days are label-only (see weekly rhythm)
+start: 2026-06-29        # ISO date, a Monday — enables week numbering + today (FLOWS §1/§3)
 source: Adv Log.xlsx + baseline.numbers
 phases:
   - {label: base,  weeks: [1, 5],   load: 3}
@@ -22,15 +20,11 @@ phases:
 
 **Target** — Reveille Peak Ranch, 20-mile loop · 14 NOV 2026 (week 20)
 
-**Weekly rhythm**
-
-- **Mon** — R&R / easy climb
-- **Tue** — Lower lift (A / B, alternating) + lateral raises — see **Lower A / Lower B** below
-- **Wed** — Hangboard warm-up + climbing (+ VO2 / intensity from Build on)
-- **Thu** — Upper lift (A / B, alternating) — see **Upper A / Upper B** below
-- **Fri** — Hangboard warm-up + climbing + lateral raises
-- **Sat** — Endurance ride, Zone 2 (progressive) — the aerobic anchor
-- **Sun** — Bike park / skills / peddler's pass
+A weekly microcycle: climb Mon/Wed/Fri, prehab lift Tue/Thu (A/B alternating,
+lateral raises each session), the Zone 2 endurance ride Saturday, and skills /
+bike park Sunday. The lift days below carry both **Week A** and **Week B**; do
+the one for the current week. The Saturday ride and midweek intensity ramp by
+week — see the progression table.
 
 **Phases**
 
@@ -65,13 +59,50 @@ phases:
 | 19 | taper | 90 min Z2 + 4×2 race pace | — |
 | 20 | taper | **RACE (14 NOV)** | 25 min easy + 3×1 race pace (wk of) |
 
-_Full day-by-day plan lives in `sources/Adv Log.xlsx`; completed sessions are logged
-to D1 (`sessions` / `sets`), not here._
+_Full day-by-day plan lives in `sources/Adv Log.xlsx`; completed sessions log to
+D1 (`sessions` / `sets`)._
 
-## Upper A  <!-- rot Upper A -->
+## Monday — R&R / easy climb  <!-- m R&R / Climb -->
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
+|  | Easy climb or rest |  |  |  | listen to the body; unstructured |
+
+## Tuesday — Lower lift  <!-- t Lower Lift -->
+
+Alternates A / B by week; lateral raises added each session.
+
+| Block | Exercise | Sets | Reps | Rest | Notes |
+|---|---|---|---|---|---|
+|  | Week A |  |  |  |  |
+| PC | SL RDL |  |  |  |  |
+| | Lunge pattern |  |  |  |  |
+| | Reverse nordics |  |  |  |  |
+| | Zercher jefferson curls | 2 | 10–15 | :60 |  |
+| Core | Bosu pikes + tucks | 2 | AMRAP |  |  |
+| | Dragon flags |  |  |  |  |
+|  | Week B |  |  |  |  |
+| Quads | SL squat pattern |  |  |  |  |
+| | DL squat pattern |  |  |  |  |
+| Plyos | Ankles |  |  |  |  |
+| | Knees |  |  |  |  |
+| | Hip flexors |  |  |  |  |
+| Core | MB throws |  |  |  |  |
+| | Hollow body hold prog |  |  |  | progression |
+
+## Wednesday — Climb (+ intensity)  <!-- w Climb -->
+
+| Block | Exercise | Sets | Reps | Rest | Notes |
+|---|---|---|---|---|---|
+|  | Hangboard warm-up + climbing |  |  |  | + midweek VO2 from Build on (see progression) |
+
+## Thursday — Upper lift  <!-- th Upper Lift -->
+
+Alternates A / B by week; lateral raises each session.
+
+| Block | Exercise | Sets | Reps | Rest | Notes |
+|---|---|---|---|---|---|
+|  | Week A |  |  |  |  |
 | Prehab | Scapula |  |  |  |  |
 | | Wrists |  |  |  |  |
 | | Half-kneeling windmill |  |  |  |  |
@@ -81,22 +112,7 @@ to D1 (`sessions` / `sets`), not here._
 | | Lats choice — deep |  |  |  | choice · deep range |
 | Shoulders | Lateral raises |  |  |  |  |
 | | Rear delt choice |  |  |  | choice |
-
-## Lower A  <!-- rot Lower A -->
-
-| Block | Exercise | Sets | Reps | Rest | Notes |
-|---|---|---|---|---|---|
-| PC | SL RDL |  |  |  |  |
-| | Lunge pattern |  |  |  |  |
-| | Reverse nordics |  |  |  |  |
-| | Zercher jefferson curls | 2 | 10–15 | :60 |  |
-| Core | Bosu pikes + tucks | 2 | AMRAP |  |  |
-| | Dragon flags |  |  |  |  |
-
-## Upper B  <!-- rot Upper B -->
-
-| Block | Exercise | Sets | Reps | Rest | Notes |
-|---|---|---|---|---|---|
+|  | Week B |  |  |  |  |
 | Prehab | Wrists |  |  |  |  |
 | | Scapula |  |  |  |  |
 | | Half-kneeling windmill |  |  |  |  |
@@ -107,14 +123,20 @@ to D1 (`sessions` / `sets`), not here._
 | | Rear delt choice |  |  |  | choice |
 | | Front lever prog |  |  |  | progression |
 
-## Lower B  <!-- rot Lower B -->
+## Friday — Climb + laterals  <!-- f Climb -->
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
-| Quads | SL squat pattern |  |  |  |  |
-| | DL squat pattern |  |  |  |  |
-| Plyos | Ankles |  |  |  |  |
-| | Knees |  |  |  |  |
-| | Hip flexors |  |  |  |  |
-| Core | MB throws |  |  |  |  |
-| | Hollow body hold prog |  |  |  | progression |
+|  | Hangboard warm-up + climbing |  |  |  | + lateral raises |
+
+## Saturday — Endurance ride  <!-- sa Endurance (Z2) -->
+
+| Block | Exercise | Sets | Reps | Rest | Notes |
+|---|---|---|---|---|---|
+|  | Zone 2 endurance ride |  |  |  | duration ramps by week — see progression |
+
+## Sunday — Bike park / skills  <!-- su Bike Park / Skills -->
+
+| Block | Exercise | Sets | Reps | Rest | Notes |
+|---|---|---|---|---|---|
+|  | Bike park / skills |  |  |  | or peddler's pass |
