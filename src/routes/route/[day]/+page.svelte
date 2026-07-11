@@ -29,11 +29,11 @@
 	}
 
 	function tok(s: LocalSet): string {
-		if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' ✓' : ''}`;
+		if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' sent' : ''}`;
 		if (s.distance != null || (s.duration_s != null && s.weight == null && s.reps == null))
 			return [s.duration_s != null ? `${Math.round(s.duration_s / 60)}m` : '', s.distance != null ? `${s.distance}mi` : ''].filter(Boolean).join(' ');
-		if (s.weight != null && s.reps != null) return `${s.weight}×${s.reps}`;
-		return s.reps != null ? `${s.reps}` : '·';
+		if (s.weight != null && s.reps != null) return `${s.weight}${s.unit ?? 'lb'} x ${s.reps}`;
+		return s.reps != null ? `${s.reps} reps` : 'logged';
 	}
 	const logged = $derived.by(() => {
 		const m = new Map<string, LocalSet[]>();
@@ -45,8 +45,8 @@
 	async function start() {
 		starting = true;
 		try {
-			await startSession(program.id, day.label, day.rows);
-			await goto('/session');
+			const id = await startSession(program.id, day.label, day.rows);
+			await goto(`/session?id=${id}`);
 		} finally {
 			starting = false;
 		}
@@ -73,22 +73,24 @@
 	{#if day.rows.length > 0}
 		<SessionTable {day} />
 
-		{#if existing?.completed_at}
+		{#if existing}
 			<div class="loggedcard">
-				<p class="microlabel done">✓ Logged today</p>
+				<p class="microlabel done">{existing.completed_at ? '✓ Logged today' : 'In progress · today'}</p>
 				{#if logged.length}
 					<ul class="loglist">
 						{#each logged as g}
-							<li><span class="lname">{g[0].exercise_id.replace(/^x-/, '').replace(/-/g, ' ')}</span><span class="ltok numeral">{g.map(tok).join('  ')}</span></li>
+							<li><span class="lname">{g[0].exercise_id.replace(/^x-/, '').replace(/-/g, ' ')}</span><span class="ltok">{g.map(tok).join('  ')}</span></li>
 						{/each}
 					</ul>
 				{:else}
-					<p class="muted">Session completed — no sets recorded.</p>
+					<p class="muted">No sets recorded yet.</p>
 				{/if}
-				<button class="start again" onclick={start} disabled={starting}>{starting ? '…' : 'Log another session'}</button>
+				{#if existing.completed_at}
+					<button class="start again" onclick={start} disabled={starting}>{starting ? '…' : 'Log another session'}</button>
+				{:else}
+					<button class="start" onclick={() => goto(`/session?id=${existing!.id}`)}>Resume session →</button>
+				{/if}
 			</div>
-		{:else if existing}
-			<button class="start" onclick={() => goto('/session')}>Resume session →</button>
 		{:else}
 			<button class="start" onclick={start} disabled={starting}>
 				{starting ? 'Starting…' : 'Start session ▸'}

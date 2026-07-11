@@ -40,18 +40,18 @@
 	function tokens(setsForEx: LogSet[]): string {
 		return setsForEx
 			.map((s) => {
-				if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' ✓' : ''}`;
+				if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' sent' : ''}`;
 				if (s.distance != null || (s.duration_s != null && s.weight == null && s.reps == null)) {
 					const p = [];
 					if (s.duration_s != null) p.push(`${Math.round(s.duration_s / 60)}m`);
 					if (s.distance != null) p.push(`${s.distance}mi`);
-					return p.join(' ') || '—';
+					return p.join(' ') || 'done';
 				}
-				if (s.weight != null && s.reps != null) return `${s.weight}×${s.reps}`;
-				if (s.reps != null) return `${s.reps}`;
-				return '·';
+				if (s.weight != null && s.reps != null) return `${s.weight}${s.unit ?? 'lb'} x ${s.reps}`;
+				if (s.reps != null) return `${s.reps} reps`;
+				return 'logged';
 			})
-			.join('  ');
+			.join('   ');
 	}
 
 	function grouped(s: LogSession): { name: string; sets: LogSet[] }[] {
@@ -159,7 +159,7 @@
 				{#if s.sets.length}
 					<ul class="exs">
 						{#each grouped(s) as g}
-							<li class="ex"><span class="exname">{g.name}</span><span class="toks numeral">{tokens(g.sets)}</span></li>
+							<li class="ex"><span class="exname">{g.name}</span><span class="toks">{tokens(g.sets)}</span></li>
 						{/each}
 					</ul>
 				{/if}
@@ -239,8 +239,6 @@
 		color: var(--muted);
 		text-align: right;
 		font-variant-numeric: tabular-nums;
-		white-space: nowrap;
-		overflow-x: auto;
 	}
 	.snote {
 		margin: 6px 0 0;

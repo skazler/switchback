@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import { ulid } from '$lib/client/ulid';
 	import {
 		activeSession,
+		getSession,
 		setsForSession,
 		putSession,
 		putSet,
@@ -47,7 +49,8 @@
 	});
 
 	onMount(async () => {
-		const s = await activeSession();
+		const id = page.url.searchParams.get('id');
+		const s = (id ? await getSession(id) : null) ?? (await activeSession());
 		if (s) {
 			session = s;
 			sets = await setsForSession(s.id);
@@ -116,14 +119,15 @@
 	}
 
 	function pip(s: LocalSet): string {
-		if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' ✓' : ''}`;
+		if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' sent' : ''}`;
 		if (s.distance != null || (s.duration_s != null && s.weight == null && s.reps == null)) {
 			const parts = [];
 			if (s.duration_s != null) parts.push(`${Math.round(s.duration_s / 60)}m`);
 			if (s.distance != null) parts.push(`${s.distance}mi`);
-			return parts.join(' · ') || '—';
+			return parts.join(' ') || 'done';
 		}
-		return `${s.weight ?? '–'}×${s.reps ?? '–'}`;
+		if (s.weight != null) return `${s.weight}${s.unit ?? 'lb'} x ${s.reps ?? '–'}`;
+		return `${s.reps ?? '–'} reps`;
 	}
 
 	async function complete() {
