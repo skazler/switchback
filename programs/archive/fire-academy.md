@@ -10,19 +10,19 @@ source: In-Season-Fire-Academy.xlsx
 
 # In-Season Fire Academy
 
-**Intentions for this program** — In-Season Fire Academy Training
+**Intentions for this program:** In-Season Fire Academy Training
 
 - Power & explosiveness; maintain strength
 - Low volume
-**Structures used** — Upper/lower/full
+**Structures used:** Upper/lower/full
 
 - PPL
-**Considerations** — Prioritize Fire Academy performance; training as a supplement/maintenance
+**Considerations:** Prioritize Fire Academy performance; training as a supplement/maintenance
 
 - LEAVE SOMETHING IN THE TANK Monday and Tuesday so you can spend it in Academy
 - Saturday backs off on volume and starts recovery; Sunday is proper full R&R
 - Next to no conditioning because Academy itself is basically a conditioning workout
-**Overview** — upper (maintenance) — upper (maintenance) — lower — upper — lower — lower (maintenance) — R&R, p/rehab
+**Overview:** upper (maintenance) — upper (maintenance) — lower — upper — lower — lower (maintenance) — R&R, p/rehab
 
 |   | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday |
 | --- | --- | --- | --- | --- | --- | --- | --- |

@@ -10,15 +10,15 @@ source: Firecamp Mod.xlsx
 
 # Firecamp Mod
 
-**Intentions for this program** — Mod on FF_S&C_v4
+**Intentions for this program:** Mod on FF_S&C_v4
 
 - For 4-day firecamp
-**Structures used** — Upper/lower
+**Structures used:** Upper/lower
 
-**Considerations** — No gym access
+**Considerations:** No gym access
 
 - class — work — work + class — firecamp — firecamp — firecamp — firecamp
-**Overview** — upper (strength/power) — max strength & posterior chain — functional legs — zone 2 — conditioning — conditioning — long zone 2
+**Overview:** upper (strength/power) — max strength & posterior chain — functional legs — zone 2 — conditioning — conditioning — long zone 2
 
 |   | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday |
 | --- | --- | --- | --- | --- | --- | --- | --- |

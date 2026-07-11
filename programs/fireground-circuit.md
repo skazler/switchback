@@ -15,7 +15,7 @@ day. Combine the segments in order, **no rest between them**:
 
 Pre-fatigue → Loaded Movement [5] → Loaded Movement [4] → Max Effort Burst [3] → Chaos [2] → Grip & Core Under Fatigue [1]
 
-**Rule** — all weights min 70 lbs, or do it in gear.
+**Rule:** all weights min 70 lbs, or do it in gear.
 
 ## Pre-Fatigue
 | Exercise | Work | Notes |

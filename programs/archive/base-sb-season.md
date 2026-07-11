@@ -10,14 +10,14 @@ source: Base+SBSeason_v3.xlsx
 
 # Base — Snowboard Season
 
-**Intentions for this program** — Base: Firefighter strength & conditioning
+**Intentions for this program:** Base: Firefighter strength & conditioning
 
 - Build: athletic (functional, mobile, & explosive) size
 - Bulletproof & support: snowboarding
-**Structures used** — Upper/lower
+**Structures used:** Upper/lower
 
 - High CNS (explosive/power/strength) at the start, ending with conditioning/fatigue training
-**Considerations** — Adapted for full time (M)/W/Fri/Sat/Sun work schedule
+**Considerations:** Adapted for full time (M)/W/Fri/Sat/Sun work schedule
 
 - Fireground simulation circuits as a conditioning baseline
 - Continue building deadlift & bench
@@ -25,7 +25,7 @@ source: Base+SBSeason_v3.xlsx
 - Support snowboarding 3-4 days/week
 - P/rehab & core is baked into everything & circuits
 - (work) — work — work — work — work
-**Overview** — conditioning — upper — sprints — athleticism — upper s&p — lower s&p — skills
+**Overview:** conditioning — upper — sprints — athleticism — upper s&p — lower s&p — skills
 
 |   | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday |
 | --- | --- | --- | --- | --- | --- | --- | --- |

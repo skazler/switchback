@@ -10,19 +10,19 @@ source: H&FFC_v5.xlsx
 
 # Hypertrophy & Firefighter Conditioning
 
-**Intentions for this program** — Hypertrophy
+**Intentions for this program:** Hypertrophy
 
 - Firefighter conditioning
 - Explosiveness
-**Structures used** — Upper/lower
+**Structures used:** Upper/lower
 
 - High/low CNS
 - PPL
-**Considerations** — Fit around Fire Academy schedule
+**Considerations:** Fit around Fire Academy schedule
 
 - Save a weekend day for an adventure & CNS flexibility
 - Lowered workout leg volume to make space for daily life leg volume
-**Overview** — (low CNS) — (low CNS) — (high CNS) — (high CNS) — (low CNS) — (high CNS) — (flexible)
+**Overview:** (low CNS) — (low CNS) — (high CNS) — (high CNS) — (low CNS) — (high CNS) — (flexible)
 
 - full — upper — lower — upper — upper — lower
 |   | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday |

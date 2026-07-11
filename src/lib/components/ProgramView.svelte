@@ -128,6 +128,14 @@
 		color: var(--muted);
 		margin-top: 14px;
 	}
+	.obody :global(a) {
+		color: var(--blaze);
+		border-bottom: 1px solid var(--blaze);
+		font-weight: 500;
+	}
+	.obody :global(a:hover) {
+		background: var(--field-raised);
+	}
 	.obody :global(p) {
 		margin: 6px 0;
 	}

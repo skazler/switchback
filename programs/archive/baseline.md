@@ -5,7 +5,6 @@ status: archived
 purpose: "Off-season & maintenance"
 level: base
 series: baseline
-schedule: rotation
 source: baseline.xlsx
 ---
 
@@ -13,20 +12,20 @@ source: baseline.xlsx
 
 > "How you do anything is how you do everything."
 
-**Date range** — March 2026 - ONWARD
+**Date range:** March 2026 - ONWARD
 
-**Intentions for this program** — Build: leanness
+**Intentions for this program:** Build: leanness
 
 - Base: muscle definition
 - Support: Bulletproof for sports
-**Structures used** — Upper/lower
+**Structures used:** Upper/lower
 
 |   | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday |   |   |   |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Session | upper A | lower A | R&R | upper B | lower B | cardio/circuit | AR/R&R |   |   |   |
 
 
-## upper A  <!-- rot upper A -->
+## upper A  <!-- m upper A -->
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
@@ -40,7 +39,7 @@ source: baseline.xlsx
 | Shoulders | LATERAL RAISES |  |  |  |  |
 |  | REAR DELT CHOICE |  |  |  |  |
 
-## lower A  <!-- rot lower A -->
+## lower A  <!-- t lower A -->
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
@@ -51,7 +50,7 @@ source: baseline.xlsx
 | Core | BOSU PIKES + TUCKS | 2 | AMRAP |  |  |
 |  | DRAGON FLAGS |  |  |  |  |
 
-## upper B  <!-- rot upper B -->
+## upper B  <!-- th upper B -->
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
@@ -65,7 +64,7 @@ source: baseline.xlsx
 |  | REAR DELT CHOICE |  |  |  |  |
 |  | FRONT LEVER PROG |  |  |  |  |
 
-## lower B  <!-- rot lower B -->
+## lower B  <!-- f lower B -->
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
@@ -76,4 +75,22 @@ source: baseline.xlsx
 |  | HIP FLEXORS |  |  |  |  |
 | Core | MB THROWS |  |  |  |  |
 |  | HOLLOW BODY HOLD PROG |  |  |  |  |
+
+## R&R  <!-- w R&R -->
+
+| Block | Exercise | Sets | Reps | Rest | Notes |
+|---|---|---|---|---|---|
+|  | Rest / active recovery |  |  |  |  |
+
+## cardio / circuit  <!-- sa cardio / circuit -->
+
+| Block | Exercise | Sets | Reps | Rest | Notes |
+|---|---|---|---|---|---|
+|  | Zone 2 or conditioning circuit |  |  |  | fireground circuit, run, hike, etc |
+
+## AR / R&R  <!-- su AR / R&R -->
+
+| Block | Exercise | Sets | Reps | Rest | Notes |
+|---|---|---|---|---|---|
+|  | Active recovery / rest |  |  |  |  |
 

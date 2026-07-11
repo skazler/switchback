@@ -10,20 +10,20 @@ source: Base+CPAT.xlsx
 
 # Base + CPAT
 
-**Intentions for this program** — Target: CPAT
+**Intentions for this program:** Target: CPAT
 
 - Base: improve FF strength & conditioning
 - Build: athletic (functional, mobile, & explosive) size
 - Support: Bulletproof for sports & athleticism
-**Structures used** — Upper/lower
+**Structures used:** Upper/lower
 
 - High CNS (explosive/power/strength) at the start, ending with conditioning/fatigue training
-**Considerations** — Adapted for full time (M)/W/Fri/Sat/Sun work + M/W/Th class schedule
+**Considerations:** Adapted for full time (M)/W/Fri/Sat/Sun work + M/W/Th class schedule
 
 - Legs: focus on function & bulletproofing over max effort strength (that's what deadlift is for)
 - Stairclimber for CPAT
 - (work) + class — work + class — class — work — work — work
-**Overview** — conditioning — upper — lower — athleticism — upper s&p — lower s&p — lower
+**Overview:** conditioning — upper — lower — athleticism — upper s&p — lower s&p — lower
 
 |   | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday |
 | --- | --- | --- | --- | --- | --- | --- | --- |

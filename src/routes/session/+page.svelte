@@ -32,6 +32,7 @@
 	let grade = $state('');
 	let sent = $state(true);
 	let showFormats = $state(false);
+	let sessionNotes = $state('');
 
 	const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 	const keyOf = (p: PlannedExercise) => p.exercise_id || `x-${slug(p.name)}`;
@@ -58,6 +59,7 @@
 			selectedWeek = wk[0] ?? '';
 			const first = (s.planned ?? []).find((p) => !p.week || p.week === selectedWeek);
 			if (first) activeKey = keyOf(first);
+			sessionNotes = s.notes ?? '';
 			await prefill();
 		}
 		loaded = true;
@@ -118,6 +120,13 @@
 		if (session) sets = await setsForSession(session.id);
 	}
 
+	async function saveNotes() {
+		if (!session) return;
+		session = { ...session, notes: sessionNotes.trim() || undefined, synced: 0 };
+		await putSession(session);
+		syncNow();
+	}
+
 	function pip(s: LocalSet): string {
 		if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' sent' : ''}`;
 		if (s.distance != null || (s.duration_s != null && s.weight == null && s.reps == null)) {
@@ -132,10 +141,10 @@
 
 	async function complete() {
 		if (!session) return;
-		const updated = { ...session, completed_at: new Date().toISOString(), synced: 0 as const };
+		const updated = { ...session, completed_at: new Date().toISOString(), notes: sessionNotes.trim() || undefined, synced: 0 as const };
 		await putSession(updated);
 		session = updated;
-		await syncNow();
+		syncNow(); // fire-and-forget — don't block navigation on a slow/guest sync
 		await goto('/log');
 	}
 
@@ -225,6 +234,11 @@
 			</li>
 		{/each}
 	</ul>
+
+	<label class="notes-field">
+		<span class="microlabel">Session notes</span>
+		<textarea bind:value={sessionNotes} onblur={saveNotes} placeholder="How'd it go? Anything to remember…"></textarea>
+	</label>
 
 	<button class="complete" onclick={complete}>Complete session</button>
 {/if}
@@ -431,8 +445,30 @@
 		padding: 10px 18px;
 		cursor: pointer;
 	}
+	.notes-field {
+		display: block;
+		margin-top: 24px;
+	}
+	.notes-field textarea {
+		display: block;
+		width: 100%;
+		margin-top: 6px;
+		min-height: 72px;
+		background: var(--field-raised);
+		border: 1px solid var(--hairline);
+		color: var(--ink);
+		font-family: var(--font-body);
+		font-size: 0.95rem;
+		padding: 10px 12px;
+		resize: vertical;
+		box-sizing: border-box;
+	}
+	.notes-field textarea:focus {
+		border-color: var(--blaze);
+		outline: none;
+	}
 	.complete {
-		margin-top: 26px;
+		margin-top: 16px;
 		width: 100%;
 		background: none;
 		border: 1px solid var(--hairline);

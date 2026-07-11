@@ -10,7 +10,6 @@ source: Run+Strength.xlsx
 
 # Run + Strength
 
-### 시트1
 
 | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
 | --- | --- | --- | --- | --- | --- | --- |
