@@ -13,5 +13,5 @@ pages_build_output_dir = ".svelte-kit/cloudflare"
 [[d1_databases]]
 binding = "DB"
 database_name = "switchback"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "8efa2299-d271-43a3-bf26-fba0846e9d97"
 migrations_dir = "migrations"
