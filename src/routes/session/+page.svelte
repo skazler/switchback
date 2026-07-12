@@ -132,7 +132,8 @@
 			format: inferFormat(match?.name ?? name, session.day ?? ''),
 			extra: true
 		};
-		const updated = { ...session, planned: [...session.planned, p], synced: 0 as const };
+		const snap = $state.snapshot(session);
+		const updated = { ...snap, planned: [...snap.planned, p], synced: 0 as const };
 		await putSession(updated);
 		session = updated;
 		newExName = '';
@@ -148,8 +149,9 @@
 
 	async function saveNotes() {
 		if (!session) return;
-		session = { ...session, notes: sessionNotes.trim() || undefined, synced: 0 };
-		await putSession(session);
+		const updated = { ...$state.snapshot(session), notes: sessionNotes.trim() || undefined, synced: 0 as const };
+		await putSession(updated);
+		session = updated;
 		syncNow();
 	}
 
@@ -176,7 +178,7 @@
 				completeError = 'No session loaded — try reopening this session from the route page.';
 				return;
 			}
-			const updated = { ...session, completed_at: new Date().toISOString(), notes: sessionNotes.trim() || undefined, synced: 0 as const };
+			const updated = { ...$state.snapshot(session), completed_at: new Date().toISOString(), notes: sessionNotes.trim() || undefined, synced: 0 as const };
 			await putSession(updated);
 			session = updated;
 			// Fire-and-forget: /log's merge prefers this unsynced local copy over a
