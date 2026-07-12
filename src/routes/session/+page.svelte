@@ -165,16 +165,30 @@
 		return `${s.reps ?? '–'} reps`;
 	}
 
+	let completing = $state(false);
+	let completeError = $state('');
 	async function complete() {
-		if (!session) return;
-		const updated = { ...session, completed_at: new Date().toISOString(), notes: sessionNotes.trim() || undefined, synced: 0 as const };
-		await putSession(updated);
-		session = updated;
-		// Fire-and-forget: /log's merge prefers this unsynced local copy over a
-		// stale D1 row anyway, so navigation must never wait on the network —
-		// a hung/slow fetch here would otherwise block goto() indefinitely.
-		syncNow();
-		await goto('/log');
+		if (completing) return;
+		completing = true;
+		completeError = '';
+		try {
+			if (!session) {
+				completeError = 'No session loaded — try reopening this session from the route page.';
+				return;
+			}
+			const updated = { ...session, completed_at: new Date().toISOString(), notes: sessionNotes.trim() || undefined, synced: 0 as const };
+			await putSession(updated);
+			session = updated;
+			// Fire-and-forget: /log's merge prefers this unsynced local copy over a
+			// stale D1 row anyway, so navigation must never wait on the network —
+			// a hung/slow fetch here would otherwise block goto() indefinitely.
+			syncNow();
+			await goto('/log');
+		} catch (e) {
+			completeError = e instanceof Error ? e.message : 'Complete failed — unknown error.';
+		} finally {
+			completing = false;
+		}
 	}
 
 	const FORMATS: { id: LogFormat; label: string }[] = [
@@ -288,7 +302,8 @@
 		<textarea bind:value={sessionNotes} onblur={saveNotes} placeholder="How'd it go? Anything to remember…"></textarea>
 	</label>
 
-	<button class="complete" onclick={complete}>Complete session</button>
+	{#if completeError}<p class="completeerr">{completeError}</p>{/if}
+	<button class="complete" onclick={complete} disabled={completing}>{completing ? 'Completing…' : 'Complete session'}</button>
 {/if}
 
 <style>
@@ -560,6 +575,11 @@
 		border-color: var(--blaze);
 		outline: none;
 	}
+	.completeerr {
+		margin: 16px 0 0;
+		color: var(--blaze);
+		font-size: 0.9rem;
+	}
 	.complete {
 		margin-top: 16px;
 		width: 100%;
@@ -572,6 +592,10 @@
 		letter-spacing: 0.04em;
 		padding: 14px;
 		cursor: pointer;
+	}
+	.complete:disabled {
+		opacity: 0.6;
+		cursor: default;
 	}
 	.complete:hover {
 		border-color: var(--blaze);
