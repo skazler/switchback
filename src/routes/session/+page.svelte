@@ -170,7 +170,10 @@
 		const updated = { ...session, completed_at: new Date().toISOString(), notes: sessionNotes.trim() || undefined, synced: 0 as const };
 		await putSession(updated);
 		session = updated;
-		await syncNow(); // wait so /log sees the final notes/completed_at, not a stale pre-completion sync
+		// Fire-and-forget: /log's merge prefers this unsynced local copy over a
+		// stale D1 row anyway, so navigation must never wait on the network —
+		// a hung/slow fetch here would otherwise block goto() indefinitely.
+		syncNow();
 		await goto('/log');
 	}
 
