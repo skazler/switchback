@@ -32,6 +32,23 @@ interface SessionRow {
 export const GET: RequestHandler = async ({ platform, locals, url }) => {
 	const db = getDB(platform);
 	const owner = locals.owner;
+
+	// Single-session lookup by id — lets /session adopt a D1-only (or
+	// another-device) session into local IndexedDB so it can be edited
+	// through the normal logging UI instead of a separate edit form.
+	const id = url.searchParams.get('id');
+	if (id) {
+		const sCols = `id,date,program_id,day,started_at,completed_at${owner ? ',notes' : ''}`;
+		const session = await db.prepare(`SELECT ${sCols} FROM sessions WHERE id = ?1`).bind(id).first<SessionRow>();
+		if (!session) return json({ owner, session: null });
+		const cols = `id,session_id,exercise_id,set_num,reps,weight,unit,duration_s,distance,grade${owner ? ',notes' : ''}`;
+		const { results: sets = [] } = await db
+			.prepare(`SELECT ${cols} FROM sets WHERE session_id = ?1 ORDER BY set_num`)
+			.bind(id)
+			.all<SetRow>();
+		return json({ owner, session: { ...session, sets } });
+	}
+
 	const limit = Math.min(Number(url.searchParams.get('limit')) || 40, 100);
 	const offset = Math.max(Number(url.searchParams.get('offset')) || 0, 0);
 

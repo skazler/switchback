@@ -55,9 +55,94 @@
 		return m;
 	});
 
+	interface RemoteSet {
+		id: string;
+		exercise_id: string;
+		set_num: number | null;
+		reps: number | null;
+		weight: number | null;
+		unit: string | null;
+		duration_s: number | null;
+		distance: number | null;
+		grade: string | null;
+		notes?: string | null;
+	}
+	interface RemoteSession {
+		id: string;
+		date: string;
+		program_id: string | null;
+		day: string | null;
+		started_at: string | null;
+		completed_at: string | null;
+		notes?: string | null;
+		sets: RemoteSet[];
+	}
+
+	function formatFromSets(exSets: RemoteSet[]): LogFormat {
+		if (exSets.some((s) => s.grade != null)) return 'climb';
+		if (exSets.some((s) => s.distance != null)) return 'ride';
+		if (exSets.some((s) => s.duration_s != null && s.weight == null && s.reps == null)) return 'time';
+		return 'strength';
+	}
+
+	// Editing an old/other-device session works by opening it here like any
+	// other — so a session with no local IndexedDB copy (D1-only history, or
+	// synced from elsewhere) is adopted on first open: fetch it, synthesize a
+	// `planned` list from its actual logged sets (there's no real prescription
+	// to recover), and persist so the rest of the page treats it normally.
+	async function adopt(id: string): Promise<LocalSession | undefined> {
+		const res = await fetch(`/api/log?id=${id}`);
+		if (!res.ok) return undefined;
+		const j = (await res.json()) as { session: RemoteSession | null };
+		if (!j.session) return undefined;
+		const r = j.session;
+
+		const byExercise = new Map<string, RemoteSet[]>();
+		for (const x of r.sets) byExercise.set(x.exercise_id, [...(byExercise.get(x.exercise_id) ?? []), x]);
+		const planned: PlannedExercise[] = [...byExercise.entries()].map(([exerciseId, exSets]) => ({
+			exercise_id: exerciseId,
+			name: data.library.find((e) => e.id === exerciseId)?.name ?? exerciseId.replace(/^x-/, '').replace(/-/g, ' '),
+			format: formatFromSets(exSets),
+			extra: true
+		}));
+
+		const localSession: LocalSession = {
+			id: r.id,
+			date: r.date,
+			program_id: r.program_id ?? '',
+			day: r.day ?? '',
+			started_at: r.started_at ?? r.date,
+			completed_at: r.completed_at ?? undefined,
+			notes: r.notes ?? undefined,
+			planned,
+			synced: 1
+		};
+		await putSession(localSession);
+		for (const x of r.sets) {
+			const set: LocalSet = {
+				id: x.id,
+				session_id: r.id,
+				exercise_id: x.exercise_id,
+				set_num: x.set_num ?? undefined,
+				reps: x.reps ?? undefined,
+				weight: x.weight ?? undefined,
+				unit: x.unit ?? undefined,
+				duration_s: x.duration_s ?? undefined,
+				distance: x.distance ?? undefined,
+				grade: x.grade ?? undefined,
+				notes: x.notes ?? undefined,
+				logged_at: r.started_at ?? r.date,
+				synced: 1
+			};
+			await putSet(set);
+		}
+		return localSession;
+	}
+
 	onMount(async () => {
 		const id = page.url.searchParams.get('id');
-		const s = (id ? await getSession(id) : null) ?? (await activeSession());
+		let s = (id ? await getSession(id) : null) ?? (await activeSession());
+		if (!s && id) s = await adopt(id);
 		if (s) {
 			session = s;
 			sets = await setsForSession(s.id);

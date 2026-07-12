@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { allSessions, setsForSession, putSession, putSet, type LocalSession, type LocalSet } from '$lib/client/idb';
-	import { removeSession, syncNow } from '$lib/client/sync.svelte';
+	import { allSessions, setsForSession, type LocalSession, type LocalSet } from '$lib/client/idb';
+	import { removeSession } from '$lib/client/sync.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -42,137 +42,36 @@
 	const prettify = (id: string) => (data.names[id] ?? id.replace(/^x-/, '').replace(/-/g, ' '));
 
 	function tokens(setsForEx: LogSet[]): string {
-		return setsForEx
-			.map((s) => {
-				if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' sent' : ''}`;
-				if (s.distance != null || (s.duration_s != null && s.weight == null && s.reps == null)) {
-					const p = [];
-					if (s.duration_s != null) p.push(`${Math.round(s.duration_s / 60)}m`);
-					if (s.distance != null) p.push(`${s.distance}mi`);
-					return p.join(' ') || 'done';
-				}
-				if (s.weight != null && s.reps != null) return `${s.weight}${s.unit ?? 'lb'} x ${s.reps}`;
-				if (s.reps != null) return `${s.reps} reps`;
-				return 'logged';
-			})
-			.join('   ');
+		const raw = setsForEx.map((s) => {
+			if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' sent' : ''}`;
+			if (s.distance != null || (s.duration_s != null && s.weight == null && s.reps == null)) {
+				const p = [];
+				if (s.duration_s != null) p.push(`${Math.round(s.duration_s / 60)}m`);
+				if (s.distance != null) p.push(`${s.distance}mi`);
+				return p.join(' ') || 'done';
+			}
+			if (s.weight != null && s.reps != null) return `${s.weight}${s.unit ?? 'lb'} x ${s.reps}`;
+			if (s.reps != null) return `${s.reps} reps`;
+			return 'logged';
+		});
+		// Collapse consecutive identical sets ("65lb x 8" ×3 times) into one
+		// token with an explicit set count, so "sets and reps" both read at a
+		// glance instead of the same value repeated once per set.
+		const parts: string[] = [];
+		let i = 0;
+		while (i < raw.length) {
+			let j = i + 1;
+			while (j < raw.length && raw[j] === raw[i]) j++;
+			parts.push(j - i > 1 ? `${raw[i]} ×${j - i}` : raw[i]);
+			i = j;
+		}
+		return parts.join('   ');
 	}
 
 	function grouped(s: LogSession): { name: string; sets: LogSet[] }[] {
 		const m = new Map<string, LogSet[]>();
 		for (const x of s.sets) m.set(x.exercise_id, [...(m.get(x.exercise_id) ?? []), x]);
 		return [...m.entries()].map(([id, sets]) => ({ name: prettify(id), sets }));
-	}
-
-	// ── owner-only editing ───────────────────────────────────────────────
-	type EditField = 'weight' | 'reps' | 'duration' | 'distance' | 'grade';
-	interface SetDraft {
-		id: string;
-		exercise_id: string;
-		set_num: number | null;
-		fields: EditField[];
-		weight: string;
-		reps: string;
-		duration: string; // minutes, as text
-		distance: string;
-		grade: string;
-		sent: boolean;
-	}
-
-	// Editing preserves a set's original shape (which fields applied) rather
-	// than letting you switch a strength set into a ride set etc. — fixing a
-	// wrong number, not changing what was logged.
-	function fieldsFor(s: LogSet): EditField[] {
-		const f: EditField[] = [];
-		if (s.grade != null) f.push('grade');
-		if (s.distance != null) f.push('distance');
-		if (s.duration_s != null) f.push('duration');
-		if (s.weight != null) f.push('weight');
-		if (s.reps != null) f.push('reps');
-		if (!f.length) f.push('reps');
-		return f;
-	}
-
-	let editingId = $state('');
-	let editNotes = $state('');
-	let editSets = $state<SetDraft[]>([]);
-	let saving = $state(false);
-
-	function startEdit(s: LogSession) {
-		editingId = s.id;
-		editNotes = s.notes ?? '';
-		editSets = s.sets.map((x) => ({
-			id: x.id,
-			exercise_id: x.exercise_id,
-			set_num: x.set_num,
-			fields: fieldsFor(x),
-			weight: x.weight != null ? String(x.weight) : '',
-			reps: x.reps != null ? String(x.reps) : '',
-			duration: x.duration_s != null ? String(Math.round(x.duration_s / 60)) : '',
-			distance: x.distance != null ? String(x.distance) : '',
-			grade: x.grade ?? '',
-			sent: x.notes === 'sent'
-		}));
-	}
-
-	function cancelEdit() {
-		editingId = '';
-	}
-
-	async function saveEdit(s: LogSession) {
-		saving = true;
-		try {
-			const notes = editNotes.trim() || undefined;
-			await putSession({
-				id: s.id,
-				date: s.date,
-				program_id: s.program_id ?? '',
-				day: s.day ?? '',
-				started_at: s.started_at ?? new Date().toISOString(),
-				completed_at: s.completed_at ?? undefined,
-				notes,
-				planned: [],
-				synced: 0
-			});
-			const newSets: LogSet[] = [];
-			for (const d of editSets) {
-				const set: LocalSet = {
-					id: d.id,
-					session_id: s.id,
-					exercise_id: d.exercise_id,
-					set_num: d.set_num ?? undefined,
-					unit: 'lb',
-					logged_at: new Date().toISOString(),
-					synced: 0
-				};
-				if (d.fields.includes('weight') && d.weight !== '') set.weight = Number(d.weight);
-				if (d.fields.includes('reps') && d.reps !== '') set.reps = Number(d.reps);
-				if (d.fields.includes('duration') && d.duration !== '') set.duration_s = Math.round(Number(d.duration) * 60);
-				if (d.fields.includes('distance') && d.distance !== '') set.distance = Number(d.distance);
-				if (d.fields.includes('grade') && d.grade !== '') {
-					set.grade = d.grade;
-					set.notes = d.sent ? 'sent' : 'attempt';
-				}
-				await putSet(set);
-				newSets.push({
-					id: d.id,
-					exercise_id: d.exercise_id,
-					set_num: set.set_num ?? null,
-					reps: set.reps ?? null,
-					weight: set.weight ?? null,
-					unit: set.unit ?? null,
-					duration_s: set.duration_s ?? null,
-					distance: set.distance ?? null,
-					grade: set.grade ?? null,
-					notes: set.notes ?? null
-				});
-			}
-			syncNow();
-			sessions = sessions.map((x) => (x.id === s.id ? { ...x, notes, sets: newSets, local: true, pendingSync: true } : x));
-			editingId = '';
-		} finally {
-			saving = false;
-		}
 	}
 
 	async function localSessions(): Promise<LogSession[]> {
@@ -288,45 +187,18 @@
 					<span class="tag microlabel">
 						{#if s.local}<span class="localdot">▲</span>{/if}
 						{s.day ?? s.program_id ?? ''}
-						{#if owner}
-							<button class="del" aria-label="Edit session" onclick={() => (editingId === s.id ? cancelEdit() : startEdit(s))}>{editingId === s.id ? 'cancel' : 'edit'}</button>
-							<button class="del" aria-label="Delete session" onclick={() => handleDelete(s.id)}>×</button>
-						{/if}
+						{#if owner}<button class="del" aria-label="Delete session" onclick={() => handleDelete(s.id)}>×</button>{/if}
 					</span>
 				</div>
-				{#if editingId === s.id}
-					<div class="editform">
-						{#each editSets as d, i (d.id)}
-							<div class="editrow">
-								<span class="editname">{prettify(d.exercise_id)}</span>
-								<div class="editfields">
-									{#if d.fields.includes('weight')}<label>lb<input inputmode="decimal" bind:value={editSets[i].weight} /></label>{/if}
-									{#if d.fields.includes('reps')}<label>reps<input inputmode="numeric" bind:value={editSets[i].reps} /></label>{/if}
-									{#if d.fields.includes('duration')}<label>min<input inputmode="decimal" bind:value={editSets[i].duration} /></label>{/if}
-									{#if d.fields.includes('distance')}<label>mi<input inputmode="decimal" bind:value={editSets[i].distance} /></label>{/if}
-									{#if d.fields.includes('grade')}
-										<label>grade<input bind:value={editSets[i].grade} /></label>
-										<button class="sentbtn" class:on={d.sent} onclick={() => (editSets[i].sent = !editSets[i].sent)}>{d.sent ? '✓ sent' : 'attempt'}</button>
-									{/if}
-								</div>
-							</div>
+				{#if s.sets.length}
+					<ul class="exs">
+						{#each grouped(s) as g}
+							<li class="ex"><span class="exname">{g.name}</span><span class="toks">{tokens(g.sets)}</span></li>
 						{/each}
-						<label class="editnotes-field">
-							<span class="microlabel">Notes</span>
-							<textarea bind:value={editNotes}></textarea>
-						</label>
-						<button class="savebtn" onclick={() => saveEdit(s)} disabled={saving}>{saving ? 'Saving…' : 'Save'}</button>
-					</div>
-				{:else}
-					{#if s.sets.length}
-						<ul class="exs">
-							{#each grouped(s) as g}
-								<li class="ex"><span class="exname">{g.name}</span><span class="toks">{tokens(g.sets)}</span></li>
-							{/each}
-						</ul>
-					{/if}
-					{#if s.notes}<p class="snote muted">{s.notes}</p>{/if}
+					</ul>
 				{/if}
+				{#if s.notes}<p class="snote muted">{s.notes}</p>{/if}
+				{#if owner}<a class="editlink" href={`/session?id=${s.id}`}>Edit →</a>{/if}
 			</li>
 		{/each}
 	</ol>
@@ -394,102 +266,15 @@
 	.del:hover {
 		color: var(--blaze);
 	}
-	.editform {
-		border-left: 3px solid var(--blaze);
-		background: var(--field-raised);
-		padding: 12px 14px;
-		margin-top: 4px;
-	}
-	.editrow {
-		padding: 6px 0;
-		border-bottom: 0.5px solid var(--hairline);
-	}
-	.editrow:last-of-type {
-		border-bottom: none;
-	}
-	.editname {
-		display: block;
-		text-transform: capitalize;
-		font-size: 0.9rem;
-		margin-bottom: 4px;
-	}
-	.editfields {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: flex-end;
-		gap: 10px;
-	}
-	.editfields label {
-		display: flex;
-		flex-direction: column;
-		font-family: var(--font-body);
-		font-size: 0.62rem;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
+	.editlink {
+		display: inline-block;
+		margin-top: 6px;
 		color: var(--muted);
-		gap: 3px;
-	}
-	.editfields input {
-		width: 5.5ch;
-		background: var(--field);
-		border: 1px solid var(--hairline);
-		color: var(--ink);
-		font-family: var(--font-display);
-		font-weight: 600;
-		font-size: 1.05rem;
-		text-align: center;
-		padding: 5px;
-		font-variant-numeric: tabular-nums;
-	}
-	.sentbtn {
-		background: none;
-		border: 1px solid var(--hairline);
-		color: var(--muted);
-		font-family: var(--font-body);
 		font-size: 0.78rem;
-		padding: 6px 9px;
-		cursor: pointer;
+		text-decoration: none;
 	}
-	.sentbtn.on {
-		border-color: var(--blaze);
+	.editlink:hover {
 		color: var(--blaze);
-	}
-	.editnotes-field {
-		display: block;
-		margin-top: 10px;
-	}
-	.editnotes-field textarea {
-		display: block;
-		width: 100%;
-		margin-top: 4px;
-		min-height: 56px;
-		background: var(--field);
-		border: 1px solid var(--hairline);
-		color: var(--ink);
-		font-family: var(--font-body);
-		font-size: 0.9rem;
-		padding: 8px 10px;
-		resize: vertical;
-		box-sizing: border-box;
-	}
-	.editnotes-field textarea:focus {
-		border-color: var(--blaze);
-		outline: none;
-	}
-	.savebtn {
-		margin-top: 10px;
-		width: 100%;
-		background: var(--blaze);
-		color: var(--field);
-		border: none;
-		font-family: var(--font-display);
-		font-weight: 600;
-		padding: 10px;
-		cursor: pointer;
-	}
-	.savebtn:disabled {
-		opacity: 0.6;
-		cursor: default;
 	}
 	.exs {
 		list-style: none;
