@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { ulid } from '$lib/client/ulid';
+	import { inferFormat } from '$lib/client/session';
 	import {
 		activeSession,
 		getSession,
@@ -16,6 +17,9 @@
 		type LogFormat
 	} from '$lib/client/idb';
 	import { syncNow, refreshPending, removeSet } from '$lib/client/sync.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 
 	let session = $state<LocalSession | null>(null);
 	let loaded = $state(false);
@@ -33,6 +37,8 @@
 	let sent = $state(true);
 	let showFormats = $state(false);
 	let sessionNotes = $state('');
+	let addingExercise = $state(false);
+	let newExName = $state('');
 
 	const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 	const keyOf = (p: PlannedExercise) => p.exercise_id || `x-${slug(p.name)}`;
@@ -115,6 +121,26 @@
 		syncNow();
 	}
 
+	async function addExercise() {
+		if (!session) return;
+		const name = newExName.trim();
+		if (!name) return;
+		const match = data.library.find((e) => e.name.toLowerCase() === name.toLowerCase());
+		const p: PlannedExercise = {
+			exercise_id: match?.id ?? '',
+			name: match?.name ?? name,
+			format: inferFormat(match?.name ?? name, session.day ?? ''),
+			extra: true
+		};
+		const updated = { ...session, planned: [...session.planned, p], synced: 0 as const };
+		await putSession(updated);
+		session = updated;
+		newExName = '';
+		addingExercise = false;
+		activeKey = keyOf(p);
+		await prefill();
+	}
+
 	async function del(id: string) {
 		await removeSet(id);
 		if (session) sets = await setsForSession(session.id);
@@ -144,7 +170,7 @@
 		const updated = { ...session, completed_at: new Date().toISOString(), notes: sessionNotes.trim() || undefined, synced: 0 as const };
 		await putSession(updated);
 		session = updated;
-		syncNow(); // fire-and-forget — don't block navigation on a slow/guest sync
+		await syncNow(); // wait so /log sees the final notes/completed_at, not a stale pre-completion sync
 		await goto('/log');
 	}
 
@@ -187,7 +213,7 @@
 			<li class="ex" class:active={key === activeKey}>
 				<button class="ex-head" onclick={() => selectExercise(p)}>
 					<div class="ex-name">
-						{#if p.group}<span class="grp microlabel">{p.group}</span>{/if}
+						{#if p.extra}<span class="grp microlabel extra">extra</span>{:else if p.group}<span class="grp microlabel">{p.group}</span>{/if}
 						<span class="nm">{p.name}</span>
 					</div>
 					<div class="presc microlabel">{[p.sets && `${p.sets}×`, p.reps].filter(Boolean).join(' ')}</div>
@@ -234,6 +260,25 @@
 			</li>
 		{/each}
 	</ul>
+
+	{#if addingExercise}
+		<div class="addex">
+			<input
+				class="addex-input"
+				list="library-options"
+				bind:value={newExName}
+				placeholder="Exercise name…"
+				onkeydown={(e) => e.key === 'Enter' && addExercise()}
+			/>
+			<datalist id="library-options">
+				{#each data.library as e}<option value={e.name}></option>{/each}
+			</datalist>
+			<button class="addex-go" onclick={addExercise}>Add</button>
+			<button class="btn-ghost" onclick={() => ((addingExercise = false), (newExName = ''))}>Cancel</button>
+		</div>
+	{:else}
+		<button class="add-ex" onclick={() => (addingExercise = true)}>+ Add exercise not on plan</button>
+	{/if}
 
 	<label class="notes-field">
 		<span class="microlabel">Session notes</span>
@@ -309,6 +354,51 @@
 	.grp {
 		color: var(--muted);
 		margin-right: 8px;
+	}
+	.grp.extra {
+		color: var(--blaze);
+	}
+	.add-ex {
+		margin-top: 10px;
+		width: 100%;
+		background: none;
+		border: 1px dashed var(--hairline);
+		color: var(--muted);
+		font-family: var(--font-body);
+		font-size: 0.85rem;
+		padding: 10px;
+		cursor: pointer;
+	}
+	.add-ex:hover {
+		border-color: var(--blaze);
+		color: var(--blaze);
+	}
+	.addex {
+		margin-top: 10px;
+		display: flex;
+		gap: 8px;
+	}
+	.addex-input {
+		flex: 1;
+		background: var(--field);
+		border: 1px solid var(--hairline);
+		color: var(--ink);
+		font-family: var(--font-body);
+		font-size: 0.95rem;
+		padding: 10px 12px;
+	}
+	.addex-input:focus {
+		border-color: var(--blaze);
+		outline: none;
+	}
+	.addex-go {
+		background: var(--blaze);
+		color: var(--field);
+		border: none;
+		font-family: var(--font-display);
+		font-weight: 600;
+		padding: 0 16px;
+		cursor: pointer;
 	}
 	.nm {
 		font-family: var(--font-display);

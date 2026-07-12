@@ -13,6 +13,7 @@ export interface PlannedExercise {
 	notes?: string;
 	week?: string; // "A" / "B" when the day has Week dividers
 	format?: LogFormat; // inferred logging format
+	extra?: boolean; // added mid-session, not part of the day's prescription
 }
 
 export type LogFormat = 'strength' | 'ride' | 'climb' | 'time';
@@ -98,6 +99,17 @@ export async function activeSession(): Promise<LocalSession | undefined> {
 	const open = (await allSessions()).filter((s) => !s.completed_at);
 	open.sort((a, b) => b.started_at.localeCompare(a.started_at));
 	return open[0];
+}
+
+/** Delete a session and every set logged against it. */
+export async function deleteSession(id: string): Promise<void> {
+	const db = await open();
+	const t = db.transaction(['sessions', 'sets'], 'readwrite');
+	const setStore = t.objectStore('sets');
+	const keys = await reqToPromise(setStore.index('by_session').getAllKeys(id) as IDBRequest<IDBValidKey[]>);
+	for (const k of keys) setStore.delete(k);
+	t.objectStore('sessions').delete(id);
+	return new Promise((res, rej) => ((t.oncomplete = () => res()), (t.onerror = () => rej(t.error))));
 }
 
 // ── sets ──────────────────────────────────────────────────────────────

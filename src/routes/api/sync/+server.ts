@@ -37,10 +37,11 @@ const nn = <T>(v: T | undefined | null): T | null => (v === undefined ? null : (
 export const POST: RequestHandler = async ({ request, platform, locals }) => {
 	if (!locals.owner) throw error(401, 'Owner session required');
 	const db = getDB(platform);
-	const { sessions = [], sets = [], deleteSets = [] } = (await request.json().catch(() => ({}))) as {
+	const { sessions = [], sets = [], deleteSets = [], deleteSessions = [] } = (await request.json().catch(() => ({}))) as {
 		sessions?: InSession[];
 		sets?: InSet[];
 		deleteSets?: string[];
+		deleteSessions?: string[];
 	};
 
 	const stmts: D1PreparedStatement[] = [];
@@ -62,6 +63,12 @@ export const POST: RequestHandler = async ({ request, platform, locals }) => {
 	}
 	for (const id of deleteSets) {
 		if (typeof id === 'string') stmts.push(db.prepare('DELETE FROM sets WHERE id = ?1').bind(id));
+	}
+	for (const id of deleteSessions) {
+		if (typeof id === 'string') {
+			stmts.push(db.prepare('DELETE FROM sets WHERE session_id = ?1').bind(id));
+			stmts.push(db.prepare('DELETE FROM sessions WHERE id = ?1').bind(id));
+		}
 	}
 	if (stmts.length) await db.batch(stmts);
 

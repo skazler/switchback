@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { allSessions, setsForSession, type LocalSession, type LocalSet } from '$lib/client/idb';
+	import { removeSession } from '$lib/client/sync.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -25,6 +26,7 @@
 		notes?: string | null;
 		sets: LogSet[];
 		local?: boolean;
+		pendingSync?: boolean;
 	}
 
 	let sessions = $state<LogSession[]>([]);
@@ -74,6 +76,7 @@
 					completed_at: s.completed_at,
 					notes: s.notes,
 					local: true,
+					pendingSync: s.synced !== 1,
 					sets: st.map((x) => ({
 						exercise_id: x.exercise_id,
 						set_num: x.set_num ?? null,
@@ -104,10 +107,19 @@
 			total = j.total;
 			const remote: LogSession[] = j.sessions;
 			if (reset) {
-				// merge local (unsynced) at first load, dedup by id
+				// Merge local drafts with D1 at first load, dedup by id. A local copy
+				// that hasn't synced yet is fresher than whatever's in D1 for that id
+				// (e.g. notes typed after an early logSet()-triggered sync already
+				// pushed a notes-less row) — prefer it over the remote row.
 				const local = await localSessions();
-				const ids = new Set(remote.map((s) => s.id));
-				sessions = [...local.filter((s) => !ids.has(s.id)), ...remote].sort((a, b) => (b.date + (b.completed_at ?? '')).localeCompare(a.date + (a.completed_at ?? '')));
+				const localById = new Map(local.map((s) => [s.id, s]));
+				const remoteIds = new Set(remote.map((s) => s.id));
+				const merged = remote.map((r) => {
+					const l = localById.get(r.id);
+					return l?.pendingSync ? l : r;
+				});
+				const localOnly = local.filter((s) => !remoteIds.has(s.id));
+				sessions = [...localOnly, ...merged].sort((a, b) => (b.date + (b.completed_at ?? '')).localeCompare(a.date + (a.completed_at ?? '')));
 				offset = remote.length;
 			} else {
 				const ids = new Set(sessions.map((s) => s.id));
@@ -122,6 +134,13 @@
 	}
 
 	onMount(() => fetchPage(true));
+
+	async function handleDelete(id: string) {
+		if (!confirm('Delete this session and its logged sets?')) return;
+		await removeSession(id);
+		sessions = sessions.filter((s) => s.id !== id);
+		total = Math.max(0, total - 1);
+	}
 
 	const fmtDate = (d: string) => {
 		const [y, m, day] = d.split('-').map(Number);
@@ -154,6 +173,7 @@
 					<span class="tag microlabel">
 						{#if s.local}<span class="localdot">▲</span>{/if}
 						{s.day ?? s.program_id ?? ''}
+						{#if owner}<button class="del" aria-label="Delete session" onclick={() => handleDelete(s.id)}>×</button>{/if}
 					</span>
 				</div>
 				{#if s.sets.length}
@@ -218,6 +238,18 @@
 	.localdot {
 		color: var(--blaze);
 		margin-right: 4px;
+	}
+	.del {
+		background: none;
+		border: none;
+		color: var(--muted);
+		font-size: 1rem;
+		line-height: 1;
+		padding: 0 0 0 8px;
+		cursor: pointer;
+	}
+	.del:hover {
+		color: var(--blaze);
 	}
 	.exs {
 		list-style: none;

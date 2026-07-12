@@ -43,6 +43,7 @@
 
 	let starting = $state(false);
 	async function start() {
+		if (starting) return;
 		starting = true;
 		try {
 			const id = await startSession(program.id, day.label, day.rows);
