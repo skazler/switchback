@@ -41,7 +41,30 @@
 
 	const prettify = (id: string) => (data.names[id] ?? id.replace(/^x-/, '').replace(/-/g, ' '));
 
+	// Consecutive identical entries collapse into one "×N" so "3 sets" is
+	// explicit instead of the same value repeated once per set.
+	function collapse(raw: string[], fmt: (text: string, count: number) => string): string[] {
+		const groups: { text: string; count: number }[] = [];
+		for (const t of raw) {
+			const last = groups[groups.length - 1];
+			if (last && last.text === t) last.count++;
+			else groups.push({ text: t, count: 1 });
+		}
+		return groups.map((g) => (g.count > 1 ? fmt(g.text, g.count) : g.text));
+	}
+
 	function tokens(setsForEx: LogSet[]): string {
+		// Strength sets (weight+reps, or bodyweight reps-only) use the
+		// notation lifters actually write — "3×6 @ 55lb" — instead of
+		// chaining weight×reps×setcount with the same symbol, which reads as
+		// three ambiguous bare numbers ("55lb x 6 x 3" — x 6 what? x 3 what?).
+		if (setsForEx.every((s) => s.grade == null && s.duration_s == null && s.distance == null && s.reps != null)) {
+			const hasWeight = setsForEx.some((s) => s.weight != null);
+			const raw = setsForEx.map((s) => (s.weight != null ? `${s.reps} @ ${s.weight}${s.unit ?? 'lb'}` : `${s.reps}`));
+			const parts = collapse(raw, (text, count) => `${count}×${text}`);
+			return hasWeight ? parts.join(', ') : `${parts.join(', ')} reps`;
+		}
+
 		const raw = setsForEx.map((s) => {
 			if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' sent' : ''}`;
 			if (s.distance != null || (s.duration_s != null && s.weight == null && s.reps == null)) {
@@ -54,18 +77,7 @@
 			if (s.reps != null) return `${s.reps} reps`;
 			return 'logged';
 		});
-		// Collapse consecutive identical sets ("65lb x 8" ×3 times) into one
-		// token with an explicit set count, so "sets and reps" both read at a
-		// glance instead of the same value repeated once per set.
-		const parts: string[] = [];
-		let i = 0;
-		while (i < raw.length) {
-			let j = i + 1;
-			while (j < raw.length && raw[j] === raw[i]) j++;
-			parts.push(j - i > 1 ? `${raw[i]} ×${j - i}` : raw[i]);
-			i = j;
-		}
-		return parts.join('   ');
+		return collapse(raw, (text, count) => `${text} ×${count}`).join('   ');
 	}
 
 	function grouped(s: LogSession): { name: string; sets: LogSet[] }[] {
