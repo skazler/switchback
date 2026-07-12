@@ -7,6 +7,7 @@ export const prerender = false;
 // Session history from D1 (FLOWS §8). Public read of sessions + sets; per-set
 // and per-session NOTES are owner-only. Reverse-chron, offset-paginated.
 interface SetRow {
+	id: string;
 	session_id: string;
 	exercise_id: string;
 	set_num: number | null;
@@ -45,7 +46,7 @@ export const GET: RequestHandler = async ({ platform, locals, url }) => {
 	let sets: SetRow[] = [];
 	if (sessions.length) {
 		const ph = sessions.map((_, i) => `?${i + 1}`).join(',');
-		const cols = `session_id,exercise_id,set_num,reps,weight,unit,duration_s,distance,grade${owner ? ',notes' : ''}`;
+		const cols = `id,session_id,exercise_id,set_num,reps,weight,unit,duration_s,distance,grade${owner ? ',notes' : ''}`;
 		const r = await db
 			.prepare(`SELECT ${cols} FROM sets WHERE session_id IN (${ph}) ORDER BY set_num`)
 			.bind(...sessions.map((s) => s.id))
