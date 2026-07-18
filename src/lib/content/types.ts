@@ -95,7 +95,17 @@ export interface Program {
 	phases?: Phase[];
 	/** rendered HTML of the prose above the first day section */
 	overviewHtml: string;
+	/** per-week breakdown parsed from an overview table headed "Week" (e.g.
+	 *  the Saturday long-ride duration) — resolves rows whose prescription is
+	 *  "see progression" instead of a fixed sets/reps (FLOWS §3). */
+	progression?: ProgressionWeek[];
 	days: ProgramDay[];
+}
+
+export interface ProgressionWeek {
+	week: number;
+	/** every non-"Week" column, in table order, as authored */
+	columns: { label: string; value: string }[];
 }
 
 /** A name that appeared in a program table but resolved to nothing. */

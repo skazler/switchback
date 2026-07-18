@@ -37,6 +37,7 @@
 	let sent = $state(true);
 	let showFormats = $state(false);
 	let sessionNotes = $state('');
+	let sessionDate = $state('');
 	let addingExercise = $state(false);
 	let newExName = $state('');
 
@@ -151,6 +152,7 @@
 			const first = (s.planned ?? []).find((p) => !p.week || p.week === selectedWeek);
 			if (first) activeKey = keyOf(first);
 			sessionNotes = s.notes ?? '';
+			sessionDate = s.date;
 			await prefill();
 		}
 		loaded = true;
@@ -240,6 +242,14 @@
 		syncNow();
 	}
 
+	async function saveDate() {
+		if (!session || !sessionDate || sessionDate === session.date) return;
+		const updated = { ...$state.snapshot(session), date: sessionDate, synced: 0 as const };
+		await putSession(updated);
+		session = updated;
+		syncNow();
+	}
+
 	function pip(s: LocalSet): string {
 		if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' sent' : ''}`;
 		if (s.distance != null || (s.duration_s != null && s.weight == null && s.reps == null)) {
@@ -300,6 +310,7 @@
 {:else}
 	<header class="head">
 		<p class="microlabel">{session.day} · {session.program_id}</p>
+		<input class="date-field" type="date" bind:value={sessionDate} onchange={saveDate} />
 	</header>
 
 	{#if weeks.length > 1}
@@ -396,6 +407,23 @@
 <style>
 	.head {
 		margin-bottom: 14px;
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 12px;
+	}
+	.date-field {
+		background: none;
+		border: 1px solid var(--hairline);
+		color: var(--muted);
+		font-family: var(--font-body);
+		font-size: 0.85rem;
+		padding: 5px 8px;
+	}
+	.date-field:focus {
+		border-color: var(--blaze);
+		color: var(--ink);
+		outline: none;
 	}
 	.empty {
 		border-left: 3px solid var(--hairline);

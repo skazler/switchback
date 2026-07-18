@@ -1,7 +1,7 @@
 import matter from 'gray-matter';
 import { marked } from 'marked';
 import { parse as parseYaml } from 'yaml';
-import type { Block, Exercise, Program, ProgramDay, SessionRow } from './types';
+import type { Block, Exercise, Program, ProgramDay, ProgressionWeek, SessionRow } from './types';
 import { buildResolver, dayMarker, intensityFor } from './resolve';
 
 marked.setOptions({ gfm: true });
@@ -172,10 +172,33 @@ export function parseProgram(
 		source: data.source ? String(data.source) : undefined,
 		phases: Array.isArray(data.phases) ? data.phases : undefined,
 		overviewHtml: linkSlotIns(marked.parser(overviewTokens as never) as string, String(data.id ?? '')),
+		progression: parseProgression(overviewTokens),
 		days
 	};
 
 	return { program, badDayFormats, unresolved };
+}
+
+/** Find an overview table headed "Week" (e.g. an endurance progression
+ *  table) and parse it into per-week columns, for resolving day rows whose
+ *  prescription just says "see progression". */
+function parseProgression(overviewTokens: { type: string }[]): ProgressionWeek[] | undefined {
+	const table = overviewTokens.find(
+		(t) => t.type === 'table' && (t as unknown as { header: { text: string }[] }).header[0]?.text.trim().toLowerCase() === 'week'
+	) as unknown as { header: { text: string }[]; rows: { text: string }[][] } | undefined;
+	if (!table) return undefined;
+
+	const labels = table.header.slice(1).map((h) => h.text.trim());
+	const weeks: ProgressionWeek[] = [];
+	for (const cells of table.rows) {
+		const week = parseInt(cells[0]?.text.trim() ?? '', 10);
+		if (!Number.isFinite(week)) continue;
+		const columns = labels
+			.map((label, i) => ({ label, value: (cells[i + 1]?.text ?? '').trim() }))
+			.filter((c) => c.value);
+		weeks.push({ week, columns });
+	}
+	return weeks.length ? weeks : undefined;
 }
 
 function tableToRows(
