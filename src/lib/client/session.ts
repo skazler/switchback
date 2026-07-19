@@ -1,16 +1,7 @@
 // Session start + small helpers shared by the day page and the session screen.
 import { ulid } from './ulid';
 import { putSession, type LocalSession, type PlannedExercise, type LogFormat } from './idb';
-
-interface DayRow {
-	group?: string;
-	name: string;
-	ref?: { id: string } | null;
-	sets?: string;
-	reps?: string;
-	rest?: string;
-	notes?: string;
-}
+import type { SessionRow } from '$lib/content/types';
 
 /** Local ISO date (YYYY-MM-DD) in the device's timezone. */
 export function today(): string {
@@ -29,9 +20,9 @@ export function inferFormat(name: string, dayLabel = ''): LogFormat {
 	return 'strength';
 }
 
-/** Snapshot the day's prescription into a new local session and persist it.
- *  Week A/B dividers tag the exercises that follow (dropped as rows). */
-export async function startSession(programId: string, dayLabel: string, rows: DayRow[]): Promise<string> {
+/** Turn a day's authored rows into the planned-exercise list a session logs
+ *  against. Week A/B dividers tag the exercises that follow (dropped as rows). */
+export function buildPlanned(dayLabel: string, rows: SessionRow[]): PlannedExercise[] {
 	let week: string | undefined;
 	const planned: PlannedExercise[] = [];
 	for (const r of rows) {
@@ -54,13 +45,18 @@ export async function startSession(programId: string, dayLabel: string, rows: Da
 			format: inferFormat(r.name, dayLabel)
 		});
 	}
+	return planned;
+}
+
+/** Snapshot the day's prescription into a new local session and persist it. */
+export async function startSession(programId: string, dayLabel: string, rows: SessionRow[]): Promise<string> {
 	const session: LocalSession = {
 		id: ulid(),
 		date: today(),
 		program_id: programId,
 		day: dayLabel,
 		started_at: new Date().toISOString(),
-		planned,
+		planned: buildPlanned(dayLabel, rows),
 		synced: 0
 	};
 	await putSession(session);

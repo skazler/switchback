@@ -3,7 +3,9 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { ulid } from '$lib/client/ulid';
-	import { inferFormat } from '$lib/client/session';
+	import { inferFormat, buildPlanned } from '$lib/client/session';
+	import { resolveToday, resolvePlan } from '$lib/today';
+	import type { ProgramDay } from '$lib/content/types';
 	import {
 		activeSession,
 		getSession,
@@ -38,6 +40,7 @@
 	let showFormats = $state(false);
 	let sessionNotes = $state('');
 	let sessionDate = $state('');
+	let planSuggestion = $state<{ day: ProgramDay; week: number } | null>(null);
 	let addingExercise = $state(false);
 	let newExName = $state('');
 
@@ -242,11 +245,52 @@
 		syncNow();
 	}
 
+	// After a date edit, check whether the entered date actually falls on a
+	// different program day than the one this session's exercises came from
+	// (e.g. backdating a session logged under today's plan to yesterday,
+	// which was a different day in the weekly rotation) — only then offer to
+	// swap the plan in, so the common case (fixing a same-day timestamp) adds
+	// no UI at all.
+	function checkPlanMismatch() {
+		planSuggestion = null;
+		if (!session || !data.program) return;
+		const [y, m, d] = session.date.split('-').map(Number);
+		const resolved = resolveToday(data.program, new Date(y, m - 1, d, 12));
+		if (resolved.status === 'session' && resolved.day.label !== session.day) {
+			planSuggestion = { day: resolved.day, week: resolved.week };
+		}
+	}
+
 	async function saveDate() {
 		if (!session || !sessionDate || sessionDate === session.date) return;
 		const updated = { ...$state.snapshot(session), date: sessionDate, synced: 0 as const };
 		await putSession(updated);
 		session = updated;
+		checkPlanMismatch();
+		syncNow();
+	}
+
+	// Re-snapshot planned exercises from the program day that actually
+	// matches the session's date. Sets already logged against exercises not
+	// in the new plan are kept, tagged "extra", so nothing is lost.
+	async function swapPlan() {
+		if (!session || !planSuggestion || !data.program) return;
+		const resolvedRows = resolvePlan(planSuggestion.day, data.program, planSuggestion.week).rows;
+		const newPlanned = buildPlanned(planSuggestion.day.label, resolvedRows);
+		const newKeys = new Set(newPlanned.map(keyOf));
+		const keepOld = session.planned
+			.filter((p) => (setsByKey.get(keyOf(p))?.length ?? 0) > 0 && !newKeys.has(keyOf(p)))
+			.map((p) => ({ ...p, extra: true }));
+		const updated = { ...$state.snapshot(session), day: planSuggestion.day.label, planned: [...newPlanned, ...keepOld], synced: 0 as const };
+		await putSession(updated);
+		session = updated;
+		const wk = [...new Set(updated.planned.map((p) => p.week).filter(Boolean))] as string[];
+		selectedWeek = wk[0] ?? '';
+		const first = updated.planned.find((p) => !p.week || p.week === selectedWeek);
+		activeKey = first ? keyOf(first) : '';
+		fmtOverride = {};
+		planSuggestion = null;
+		await prefill();
 		syncNow();
 	}
 
@@ -312,6 +356,14 @@
 		<p class="microlabel">{session.day} · {session.program_id}</p>
 		<input class="date-field" type="date" bind:value={sessionDate} onchange={saveDate} />
 	</header>
+
+	{#if planSuggestion}
+		<div class="planhint">
+			<span><strong>{planSuggestion.day.label}</strong> is the plan for this date.</span>
+			<button class="swap" onclick={swapPlan}>Swap in →</button>
+			<button class="dismiss" aria-label="Dismiss" onclick={() => (planSuggestion = null)}>×</button>
+		</div>
+	{/if}
 
 	{#if weeks.length > 1}
 		<div class="weeks">
@@ -432,6 +484,45 @@
 	}
 	.empty p {
 		margin: 0 0 10px;
+	}
+	.planhint {
+		display: flex;
+		align-items: baseline;
+		gap: 10px;
+		margin-bottom: 14px;
+		padding: 8px 10px;
+		border-left: 3px solid var(--blaze);
+		background: var(--field-raised);
+		font-size: 0.85rem;
+	}
+	.planhint span {
+		flex: 1;
+	}
+	.planhint strong {
+		text-transform: capitalize;
+	}
+	.planhint .swap {
+		background: none;
+		border: none;
+		color: var(--blaze);
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.85rem;
+		cursor: pointer;
+		padding: 0;
+		white-space: nowrap;
+	}
+	.planhint .dismiss {
+		background: none;
+		border: none;
+		color: var(--muted);
+		font-size: 1rem;
+		line-height: 1;
+		cursor: pointer;
+		padding: 0 0 0 4px;
+	}
+	.planhint .dismiss:hover {
+		color: var(--blaze);
 	}
 	.weeks {
 		display: flex;

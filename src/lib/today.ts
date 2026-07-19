@@ -1,4 +1,4 @@
-import type { Phase, Program, ProgramDay } from './content/types';
+import type { Phase, Program, ProgramDay, SessionRow } from './content/types';
 import { site } from './site.config';
 
 export type TodayResult =
@@ -58,4 +58,41 @@ export function resolveToday(
 	const day = program.days.find((dd) => dd.weekday === weekday);
 	if (!day) return { status: 'rest', week, phase };
 	return { status: 'session', week, phase, day };
+}
+
+/** Best-matching progression column for a row, by word overlap between the
+ *  column's header and the row's own name + notes. No overlap → no guess. */
+function matchColumn(row: SessionRow, columns: { label: string; value: string }[]) {
+	const words = `${row.name} ${row.notes ?? ''}`.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+	let best: { label: string; value: string } | undefined;
+	let bestScore = 0;
+	for (const c of columns) {
+		const colWords = c.label.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+		const score = colWords.filter((w) => words.includes(w)).length;
+		if (score > bestScore) {
+			bestScore = score;
+			best = c;
+		}
+	}
+	return best;
+}
+
+/** Rows that say "see progression" instead of a fixed sets/reps get the
+ *  current week's value from the program's progression table substituted in. */
+export function resolvePlan(day: ProgramDay, program: Program, week: number | null): ProgramDay {
+	const progWeek = week != null ? program.progression?.find((p) => p.week === week) : undefined;
+	if (!progWeek || !progWeek.columns.length) return day;
+
+	const rows = day.rows.map((row) => {
+		if (row.sets || row.reps) return row;
+		if (!row.notes || !/progression/i.test(row.notes)) return row;
+		const match = matchColumn(row, progWeek.columns);
+		if (!match) return row;
+		return {
+			...row,
+			reps: match.value,
+			notes: row.notes.replace(/[-–—]?\s*\(?see progression\)?\.?/i, '').trim() || undefined
+		};
+	});
+	return { ...day, rows };
 }

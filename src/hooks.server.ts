@@ -8,7 +8,7 @@ import { SESSION_COOKIE, validateSession } from '$lib/server/auth';
 // (`building`) the D1 binding is off-limits, so skip it.
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.owner = false;
-	const db = building ? undefined : event.platform?.env?.DB;
+	const db = building || !event.url.pathname.startsWith('/api/') ? undefined : event.platform?.env?.DB;
 	if (db) {
 		try {
 			event.locals.owner = await validateSession(db, event.cookies.get(SESSION_COOKIE));
