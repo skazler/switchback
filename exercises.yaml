@@ -2662,6 +2662,14 @@ exercises:
     group: "Legs"
     subgroup: "All"
     equipment: [med-ball, sandbag]
+  - name: "Kickstand goblet squat"
+    id: kickstand-goblet-squat
+    category: strength-hypertrophy
+    group: "Legs"
+    subgroup: "All"
+    urls:
+      - "https://www.instagram.com/reel/Das6u-JKmVL/?utm_source=ig_web_copy_link&igsh=NTc4MTIwNjQ2YQ=="
+    equipment: [dumbbell]
   - name: "LM curtsy lunge"
     id: lm-curtsy-lunge
     category: strength-hypertrophy

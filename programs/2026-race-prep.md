@@ -69,6 +69,7 @@ Alternates A / B by week; lateral raises added each session.
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
 |  | Week A |  |  |  |  |
+| Power | SL box cleans | 3 | 5/leg | 2:00 |  |
 | Posterior chain | SL RDL |  |  |  |  |
 | | Lunge pattern |  |  |  |  |
 | | Reverse nordics |  |  |  |  |
@@ -76,7 +77,8 @@ Alternates A / B by week; lateral raises added each session.
 | Core | Bosu pikes + tucks | 2 | AMRAP |  |  |
 | | Dragon flags |  |  |  |  |
 |  | Week B |  |  |  |  |
-| Quads | SL squat pattern |  |  |  |  |
+| Power | SL box cleans | 3 | 5/leg | 2:00 |  |
+| Quads | Kickstand goblet squat |  |  |  | https://www.instagram.com/reel/Das6u-JKmVL/?utm_source=ig_web_copy_link&igsh=NTc4MTIwNjQ2YQ== |
 | | DL squat pattern |  |  |  |  |
 | Plyos | Ankles |  |  |  |  |
 | | Knees |  |  |  |  |
