@@ -31,8 +31,6 @@ endurance ride Saturday, skills / bike park Sunday.
   threshold / over-unders, and the RPR pre-ride recon.
 - **Taper** (wk 19–20, 02–14NOV) — sharpen and shed fatigue into race day.
 
-**Endurance progression:** Saturday long ride + midweek intensity
-
 | Week | Phase | Long ride | Midweek intensity |
 |---|---|---|---|
 | 1 | base | 60 min Z2 | — |
@@ -46,7 +44,7 @@ endurance ride Saturday, skills / bike park Sunday.
 | 9 | build | 1:45 Z2 (down) | 6×2 min VO2 |
 | 10 | build | 2:30 Z2 + 2×15 tempo | 5×4 min VO2 |
 | 11 | build | 2:45 Z2 + 3×12 tempo | — |
-| 12 | build | 2:30 Z2 | — |
+| 12 | build | **Reveille pre-ride: full 20 mi** | — |
 | 13 | peak | 2:30 Z2 + 3×10 race pace | 6×3 min hard climbs |
 | 14 | peak | 2:45 Z2 rolling + 2×20 tempo | over-unders 3×9 (2′ Z4 / 1′ Z5) |
 | 15 | peak | 2:00 Z2 (down) | — |

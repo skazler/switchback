@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { Program } from '$content/types';
 	import ElevationProfile from './ElevationProfile.svelte';
+	import ProgressionTable from './ProgressionTable.svelte';
 	import SessionTable from './SessionTable.svelte';
 	import TrailMarker from './TrailMarker.svelte';
+	import { dateForWeekday, formatDay, formatWeekRange } from '$lib/plan-dates';
 
 	let {
 		program,
@@ -17,6 +19,14 @@
 		open?: boolean;
 		todaySlug?: string | null;
 	} = $props();
+
+	/** Date a day-section falls on in the week being viewed — weekly, dated
+	 *  programs only (rotation days have no weekday to hang a date on). */
+	function dayDate(weekday: number): string | null {
+		if (!program.start || program.schedule !== 'weekly' || currentWeek == null) return null;
+		if (weekday < 0) return null;
+		return formatDay(dateForWeekday(program.start, currentWeek, weekday));
+	}
 
 	const meta = $derived(
 		[
@@ -50,17 +60,28 @@
 	</section>
 {/if}
 
+<ProgressionTable {program} {currentWeek} />
+
 <hr class="rule wide" />
 
 {#if mode === 'active'}
-	<p class="microlabel">Days</p>
+	<p class="microlabel">
+		Days{#if currentWeek != null && program.start}<span class="dhint"
+				>week {currentWeek} · {formatWeekRange(program.start, currentWeek)}</span
+			>{/if}
+	</p>
 	<ol class="days">
 		{#each program.days as day}
 			<li>
 				<a class="dayrow" class:today={day.slug === todaySlug} href="/route/{day.slug}">
 					<span class="code numeral">{day.code}</span>
 					<span class="daylabel display">{day.label}</span>
-					<span class="count microlabel">{day.rows.filter((r) => r.name).length} moves</span>
+					<span class="meta-right">
+						{#if dayDate(day.weekday)}
+							<span class="date numeral">{dayDate(day.weekday)}</span>
+						{/if}
+						<span class="count microlabel">{day.rows.filter((r) => r.name).length} moves</span>
+					</span>
 					<TrailMarker marker={day.marker} />
 					<span class="arrow" aria-hidden="true">→</span>
 				</a>
@@ -217,8 +238,30 @@
 		font-size: 1.3rem;
 		text-transform: capitalize;
 	}
-	.count {
+	.dhint {
+		color: var(--muted);
+		margin-left: 8px;
+		text-transform: none;
+		letter-spacing: 0.04em;
+	}
+	.meta-right {
+		display: flex;
+		align-items: baseline;
+		gap: 10px;
 		margin-left: auto;
+	}
+	.date {
+		color: var(--muted);
+		font-size: 0.8rem;
+	}
+	.dayrow.today .date {
+		color: var(--blaze);
+		font-weight: 600;
+	}
+	@media (max-width: 420px) {
+		.count {
+			display: none;
+		}
 	}
 	.arrow {
 		font-family: var(--font-display);

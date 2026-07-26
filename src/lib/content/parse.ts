@@ -160,6 +160,14 @@ export function parseProgram(
 	const first = overviewTokens[0] as { type: string; depth?: number } | undefined;
 	if (first?.type === 'heading' && first.depth === 1) overviewTokens.shift();
 
+	// The progression table renders as its own dated component, not as overview
+	// prose — lift it out so it isn't printed twice.
+	const progression = parseProgression(overviewTokens);
+	if (progression) {
+		const i = overviewTokens.findIndex((t) => t.type === 'table' && isProgressionTable(t));
+		if (i !== -1) overviewTokens.splice(i, 1);
+	}
+
 	const program: Program = {
 		id: String(data.id ?? ''),
 		title: String(data.title ?? data.id ?? ''),
@@ -172,11 +180,17 @@ export function parseProgram(
 		source: data.source ? String(data.source) : undefined,
 		phases: Array.isArray(data.phases) ? data.phases : undefined,
 		overviewHtml: linkSlotIns(marked.parser(overviewTokens as never) as string, String(data.id ?? '')),
-		progression: parseProgression(overviewTokens),
+		progression,
 		days
 	};
 
 	return { program, badDayFormats, unresolved };
+}
+
+/** A table whose first column is headed "Week" — the progression table. */
+function isProgressionTable(t: { type: string }): boolean {
+	const header = (t as unknown as { header?: { text: string }[] }).header;
+	return header?.[0]?.text.trim().toLowerCase() === 'week';
 }
 
 /** Find an overview table headed "Week" (e.g. an endurance progression
@@ -184,17 +198,20 @@ export function parseProgram(
  *  prescription just says "see progression". */
 function parseProgression(overviewTokens: { type: string }[]): ProgressionWeek[] | undefined {
 	const table = overviewTokens.find(
-		(t) => t.type === 'table' && (t as unknown as { header: { text: string }[] }).header[0]?.text.trim().toLowerCase() === 'week'
+		(t) => t.type === 'table' && isProgressionTable(t)
 	) as unknown as { header: { text: string }[]; rows: { text: string }[][] } | undefined;
 	if (!table) return undefined;
 
 	const labels = table.header.slice(1).map((h) => h.text.trim());
+	// Cell text is raw markdown; the overview renders it, but the values also
+	// get substituted into plain-text plan cells — drop the emphasis markers.
+	const plain = (s: string) => s.replace(/\*\*|__/g, '').trim();
 	const weeks: ProgressionWeek[] = [];
 	for (const cells of table.rows) {
 		const week = parseInt(cells[0]?.text.trim() ?? '', 10);
 		if (!Number.isFinite(week)) continue;
 		const columns = labels
-			.map((label, i) => ({ label, value: (cells[i + 1]?.text ?? '').trim() }))
+			.map((label, i) => ({ label, value: plain(cells[i + 1]?.text ?? '') }))
 			.filter((c) => c.value);
 		weeks.push({ week, columns });
 	}
