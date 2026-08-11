@@ -4,6 +4,7 @@
 	import { page } from '$app/state';
 	import { ulid } from '$lib/client/ulid';
 	import { inferFormat, buildPlanned } from '$lib/client/session';
+	import { durationInputValue, formatDistance, formatDuration, parseDistance, parseDuration } from '$lib/set-input';
 	import { resolveToday, resolvePlan } from '$lib/today';
 	import type { ProgramDay } from '$lib/content/types';
 	import {
@@ -33,9 +34,10 @@
 	// entry inputs (only the ones the active format needs are shown)
 	let weight = $state('');
 	let reps = $state('');
-	let minutes = $state('');
+	let duration = $state('');
 	let distance = $state('');
 	let grade = $state('');
+	let entryError = $state('');
 	let sent = $state(true);
 	let showFormats = $state(false);
 	let sessionNotes = $state('');
@@ -162,15 +164,16 @@
 	});
 
 	async function prefill() {
-		[weight, reps, minutes, distance, grade] = ['', '', '', '', ''];
+		[weight, reps, duration, distance, grade] = ['', '', '', '', ''];
 		sent = true;
+		entryError = '';
 		if (!activeExercise) return;
 		const last = await lastSetFor(keyOf(activeExercise));
 		if (last) {
 			if (last.weight != null) weight = String(last.weight);
 			if (last.reps != null) reps = String(last.reps);
-			if (last.duration_s != null) minutes = String(Math.round(last.duration_s / 60));
-			if (last.distance != null) distance = String(last.distance);
+			if (last.duration_s != null) duration = durationInputValue(last.duration_s);
+			if (last.distance != null) distance = formatDistance(last.distance);
 			if (last.grade) grade = last.grade;
 		}
 		if (!reps) reps = (activeExercise.reps ?? '').replace(/[^0-9].*$/, '');
@@ -192,18 +195,33 @@
 		const key = keyOf(activeExercise);
 		const done = setsByKey.get(key)?.length ?? 0;
 		const s: LocalSet = { id: ulid(), session_id: session.id, exercise_id: key, set_num: done + 1, logged_at: new Date().toISOString(), synced: 0 };
+		entryError = '';
 		if (activeFmt === 'strength') {
 			if (weight) s.weight = Number(weight);
 			if (reps) s.reps = Number(reps);
 			s.unit = 'lb';
-		} else if (activeFmt === 'ride') {
-			if (minutes) s.duration_s = Math.round(Number(minutes) * 60);
-			if (distance) s.distance = Number(distance);
+		} else if (activeFmt === 'ride' || activeFmt === 'time') {
+			// A field that's filled but unreadable is a typo, not an empty set —
+			// say so rather than logging a NaN that survives all the way to D1.
+			if (duration) {
+				const secs = parseDuration(duration);
+				if (secs == null) {
+					entryError = `Can't read "${duration}" as a time — try 45, 1:30, or 1h30m.`;
+					return;
+				}
+				s.duration_s = secs;
+			}
+			if (activeFmt === 'ride' && distance) {
+				const mi = parseDistance(distance);
+				if (mi == null) {
+					entryError = `Can't read "${distance}" as miles — try 12 or 12.4.`;
+					return;
+				}
+				s.distance = mi;
+			}
 		} else if (activeFmt === 'climb') {
 			if (grade) s.grade = /^v/i.test(grade) ? grade.toUpperCase() : `V${grade}`;
 			s.notes = sent ? 'sent' : 'attempt';
-		} else if (activeFmt === 'time') {
-			if (minutes) s.duration_s = Math.round(Number(minutes) * 60);
 		}
 		await putSet(s);
 		sets = await setsForSession(session.id);
@@ -298,8 +316,8 @@
 		if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' sent' : ''}`;
 		if (s.distance != null || (s.duration_s != null && s.weight == null && s.reps == null)) {
 			const parts = [];
-			if (s.duration_s != null) parts.push(`${Math.round(s.duration_s / 60)}m`);
-			if (s.distance != null) parts.push(`${s.distance}mi`);
+			if (s.duration_s != null) parts.push(formatDuration(s.duration_s));
+			if (s.distance != null) parts.push(`${formatDistance(s.distance)}mi`);
 			return parts.join(' ') || 'done';
 		}
 		if (s.weight != null) return `${s.weight}${s.unit ?? 'lb'} x ${s.reps ?? '–'}`;
@@ -402,16 +420,17 @@
 								<span class="x2">×</span>
 								<label>reps<input inputmode="numeric" bind:value={reps} /></label>
 							{:else if activeFmt === 'ride'}
-								<label>min<input inputmode="decimal" bind:value={minutes} /></label>
-								<label>miles<input inputmode="decimal" bind:value={distance} /></label>
+								<label>time<input inputmode="text" placeholder="1:30" bind:value={duration} /></label>
+								<label>miles<input inputmode="decimal" placeholder="12.4" bind:value={distance} /></label>
 							{:else if activeFmt === 'climb'}
 								<label>grade<input class="grade" bind:value={grade} placeholder="V4" /></label>
 								<button class="sent" class:on={sent} onclick={() => (sent = !sent)}>{sent ? '✓ sent' : 'attempt'}</button>
 							{:else}
-								<label>min<input inputmode="decimal" bind:value={minutes} /></label>
+								<label>time<input inputmode="text" placeholder="45" bind:value={duration} /></label>
 							{/if}
 							<button class="log" onclick={logSet}>Log</button>
 						</div>
+						{#if entryError}<p class="entryerr">{entryError}</p>{/if}
 						<button class="fmt-toggle microlabel" onclick={() => (showFormats = !showFormats)}>
 							{FORMATS.find((f) => f.id === activeFmt)?.label ?? activeFmt} ▾
 						</button>
@@ -729,6 +748,15 @@
 	.fields input.grade {
 		width: 4ch;
 		text-transform: uppercase;
+	}
+	.fields input::placeholder {
+		color: var(--muted);
+		opacity: 0.45;
+	}
+	.entryerr {
+		margin: 8px 0 0;
+		color: var(--blaze);
+		font-size: 0.85rem;
 	}
 	.x2 {
 		font-family: var(--font-display);

@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { allSessions, setsForSession, type LocalSession, type LocalSet } from '$lib/client/idb';
 	import { removeSession } from '$lib/client/sync.svelte';
+	import { formatDistance, formatDuration } from '$lib/set-input';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -69,8 +70,8 @@
 			if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' sent' : ''}`;
 			if (s.distance != null || (s.duration_s != null && s.weight == null && s.reps == null)) {
 				const p = [];
-				if (s.duration_s != null) p.push(`${Math.round(s.duration_s / 60)}m`);
-				if (s.distance != null) p.push(`${s.distance}mi`);
+				if (s.duration_s != null) p.push(formatDuration(s.duration_s));
+				if (s.distance != null) p.push(`${formatDistance(s.distance)}mi`);
 				return p.join(' ') || 'done';
 			}
 			if (s.weight != null && s.reps != null) return `${s.weight}${s.unit ?? 'lb'} x ${s.reps}`;

@@ -5,6 +5,7 @@
 	import { goto } from '$app/navigation';
 	import { startSession, today } from '$lib/client/session';
 	import { allSessions, setsForSession, type LocalSession, type LocalSet } from '$lib/client/idb';
+	import { formatDistance, formatDuration } from '$lib/set-input';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -31,7 +32,7 @@
 	function tok(s: LocalSet): string {
 		if (s.grade) return `${s.grade}${s.notes === 'sent' ? ' sent' : ''}`;
 		if (s.distance != null || (s.duration_s != null && s.weight == null && s.reps == null))
-			return [s.duration_s != null ? `${Math.round(s.duration_s / 60)}m` : '', s.distance != null ? `${s.distance}mi` : ''].filter(Boolean).join(' ');
+			return [s.duration_s != null ? formatDuration(s.duration_s) : '', s.distance != null ? `${formatDistance(s.distance)}mi` : ''].filter(Boolean).join(' ');
 		if (s.weight != null && s.reps != null) return `${s.weight}${s.unit ?? 'lb'} x ${s.reps}`;
 		return s.reps != null ? `${s.reps} reps` : 'logged';
 	}
