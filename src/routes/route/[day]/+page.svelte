@@ -6,13 +6,27 @@
 	import { startSession, today } from '$lib/client/session';
 	import { allSessions, setsForSession, type LocalSession, type LocalSet } from '$lib/client/idb';
 	import { formatDistance, formatDuration } from '$lib/set-input';
+	import { resolveToday, resolvePlan } from '$lib/today';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
-	const day = $derived(data.day);
 	const program = $derived(data.program);
-	const week = $derived(data.week);
-	const isToday = $derived(data.isToday);
+
+	// Recompute today's week + "today" flag client-side; the prerendered values
+	// froze at build date. The week also drives the progression substitution, so
+	// resolve the day's rows here rather than server-side.
+	let live = $state<ReturnType<typeof resolveToday> | null>(null);
+	$effect(() => {
+		live = resolveToday(data.program, new Date());
+	});
+	const week = $derived(
+		live ? (live.status === 'no-program' || live.week === 0 ? null : live.week) : data.week
+	);
+	const isToday = $derived(
+		live ? live.status === 'session' && live.day.slug === data.slug : data.isToday
+	);
+	const rawDay = $derived(program.days.find((d) => d.slug === data.slug)!);
+	const day = $derived(resolvePlan(rawDay, program, week));
 
 	// Detect a session already started/logged for this day today.
 	let existing = $state<LocalSession | null>(null);

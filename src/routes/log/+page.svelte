@@ -34,6 +34,12 @@
 
 	let sessions = $state<LogSession[]>([]);
 	let total = $state(0);
+	// Sessions that live only in IndexedDB (logged here, not yet synced). D1's
+	// COUNT can't see them, so they're added back into the displayed total —
+	// otherwise today's just-logged session is listed but not counted, and the
+	// "load more" cutoff (sessions.length < total) trips a page early. Held as
+	// ids, not a count, so a delete can drop the right one.
+	let localOnlyIds = $state(new Set<string>());
 	let offset = $state(0);
 	let owner = $state(false);
 	let loading = $state(true);
@@ -131,7 +137,6 @@
 			if (!res.ok) throw new Error(`log ${res.status}`);
 			const j = (await res.json()) as { owner: boolean; total: number; sessions: LogSession[] };
 			owner = j.owner;
-			total = j.total;
 			const remote: LogSession[] = j.sessions;
 			if (reset) {
 				// Merge local drafts with D1 at first load, dedup by id. A local copy
@@ -146,6 +151,7 @@
 					return l?.pendingSync ? l : r;
 				});
 				const localOnly = local.filter((s) => !remoteIds.has(s.id));
+				localOnlyIds = new Set(localOnly.map((s) => s.id));
 				sessions = [...localOnly, ...merged].sort((a, b) => (b.date + (b.completed_at ?? '')).localeCompare(a.date + (a.completed_at ?? '')));
 				offset = remote.length;
 			} else {
@@ -153,6 +159,7 @@
 				sessions = [...sessions, ...remote.filter((s) => !ids.has(s.id))];
 				offset += remote.length;
 			}
+			total = j.total + localOnlyIds.size;
 		} catch (e) {
 			error = e instanceof Error ? e.message : 'failed to load';
 		} finally {
@@ -166,6 +173,7 @@
 		if (!confirm('Delete this session and its logged sets?')) return;
 		await removeSession(id);
 		sessions = sessions.filter((s) => s.id !== id);
+		localOnlyIds.delete(id);
 		total = Math.max(0, total - 1);
 	}
 
