@@ -60,6 +60,19 @@ export function resolveToday(
 	return { status: 'session', week, phase, day };
 }
 
+const WEEKDAY_NAMES = [
+	'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'
+];
+
+/** A progression column named for this sheet's weekday — e.g. a "Sunday"
+ *  column read by the Sunday sheet. Unambiguous by construction, so it wins
+ *  over the word-overlap guess below. */
+function columnForWeekday(day: ProgramDay, columns: { label: string; value: string }[]) {
+	const name = WEEKDAY_NAMES[day.weekday];
+	if (!name) return undefined;
+	return columns.find((c) => c.label.trim().toLowerCase() === name);
+}
+
 /** Best-matching progression column for a row, by word overlap between the
  *  column's header and the row's own name + notes. No overlap → no guess. */
 function matchColumn(row: SessionRow, columns: { label: string; value: string }[]) {
@@ -86,7 +99,7 @@ export function resolvePlan(day: ProgramDay, program: Program, week: number | nu
 	const rows = day.rows.map((row) => {
 		if (row.sets || row.reps) return row;
 		if (!row.notes || !/progression/i.test(row.notes)) return row;
-		const match = matchColumn(row, progWeek.columns);
+		const match = columnForWeekday(day, progWeek.columns) ?? matchColumn(row, progWeek.columns);
 		if (!match) return row;
 		return {
 			...row,

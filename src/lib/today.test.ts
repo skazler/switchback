@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { resolveToday } from './today';
-import type { Program, ProgramDay } from './content/types';
+import { resolvePlan, resolveToday } from './today';
+import type { Program, ProgramDay, SessionRow } from './content/types';
 
 function day(code: string, weekday: number, slug: string): ProgramDay {
 	return { slug, code, weekday, label: slug, rows: [], marker: 'blue' };
@@ -61,5 +61,56 @@ describe('resolveToday', () => {
 	it('build phase resolves in week 7', () => {
 		const r = resolveToday(program, at('2026-02-09')); // 6 weeks after start, Monday → week 7
 		expect(r.status === 'session' && r.phase?.label).toBe('build');
+	});
+});
+
+// ── resolvePlan: the by-week progression table ──────────────────────
+const dayRow = (name: string, notes: string): SessionRow => ({ name, ref: null, notes });
+
+function progProgram(): Program {
+	return {
+		id: 'p',
+		title: 'Test',
+		status: 'active',
+		schedule: 'weekly',
+		start: '2026-06-29',
+		overviewHtml: '',
+		progression: [
+			{
+				week: 9,
+				columns: [
+					{ label: 'Phase', value: 'build' },
+					{ label: 'Long ride', value: '1:45 Z2 (down)' },
+					{ label: 'Sunday', value: 'easy 45–60 min ride' },
+					{ label: 'Midweek intensity', value: '6×2 min VO2' }
+				]
+			}
+		],
+		days: [
+			{ ...day('Sa', 6, 'sa-ride'), rows: [dayRow('Zone 2 endurance ride', 'duration ramps by week — see progression')] },
+			{ ...day('Su', 0, 'su-bike-park'), rows: [dayRow('Bike park / skills', 'varies by week — see progression')] },
+			{ ...day('W', 3, 'w-climb'), rows: [dayRow('Hangboard warm-up + climbing', '+ midweek VO2 from Build on (see progression)')] }
+		]
+	};
+}
+
+describe('resolvePlan', () => {
+	const program = progProgram();
+	const sheet = (slug: string) => program.days.find((d) => d.slug === slug)!;
+
+	it('a weekday-named column binds to that weekday’s sheet', () => {
+		const r = resolvePlan(sheet('su-bike-park'), program, 9);
+		expect(r.rows[0].reps).toBe('easy 45–60 min ride');
+		expect(r.rows[0].notes).toBe('varies by week');
+	});
+
+	it('word overlap still resolves columns that aren’t weekday-named', () => {
+		expect(resolvePlan(sheet('sa-ride'), program, 9).rows[0].reps).toBe('1:45 Z2 (down)');
+		expect(resolvePlan(sheet('w-climb'), program, 9).rows[0].reps).toBe('6×2 min VO2');
+	});
+
+	it('a week with no progression row leaves the sheet alone', () => {
+		expect(resolvePlan(sheet('su-bike-park'), program, 3).rows[0].reps).toBeUndefined();
+		expect(resolvePlan(sheet('su-bike-park'), program, null).rows[0].reps).toBeUndefined();
 	});
 });

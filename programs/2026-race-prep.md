@@ -21,38 +21,39 @@ phases:
 **Target** [Reveille Peak Ranch — 20-mile loop](/summits#reveille-peak-ranch), 14 NOV 2026
 
 A weekly microcycle: climb Mon/Wed/Fri, prehab lift Tue/Thu, the Zone 2
-endurance ride Saturday, skills / bike park Sunday.
+endurance ride Saturday, a second ride Sunday — bike park most weeks, but
+tempo or an easy spin when the week calls for it (see the by-week table).
 
 **Phases**
 
 - **Base** (wk 1–5, 29JUN–02AUG) — settle the rhythm; long ride ramps 60 → 105 min.
-- **Build** (wk 6–12, 03AUG–20SEP) — add midweek VO2 + weekend tempo; long ride to 2:45.
+- **Build** (wk 6–12, 03AUG–20SEP) — add midweek VO2 + Sunday tempo; long ride to 2:45.
 - **Peak — "make it look like the race"** (wk 13–18, 21SEP–01NOV) — race-pace efforts,
   threshold / over-unders, and the RPR pre-ride recon.
 - **Taper** (wk 19–20, 02–14NOV) — sharpen and shed fatigue into race day.
 
-| Week | Phase | Long ride | Midweek intensity |
-|---|---|---|---|
-| 1 | base | 60 min Z2 | — |
-| 2 | base | 75 min Z2 | — |
-| 3 | base | 90 min Z2 | — |
-| 4 | base | 105 min Z2 | — |
-| 5 | base | R&R (family trip) | — |
-| 6 | build | 2:00 Z2 | 4×4 min VO2 |
-| 7 | build | 2:15 Z2 + 2×15 tempo | 5×3 min VO2 |
-| 8 | build | 2:30 Z2 | — |
-| 9 | build | 1:45 Z2 (down) | 6×2 min VO2 |
-| 10 | build | 2:30 Z2 + 2×15 tempo | 5×4 min VO2 |
-| 11 | build | 2:45 Z2 + 3×12 tempo | — |
-| 12 | build | **Reveille pre-ride: full 20 mi** | — |
-| 13 | peak | 2:30 Z2 + 3×10 race pace | 6×3 min hard climbs |
-| 14 | peak | 2:45 Z2 rolling + 2×20 tempo | over-unders 3×9 (2′ Z4 / 1′ Z5) |
-| 15 | peak | 2:00 Z2 (down) | — |
-| 16 | peak | 2:30 @ race pace (hard final hr) | 5×4 min threshold |
-| 17 | peak | **PRE-RIDE: RPR full 20-mi loop, timed** | — |
-| 18 | peak | 2:00 Z2 + 2×12 race pace | — |
-| 19 | taper | 90 min Z2 + 4×2 race pace | — |
-| 20 | taper | **RACE (14 NOV)** | 25 min easy + 3×1 race pace (wk of) |
+| Week | Phase | Long ride | Sunday | Midweek intensity |
+|---|---|---|---|---|
+| 1 | base | 60 min Z2 | peddler's pass | — |
+| 2 | base | 75 min Z2 | bike park | — |
+| 3 | base | 90 min Z2 | bike park | — |
+| 4 | base | 105 min Z2 | bike park | — |
+| 5 | base | R&R (family trip) | R&R (family trip) | — |
+| 6 | build | 2:00 Z2 | bike park | 4×4 min VO2 |
+| 7 | build | 2:15 Z2 | 2×15 tempo (rolling fire road) | 5×3 min VO2 |
+| 8 | build | 2:30 Z2 | bike park | — |
+| 9 | build | 1:45 Z2 (down) | easy 45–60 min ride | 6×2 min VO2 |
+| 10 | build | 2:30 Z2 | 2×15 tempo | 5×4 min VO2 |
+| 11 | build | 2:45 Z2 | 3×12 tempo | — |
+| 12 | build | **Reveille pre-ride: full 20 mi** | bike park | — |
+| 13 | peak | 2:30 Z2 + 3×10 race pace | bike park | 6×3 min hard climbs |
+| 14 | peak | 2:45 Z2 rolling | 2×20 tempo | over-unders 3×9 (2′ Z4 / 1′ Z5) |
+| 15 | peak | 2:00 Z2 (down) | easy ride / light skills | — |
+| 16 | peak | 2:30 @ race pace (hard final hr) | bike park | 5×4 min threshold |
+| 17 | peak | **PRE-RIDE: RPR full 20-mi loop, timed** | 45 min easy | — |
+| 18 | peak | 2:00 Z2 + 2×12 race pace | bike park (last one) | — |
+| 19 | taper | 90 min Z2 + 4×2 race pace | 40 min easy (no bike park) | — |
+| 20 | taper | **RACE (14 NOV)** | **celebrate!** | 25 min easy + 3×1 race pace (wk of) |
 
 ## Monday — R&R / easy climb  <!-- m R&R / Climb -->
 
@@ -133,4 +134,4 @@ Alternates A / B by week; lateral raises each session.
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
-|  | Bike park / skills |  |  |  | or peddler's pass |
+|  | Bike park / skills |  |  |  | varies by week — see progression |
