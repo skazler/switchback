@@ -90,6 +90,12 @@ function matchColumn(row: SessionRow, columns: { label: string; value: string }[
 	return best;
 }
 
+/** A dash in a progression cell means "nothing this week" — the sheet keeps
+ *  its own prescription rather than printing a lone em dash as one. */
+function isPlaceholder(value: string): boolean {
+	return !value.replace(/[-–—\s]/g, '');
+}
+
 /** Rows that say "see progression" instead of a fixed sets/reps get the
  *  current week's value from the program's progression table substituted in. */
 export function resolvePlan(day: ProgramDay, program: Program, week: number | null): ProgramDay {
@@ -100,7 +106,7 @@ export function resolvePlan(day: ProgramDay, program: Program, week: number | nu
 		if (row.sets || row.reps) return row;
 		if (!row.notes || !/progression/i.test(row.notes)) return row;
 		const match = columnForWeekday(day, progWeek.columns) ?? matchColumn(row, progWeek.columns);
-		if (!match) return row;
+		if (!match || isPlaceholder(match.value)) return row;
 		return {
 			...row,
 			reps: match.value,

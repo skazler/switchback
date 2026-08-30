@@ -27,7 +27,7 @@ tempo or an easy spin when the week calls for it (see the by-week table).
 **Phases**
 
 - **Base** (wk 1–5, 29JUN–02AUG) — settle the rhythm; long ride ramps 60 → 105 min.
-- **Build** (wk 6–12, 03AUG–20SEP) — add midweek VO2 + Sunday tempo; long ride to 2:45.
+- **Build** (wk 6–12, 03AUG–20SEP) — add midweek VO2 (wk 7 on) + Sunday tempo; long ride to 2:45.
 - **Peak — "make it look like the race"** (wk 13–18, 21SEP–01NOV) — race-pace efforts,
   threshold / over-unders, and the RPR pre-ride recon.
 - **Taper** (wk 19–20, 02–14NOV) — sharpen and shed fatigue into race day.
@@ -39,13 +39,13 @@ tempo or an easy spin when the week calls for it (see the by-week table).
 | 3 | base | 90 min Z2 | bike park | — |
 | 4 | base | 105 min Z2 | bike park | — |
 | 5 | base | R&R (family trip) | R&R (family trip) | — |
-| 6 | build | 2:00 Z2 | bike park | 4×4 min VO2 |
-| 7 | build | 2:15 Z2 | 2×15 tempo (rolling fire road) | 5×3 min VO2 |
-| 8 | build | 2:30 Z2 | bike park | — |
-| 9 | build | 1:45 Z2 (down) | easy 45–60 min ride | 6×2 min VO2 |
-| 10 | build | 2:30 Z2 | 2×15 tempo | 5×4 min VO2 |
-| 11 | build | 2:45 Z2 | 3×12 tempo | — |
-| 12 | build | **Reveille pre-ride: full 20 mi** | bike park | — |
+| 6 | build | 2:00 Z2 | bike park | — |
+| 7 | build | 2:15 Z2 | 2×15 tempo (rolling fire road) | 4×4 min VO2 (~40 min) |
+| 8 | build | 2:30 Z2 | bike park | 5×3 min VO2 |
+| 9 | build | 1:45 Z2 (down) | easy 45–60 min ride | — |
+| 10 | build | 2:30 Z2 | 2×15 tempo | 6×2 min VO2 |
+| 11 | build | 2:45 Z2 | 3×12 tempo | 5×4 min VO2 |
+| 12 | build | 2:30 Z2 | bike park | — |
 | 13 | peak | 2:30 Z2 + 3×10 race pace | bike park | 6×3 min hard climbs |
 | 14 | peak | 2:45 Z2 rolling | 2×20 tempo | over-unders 3×9 (2′ Z4 / 1′ Z5) |
 | 15 | peak | 2:00 Z2 (down) | easy ride / light skills | — |
@@ -89,7 +89,7 @@ Alternates A / B by week; lateral raises added each session.
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
-|  | Hangboard warm-up + climbing |  |  |  | + midweek VO2 from Build on (see progression) |
+|  | Hangboard warm-up + climbing |  |  |  | swapped for the week’s midweek intensity when one is listed — see progression |
 
 ## Thursday — Upper lift  <!-- th Upper Lift -->
 

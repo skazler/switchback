@@ -109,6 +109,16 @@ describe('resolvePlan', () => {
 		expect(resolvePlan(sheet('w-climb'), program, 9).rows[0].reps).toBe('6×2 min VO2');
 	});
 
+	it('a dash cell leaves the sheet’s own prescription alone', () => {
+		const p = progProgram();
+		p.progression![0].columns = p.progression![0].columns.map((c) =>
+			c.label === 'Midweek intensity' ? { ...c, value: '—' } : c
+		);
+		const w = p.days.find((d) => d.slug === 'w-climb')!;
+		expect(resolvePlan(w, p, 9).rows[0].reps).toBeUndefined();
+		expect(resolvePlan(w, p, 9).rows[0].notes).toContain('see progression');
+	});
+
 	it('a week with no progression row leaves the sheet alone', () => {
 		expect(resolvePlan(sheet('su-bike-park'), program, 3).rows[0].reps).toBeUndefined();
 		expect(resolvePlan(sheet('su-bike-park'), program, null).rows[0].reps).toBeUndefined();
