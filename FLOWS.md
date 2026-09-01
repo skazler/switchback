@@ -48,7 +48,7 @@ start: 2025-12-29    # ISO date, a Monday; enables week numbering
 | `/route` | Active program: overview, elevation-profile progress (DESIGN.md concept 1), week table, day links |
 | `/route/[day]` | Day view = session screen (read mode) |
 | `/routes` | All programs incl. archive |
-| `/library` | Exercise library, filter by category/group/equipment; each entry links out to its saved url(s) |
+| `/library` | Exercise library, grouped by category → body part and filterable by both; search covers name, category, body part and the sheet's group/subgroup. Each entry links out to its saved url(s) |
 | `/log` | Session history (respecting privacy rules below) |
 | `/summits` | Summit register: PRs + unclimbed goals |
 | `/get` | Install page: platform-sniffed (Android → install prompt button; iOS → Add-to-Home-Screen illustrated steps; desktop → "just use the URL") |

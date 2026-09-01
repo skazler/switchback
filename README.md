@@ -41,10 +41,10 @@ A program renders as an elevation profile. Deload weeks dip, build phases climb,
 
 ## The library
 
-581 moves — `exercises.yaml` (536) merged with `skills.yaml` (78 snowboard and hockey entries) and deduplicated by id. Tagged by category and equipment, searchable instantly.
+582 moves — `exercises.yaml` (537) merged with `skills.yaml` (78 snowboard and hockey entries) and deduplicated by id. Filed by category of workout and then by body part, searchable instantly.
 
 <p align="center">
-  <img src="assets/library.png" alt="Library — searchable move catalog filtered by category and equipment" width="820">
+  <img src="assets/library.png" alt="Library — searchable move catalog grouped by category and body part" width="820">
 </p>
 
 Programs and blocks reference moves *by name*. The resolver maps name → id → page at build time, so a prescription is always one tap from how to perform it — and any name that fails to resolve is reported rather than silently dropped.
@@ -54,7 +54,7 @@ Programs and blocks reference moves *by name*. The resolver maps name → id →
 ## Content model
 
 ```
-exercises.yaml      atoms — the exercise library, tagged by category and equipment
+exercises.yaml      atoms — the exercise library, tagged by category (body part is derived)
 skills.yaml         sport-specific atoms, merged into the same catalog
 blocks/             molecules — reusable chunks that programs compose (14)
 programs/           compositions — one Markdown file per program (20: 5 current, 15 archived)
