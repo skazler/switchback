@@ -13,10 +13,9 @@ Append an entry under `exercises:` in `exercises.yaml`:
   - name: "Copenhagen plank"      # display name; programs reference this
     id: copenhagen-plank          # stable kebab-case slug, UNIQUE
     category: prehab-mobility     # athleticism · conditioning · prehab-mobility · strength-hypertrophy
-    group: "Adductors"            # section label (free text)
-    subgroup: "Isometrics"        # optional nested label
+    group: "Adductors"            # section label; also names the body part
+    subgroup: "Isometrics"        # optional nested label; body part if it names one
     note: "Short lever to start"  # optional
-    equipment: [bench]            # optional; tokens like DB, KB, BB, band…
     modifiers: [unilateral]       # optional; unilateral · bodyweight · isometric
     urls:                         # optional; first url is the link target
       - "https://www.instagram.com/reel/…"
@@ -26,8 +25,15 @@ Rules that matter:
 
 - **`id` is identity.** Keep it unique and stable — logs (M3) reference
   exercises by id. If two entries share an id they're treated as the same
-  move and merged at build (urls/equipment unioned), surfaced as a warning
+  move and merged at build (urls/modifiers unioned), surfaced as a warning
   at `/api/health`. Use that only for genuine cross-listings of one move.
+- **Body part is derived, not authored.** `src/lib/content/body.ts` maps the
+  sheet's `group`/`subgroup` onto one vocabulary (chest · back · shoulders ·
+  arms · wrists & forearms · core · hips & glutes · quads · hamstrings ·
+  adductors · calves & ankles, plus upper/lower/full body). Label a new entry
+  with the group the sheet uses and it files itself; if the group names
+  nothing anatomical the entry falls back to name keywords. Adding a new
+  group label means adding it to `LABELS` in that file.
 - **`name` is what programs link against.** A program table cell like
   `COPENHAGEN PLANK` resolves to this entry by case-insensitive match on
   `name` (a trailing footnote `*` is ignored). No match → renders as plain

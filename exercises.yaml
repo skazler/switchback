@@ -1,6 +1,7 @@
 # exercises.yaml — generated from Exercise_Compilation.xlsx (2026-07-07)
 # Structure: category/group/subgroup mirror the spreadsheet hierarchy.
-# equipment/modifiers are INFERRED from names — review pass recommended.
+# body part is derived at build time from group/subgroup (src/lib/content/body.ts);
+# modifiers are INFERRED from names — review pass recommended.
 # Abbreviations: DB dumbbell, KB kettlebell, BB barbell, LM landmine,
 #   MB med ball, SA single arm, SL single leg, SS split stance/single side,
 #   TB trap bar, SM smith machine, COD change of direction, TKE terminal knee ext.
@@ -11,20 +12,17 @@ exercises:
     group: "Agility (fast feet)"
     urls:
       - "https://www.instagram.com/reel/DHZoNC6ylwZ/?igsh=MXBjeGd0aTlqejVuZA%3D%3D"
-    equipment: [box]
   - name: "Box up & down"
     id: box-up-down
     category: athleticism
     group: "Agility (fast feet)"
     note: "Quick & light taps on box"
-    equipment: [box]
   - name: "COD box jumps"
     id: cod-box-jumps
     category: athleticism
     group: "Agility (fast feet)"
     urls:
       - "https://www.instagram.com/reel/DO8N2QajlEF/?igsh=Nnpwa2IxeDVxbDc="
-    equipment: [box]
   - name: "Diamond figure 8s"
     id: diamond-figure-8s
     category: athleticism
@@ -48,7 +46,6 @@ exercises:
     group: "Agility (fast feet)"
     urls:
       - "https://www.instagram.com/reel/DPY97zBgJP1/?igsh=MXJ3OTloNzh0bWFvYQ=="
-    equipment: [hurdle]
   - name: "Ickey shuffle to crossover"
     id: ickey-shuffle-to-crossover
     category: athleticism
@@ -67,14 +64,12 @@ exercises:
     group: "Agility (fast feet)"
     urls:
       - "https://www.instagram.com/reel/DOA3pQRCCsx/?igsh=MXY5N3Vjcng3eTlmcg=="
-    equipment: [ladder]
   - name: "Ladder drills (variety)"
     id: ladder-drills-variety
     category: athleticism
     group: "Agility (fast feet)"
     urls:
       - "https://www.instagram.com/reel/DGTYCySoAQc/?igsh=cTZtOTI0Ymp3dXY2"
-    equipment: [ladder]
   - name: "Lateral forward & back"
     id: lateral-forward-back
     category: athleticism
@@ -145,7 +140,6 @@ exercises:
     group: "Braking Mechanics"
     urls:
       - "https://www.instagram.com/p/DQg0KD5ANW1/?img_index=3&igsh=MXIweTJrbnF6eHp5bQ=="
-    equipment: [band]
   - name: "Reflexive eccentrics"
     id: reflexive-eccentrics
     category: athleticism
@@ -188,31 +182,26 @@ exercises:
     group: "Core"
     urls:
       - "https://www.youtube.com/watch?v=lWFQhUbWbjc"
-    equipment: [kettlebell]
   - name: "LM rollout pushups"
     id: lm-rollout-pushups
     category: athleticism
     group: "Core"
-    equipment: [landmine]
   - name: "LM rotation lifts"
     id: lm-rotation-lifts
     category: athleticism
     group: "Core"
     urls:
       - "https://www.instagram.com/reel/DJrDOErzTG9/?igsh=Z255ZWc4OHMxbmox"
-    equipment: [landmine]
   - name: "LM anti-rotation"
     id: lm-anti-rotation
     category: athleticism
     group: "Core"
-    equipment: [landmine]
   - name: "LM rotations"
     id: lm-rotations
     category: athleticism
     group: "Core"
     urls:
       - "https://www.instagram.com/reel/DKw6qNGMMTn/?igsh=YmozenB5ZzBweXVt"
-    equipment: [landmine]
   - name: "Pallof hold"
     id: pallof-hold
     category: athleticism
@@ -233,7 +222,6 @@ exercises:
     id: plank-hands-to-elbow-with-feet-elevated-on-bosu-ball
     category: athleticism
     group: "Core"
-    equipment: [bosu]
   - name: "Reverse crunch"
     id: reverse-crunch
     category: athleticism
@@ -263,7 +251,6 @@ exercises:
     group: "Core"
     urls:
       - "https://www.instagram.com/reel/DPY3uXNDeRg/?igsh=azR0YTcxanAwbnl0"
-    equipment: [bosu, plate]
     modifiers: [unilateral]
   - name: "Split stance rotational MB throw"
     id: split-stance-rotational-mb-throw
@@ -271,7 +258,6 @@ exercises:
     group: "Core"
     urls:
       - "https://youtu.be/mHl9RCZaghw?si=Ib7OcojsmoTX1olu"
-    equipment: [med-ball]
   - name: "Star plank"
     id: star-plank
     category: athleticism
@@ -322,7 +308,6 @@ exercises:
     id: hurdle-skips
     category: athleticism
     group: "Dynamic Warmups"
-    equipment: [hurdle]
   - name: "Pogos (double, front/back, lateral, single)"
     id: pogos-double-front-back-lateral-single
     category: athleticism
@@ -365,7 +350,6 @@ exercises:
     category: athleticism
     group: "Dynamic Warmups"
     subgroup: "Skips"
-    equipment: [box]
   - name: "Danes fast abs"
     id: danes-fast-abs
     category: athleticism
@@ -379,13 +363,11 @@ exercises:
     group: "Explosiveness/Power"
     subgroup: "Core/Rotational"
     note: "USE THE BIG SOFT BALL"
-    equipment: [med-ball]
   - name: "MB wall slam"
     id: mb-wall-slam
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Core/Rotational"
-    equipment: [med-ball]
   - name: "Variety"
     id: variety
     category: athleticism
@@ -398,19 +380,16 @@ exercises:
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Lower"
-    equipment: [barbell]
   - name: "Box jumps"
     id: box-jumps
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Lower"
-    equipment: [box]
   - name: "Box step up + knee drive (weighted)"
     id: box-step-up-knee-drive-weighted
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Lower"
-    equipment: [box]
   - name: "Clean"
     id: clean
     category: athleticism
@@ -434,7 +413,6 @@ exercises:
     group: "Explosiveness/Power"
     subgroup: "Lower"
     note: "use hips to drive force"
-    equipment: [dumbbell]
   - name: "DB squat jumps"
     id: db-squat-jumps
     category: athleticism
@@ -442,7 +420,6 @@ exercises:
     subgroup: "Lower"
     urls:
       - "https://www.youtube.com/shorts/ihWV_Af5Xsk"
-    equipment: [dumbbell]
   - name: "Deficit sprinter start skips"
     id: deficit-sprinter-start-skips
     category: athleticism
@@ -477,7 +454,6 @@ exercises:
     subgroup: "Lower"
     urls:
       - "https://www.instagram.com/p/DKaONEkO6Kr/?img_index=5&igsh=MW93cnQ4em5ndXQwaw=="
-    equipment: [trap-bar]
     modifiers: [isometric]
   - name: "Yielding"
     id: yielding
@@ -491,7 +467,6 @@ exercises:
     subgroup: "Lower"
     urls:
       - "https://www.instagram.com/reel/DEOqB9NzyO0/?igsh=MTI5M3JjN2h3YXZ3Nw=="
-    equipment: [band]
   - name: "Knee jump to broad jump"
     id: knee-jump-to-broad-jump
     category: athleticism
@@ -513,13 +488,11 @@ exercises:
     subgroup: "Lower"
     urls:
       - "https://www.instagram.com/reel/DLfbakEpmQ7/?igsh=MXU0cTFndjczY3Vuag=="
-    equipment: [box]
   - name: "LM curtsy lunge w/ sl jump"
     id: lm-curtsy-lunge-w-sl-jump
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Lower"
-    equipment: [landmine]
     modifiers: [unilateral]
   - name: "LM rocking lunge w/ knee drive"
     id: lm-rocking-lunge-w-knee-drive
@@ -528,7 +501,6 @@ exercises:
     subgroup: "Lower"
     urls:
       - "https://www.instagram.com/reel/DJ8Ucf8zag6/?igsh=b2xvamkxZDNybjNz"
-    equipment: [landmine]
   - name: "LM thruster w/ calf raise"
     id: lm-thruster-w-calf-raise
     category: athleticism
@@ -536,7 +508,6 @@ exercises:
     subgroup: "Lower"
     urls:
       - "https://www.instagram.com/reel/DJ8Ucf8zag6/?igsh=b2xvamkxZDNybjNz"
-    equipment: [landmine]
   - name: "LM zercher rebounds"
     id: lm-zercher-rebounds
     category: athleticism
@@ -544,7 +515,6 @@ exercises:
     subgroup: "Lower"
     urls:
       - "https://www.instagram.com/reel/DPZeuoFiAeA/?igsh=MTh0aThvZzE1ZnQ0Nw=="
-    equipment: [landmine]
   - name: "MB knee punch"
     id: mb-knee-punch
     category: athleticism
@@ -552,7 +522,6 @@ exercises:
     subgroup: "Lower"
     urls:
       - "https://www.instagram.com/reel/DKQVR-0CCzx/?igsh=MTJrdG4ycDN6NnM5Zg=="
-    equipment: [med-ball]
   - name: "MB skater to throw"
     id: mb-skater-to-throw
     category: athleticism
@@ -560,7 +529,6 @@ exercises:
     subgroup: "Lower"
     urls:
       - "https://www.instagram.com/reel/DIue5gZzycD/?igsh=ejNtdWtkMXJzaDZ2"
-    equipment: [med-ball]
   - name: "RDL MB throws"
     id: rdl-mb-throws
     category: athleticism
@@ -568,7 +536,6 @@ exercises:
     subgroup: "Lower"
     urls:
       - "https://www.instagram.com/p/DRFbIW-j9B_/?igsh=MWtucHdydm5oNzVpZQ=="
-    equipment: [med-ball]
   - name: "SL bulgarian hops"
     id: sl-bulgarian-hops
     category: athleticism
@@ -606,7 +573,6 @@ exercises:
     subgroup: "Lower"
     urls:
       - "https://www.instagram.com/reel/DIue5gZzycD/?igsh=ejNtdWtkMXJzaDZ2"
-    equipment: [box]
     modifiers: [unilateral]
   - name: "Sled first step"
     id: sled-first-step
@@ -615,19 +581,16 @@ exercises:
     subgroup: "Lower"
     urls:
       - "https://www.instagram.com/reel/DQwaWIfkbWI/?igsh=MWgyamhlajZ5enZtMA=="
-    equipment: [sled]
   - name: "Sled resisted sprint"
     id: sled-resisted-sprint
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Lower"
-    equipment: [sled]
   - name: "Split stance trap bar jumps"
     id: split-stance-trap-bar-jumps
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Lower"
-    equipment: [trap-bar]
   - name: "Sprinting jumps"
     id: sprinting-jumps
     category: athleticism
@@ -640,7 +603,6 @@ exercises:
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Lower"
-    equipment: [trap-bar]
   - name: "TRX curtsy lunge jump"
     id: trx-curtsy-lunge-jump
     category: athleticism
@@ -648,7 +610,6 @@ exercises:
     subgroup: "Lower"
     urls:
       - "https://www.instagram.com/reel/DLWAW4HsOSG/?igsh=NXV0cW84djU4N3M1"
-    equipment: [trx]
   - name: "Tuck jump + wall push off"
     id: tuck-jump-wall-push-off
     category: athleticism
@@ -678,7 +639,6 @@ exercises:
     subgroup: "Upper"
     urls:
       - "https://www.instagram.com/reel/DFc-x5xPjtr/?igsh=cHhvdXc1Yjc3dHY5"
-    equipment: [smith-machine]
   - name: "Drop pushups"
     id: drop-pushups
     category: athleticism
@@ -691,7 +651,6 @@ exercises:
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Upper"
-    equipment: [endless-rope]
   - name: "Forward step + med ball punch"
     id: forward-step-med-ball-punch
     category: athleticism
@@ -699,7 +658,6 @@ exercises:
     subgroup: "Upper"
     urls:
       - "https://www.instagram.com/reel/DFc-x5xPjtr/?igsh=cHhvdXc1Yjc3dHY5"
-    equipment: [med-ball]
   - name: "Hang clean to split catch"
     id: hang-clean-to-split-catch
     category: athleticism
@@ -714,7 +672,6 @@ exercises:
     subgroup: "Upper"
     urls:
       - "https://www.instagram.com/reel/DGlCGz8p3jf/?igsh=MTVndmVmc3NtZ3Q1Yg=="
-    equipment: [landmine]
   - name: "LM jump squat clean to thruster"
     id: lm-jump-squat-clean-to-thruster
     category: athleticism
@@ -722,13 +679,11 @@ exercises:
     subgroup: "Upper"
     urls:
       - "https://www.instagram.com/reel/DPZVMtiiA9p/?igsh=d2V3eW55NGRnbTU1"
-    equipment: [landmine]
   - name: "LM rotational pushups"
     id: lm-rotational-pushups
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Upper"
-    equipment: [landmine]
   - name: "LM rotational split jerk"
     id: lm-rotational-split-jerk
     category: athleticism
@@ -736,7 +691,6 @@ exercises:
     subgroup: "Upper"
     urls:
       - "https://www.youtube.com/watch?v=ODy6lmCrGtY"
-    equipment: [landmine]
   - name: "MB chest pass"
     id: mb-chest-pass
     category: athleticism
@@ -744,7 +698,6 @@ exercises:
     subgroup: "Upper"
     urls:
       - "https://www.instagram.com/reel/DKX8S1dy2xi/?igsh=amp3MWdybzNnM3A3"
-    equipment: [med-ball]
   - name: "MB down slams"
     id: mb-down-slams
     category: athleticism
@@ -752,7 +705,6 @@ exercises:
     subgroup: "Upper"
     urls:
       - "https://www.instagram.com/reel/DKike1evwlE/?igsh=MXU3M2JvZWlkeHM2dQ=="
-    equipment: [med-ball]
   - name: "MB variety"
     id: mb-variety
     category: athleticism
@@ -760,7 +712,6 @@ exercises:
     subgroup: "Upper"
     urls:
       - "https://www.instagram.com/reel/DQrzrzHkQTi/?igsh=Y3NkMWc4eDdtOHJv"
-    equipment: [med-ball]
   - name: "Push press"
     id: push-press
     category: athleticism
@@ -771,25 +722,21 @@ exercises:
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Full"
-    equipment: [med-ball]
   - name: "Hang clean to box"
     id: hang-clean-to-box
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Full"
-    equipment: [box]
   - name: "LM split clean & jerk"
     id: lm-split-clean-jerk
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Full"
-    equipment: [landmine]
   - name: "MB throw height & distance"
     id: mb-throw-height-distance
     category: athleticism
     group: "Explosiveness/Power"
     subgroup: "Full"
-    equipment: [med-ball]
   - name: "Power clean & jerk"
     id: power-clean-jerk
     category: athleticism
@@ -812,14 +759,12 @@ exercises:
     group: "Plyos"
     urls:
       - "https://www.instagram.com/reel/DJMZm7ZxBDU/?igsh=MTVwNWticGIybjN6cA%3D%3D"
-    equipment: [hurdle]
   - name: "3-2-1 step hurdles"
     id: 3-2-1-step-hurdles
     category: athleticism
     group: "Plyos"
     urls:
       - "https://www.instagram.com/reel/DJMZm7ZxBDU/?igsh=MTVwNWticGIybjN6cA%3D%3D"
-    equipment: [hurdle]
   - name: "10 low 10 high"
     id: 10-low-10-high
     category: athleticism
@@ -830,24 +775,20 @@ exercises:
     id: bosu-front-lateral-jumps
     category: athleticism
     group: "Plyos"
-    equipment: [bosu]
   - name: "Box jump-drop-jump"
     id: box-jump-drop-jump
     category: athleticism
     group: "Plyos"
-    equipment: [box]
   - name: "Box lateral jumps"
     id: box-lateral-jumps
     category: athleticism
     group: "Plyos"
-    equipment: [box]
   - name: "Box jump to sl landing"
     id: box-jump-to-sl-landing
     category: athleticism
     group: "Plyos"
     urls:
       - "https://www.instagram.com/reel/DMtn--nsLnP/?igsh=M3Zxdjl6bXdjeGtu"
-    equipment: [box]
     modifiers: [unilateral]
   - name: "Cross circle jumps"
     id: cross-circle-jumps
@@ -859,7 +800,6 @@ exercises:
     group: "Plyos"
     urls:
       - "https://www.instagram.com/reel/DJeqYwXzmCX/?igsh=bnBwbXJtcDZ4a2hh"
-    equipment: [box]
   - name: "Deceleration"
     id: deceleration
     category: athleticism
@@ -902,7 +842,6 @@ exercises:
     subgroup: "Depth drop & jump"
     urls:
       - "https://www.instagram.com/reel/DJZMxehOTSe/?igsh=b2xvYWt4YzlndTl6"
-    equipment: [box]
   - name: "Drop skater"
     id: drop-skater
     category: athleticism
@@ -957,7 +896,6 @@ exercises:
     subgroup: "Depth drop & jump"
     urls:
       - "https://youtube.com/shorts/9T65Myx_Vkg?si=qj6esp5AENFGdmSq"
-    equipment: [ladder]
   - name: "Lateral bound to stick"
     id: lateral-bound-to-stick
     category: athleticism
@@ -970,7 +908,6 @@ exercises:
     subgroup: "Depth drop & jump"
     urls:
       - "https://www.instagram.com/reel/DJrDOErzTG9/?igsh=Z255ZWc4OHMxbmox"
-    equipment: [box]
   - name: "Lateral drop & push"
     id: lateral-drop-push
     category: athleticism
@@ -992,7 +929,6 @@ exercises:
     subgroup: "Depth drop & jump"
     urls:
       - "https://www.instagram.com/reel/DPPoMh2jxYs/?igsh=cG5hMWhpMGNndDh2"
-    equipment: [hurdle]
   - name: "Lateral punch & push"
     id: lateral-punch-push
     category: athleticism
@@ -1021,7 +957,6 @@ exercises:
     subgroup: "Depth drop & jump"
     urls:
       - "https://www.instagram.com/reel/DFTx2IoIiVz/?igsh=YmM3Nmw5YTBrODlp"
-    equipment: [box]
   - name: "RFE lateral hops"
     id: rfe-lateral-hops
     category: athleticism
@@ -1055,7 +990,6 @@ exercises:
     subgroup: "Depth drop & jump"
     urls:
       - "https://www.youtube.com/shorts/UMz8WiD8wCE"
-    equipment: [box]
     modifiers: [unilateral]
   - name: "SL broad jumps"
     id: sl-broad-jumps
@@ -1109,7 +1043,6 @@ exercises:
     subgroup: "Depth drop & jump"
     urls:
       - "https://www.instagram.com/share/reel/BALP_gMc2v?fhid=QkFMUF9nTWMydg"
-    equipment: [ladder]
     modifiers: [unilateral]
   - name: "SL lateral bosu jump"
     id: sl-lateral-bosu-jump
@@ -1118,7 +1051,6 @@ exercises:
     subgroup: "Depth drop & jump"
     urls:
       - "https://www.instagram.com/p/DO1Gyhfkb3M/?igsh=cDZydnIwdzZyZTdv"
-    equipment: [bosu]
     modifiers: [unilateral]
   - name: "SL lateral box jump + tuck jump"
     id: sl-lateral-box-jump-tuck-jump
@@ -1127,7 +1059,6 @@ exercises:
     subgroup: "Depth drop & jump"
     urls:
       - "https://www.instagram.com/reel/DJrDOErzTG9/?igsh=Z255ZWc4OHMxbmox"
-    equipment: [box]
     modifiers: [unilateral]
   - name: "SL lateral hops back & forth"
     id: sl-lateral-hops-back-forth
@@ -1152,7 +1083,6 @@ exercises:
     subgroup: "Depth drop & jump"
     urls:
       - "https://www.youtube.com/shorts/ihWV_Af5Xsk"
-    equipment: [box]
     modifiers: [unilateral]
   - name: "SL lateral skater"
     id: sl-lateral-skater
@@ -1169,7 +1099,6 @@ exercises:
     subgroup: "Depth drop & jump"
     urls:
       - "https://youtube.com/shorts/UDy8aDTO45c?si=aPTml9HS7fEEN-zg"
-    equipment: [hurdle]
     modifiers: [unilateral]
   - name: "SL lateral tuck jump"
     id: sl-lateral-tuck-jump
@@ -1184,7 +1113,6 @@ exercises:
     category: athleticism
     group: "Plyos"
     subgroup: "Depth drop & jump"
-    equipment: [box]
     modifiers: [unilateral]
   - name: "SL triple broads"
     id: sl-triple-broads
@@ -1206,7 +1134,6 @@ exercises:
     category: athleticism
     group: "Plyos"
     subgroup: "Depth drop & jump"
-    equipment: [box]
     modifiers: [unilateral]
   - name: "Split jumps"
     id: split-jumps
@@ -1274,14 +1201,12 @@ exercises:
     subgroup: "Switches"
     urls:
       - "https://www.instagram.com/reel/DLTe7vUs5cM/?igsh=MWdmNzFobjJ0bWtjNg=="
-    equipment: [hurdle]
   - name: "Change of direction hurdle jumps"
     id: change-of-direction-hurdle-jumps
     category: athleticism
     group: "Plyo-Agility (COD/quickness)"
     urls:
       - "https://www.instagram.com/reel/DJkYGRlx4HQ/?igsh=MWQ5eWpyNzNvZjc3bQ%3D%3D"
-    equipment: [hurdle]
   - name: "Explosive agility"
     id: explosive-agility
     category: athleticism
@@ -1294,7 +1219,6 @@ exercises:
     group: "Plyo-Agility (COD/quickness)"
     urls:
       - "https://www.instagram.com/reel/DJpgv51RmPO/?igsh=MTByZTZ6ODRvYm51bA%3D%3D"
-    equipment: [hurdle]
   - name: "Icky shuffle bounding"
     id: icky-shuffle-bounding
     category: athleticism
@@ -1360,7 +1284,6 @@ exercises:
     group: "Plyo-Agility (COD/quickness)"
     urls:
       - "https://www.instagram.com/reel/DPJZVvLkc0v/?igsh=MWtyNTdlNGk1cGt1ag=="
-    equipment: [box]
     modifiers: [unilateral]
   - name: "SL circle hops"
     id: sl-circle-hops
@@ -1400,7 +1323,6 @@ exercises:
     group: "Speed drills"
     urls:
       - "https://www.instagram.com/reel/DLz_Y9KRh-0/?igsh=dW8ybmhmOWVrdmh4"
-    equipment: [band]
   - name: "Alternating bounds"
     id: alternating-bounds
     category: athleticism
@@ -1443,7 +1365,6 @@ exercises:
     subgroup: "Bounds"
     urls:
       - "https://www.instagram.com/reel/DKW_S-wOFJp/?igsh=Z2U2cG8yNm40M3pn"
-    equipment: [band]
   - name: "SL cycle"
     id: sl-cycle
     category: athleticism
@@ -1539,7 +1460,6 @@ exercises:
     id: hurdle-jump-sprints
     category: athleticism
     group: "Sprints/Speed/COD"
-    equipment: [hurdle]
   - name: "Pushup to sprints"
     id: pushup-to-sprints
     category: athleticism
@@ -1615,7 +1535,6 @@ exercises:
     category: conditioning
     group: "Low intensity long duration & active recovery cardio"
     subgroup: "Basketball"
-    equipment: [bike]
   - name: "throw a football around"
     id: throw-a-football-around
     category: conditioning
@@ -1640,7 +1559,6 @@ exercises:
     category: conditioning
     group: "Low intensity long duration & active recovery cardio"
     subgroup: "Football"
-    equipment: [bike]
   - name: "Ruck"
     id: ruck
     category: conditioning
@@ -1718,7 +1636,6 @@ exercises:
     category: prehab-mobility
     group: "Prehab/Mobility/Activation"
     subgroup: "Ankle"
-    equipment: [band]
   - name: "Lateral bounds"
     id: lateral-bounds
     category: prehab-mobility
@@ -1736,7 +1653,6 @@ exercises:
     subgroup: "Ankle"
     urls:
       - "https://youtube.com/shorts/_Kwi_KQEqls?si=s8Rx8stoA38uUAUs"
-    equipment: [slant-board]
   - name: "SL lateral hops & back"
     id: sl-lateral-hops-back
     category: prehab-mobility
@@ -1799,7 +1715,6 @@ exercises:
     category: prehab-mobility
     group: "Prehab/Mobility/Activation"
     subgroup: "Adductors (& groin)"
-    equipment: [slider]
   - name: "Copenhagen 90 90s"
     id: copenhagen-90-90s
     category: prehab-mobility
@@ -1831,7 +1746,6 @@ exercises:
     subgroup: "Adductors (& groin)"
     urls:
       - "https://www.youtube.com/watch?v=9gyQsDaUnKo"
-    equipment: [kettlebell]
     modifiers: [isometric]
   - name: "Rotational groin slider"
     id: rotational-groin-slider
@@ -1840,7 +1754,6 @@ exercises:
     subgroup: "Adductors (& groin)"
     urls:
       - "https://www.instagram.com/p/DPEM3kHEebR/?img_index=4&igsh=YjZxM2tpNHZ4Mm5v"
-    equipment: [slider]
   - name: "Side lunge plate pulls"
     id: side-lunge-plate-pulls
     category: prehab-mobility
@@ -1848,13 +1761,11 @@ exercises:
     subgroup: "Adductors (& groin)"
     urls:
       - "https://www.instagram.com/reel/DGj8RF4ODYc/?igsh=MTNicjg4aHd3a2JnYg=="
-    equipment: [plate]
   - name: "Slider squats"
     id: slider-squats
     category: prehab-mobility
     group: "Prehab/Mobility/Activation"
     subgroup: "Adductors (& groin)"
-    equipment: [slider]
   - name: "Variety"
     id: variety
     category: prehab-mobility
@@ -1889,7 +1800,6 @@ exercises:
     category: prehab-mobility
     group: "Prehab/Mobility/Activation"
     subgroup: "Back (& core)"
-    equipment: [trx]
   - name: "RDL + press + core rotation"
     id: rdl-press-core-rotation
     category: prehab-mobility
@@ -1916,13 +1826,11 @@ exercises:
     subgroup: "Hips (& glutes)"
     urls:
       - "https://www.instagram.com/p/DLkwS1Avap8/?utm_source=ig_web_copy_link&igsh=OHR6dmZvOXEwZWh5"
-    equipment: [band]
   - name: "Fire hydrant (banded)"
     id: fire-hydrant-banded
     category: prehab-mobility
     group: "Prehab/Mobility/Activation"
     subgroup: "Hips (& glutes)"
-    equipment: [band]
   - name: "Flow"
     id: flow
     category: prehab-mobility
@@ -1937,7 +1845,6 @@ exercises:
     subgroup: "Hips (& glutes)"
     urls:
       - "https://www.instagram.com/reel/DRfkT5skiJ-/?igsh=MWtkdXF1N3V4Yjdt"
-    equipment: [ghd]
   - name: "Hip airplane"
     id: hip-airplane
     category: prehab-mobility
@@ -1964,7 +1871,6 @@ exercises:
     subgroup: "Hips (& glutes)"
     urls:
       - "https://youtube.com/shorts/ahpTp0cAxO8?si=CGqgF7U0kuT690Ke"
-    equipment: [band]
   - name: "KB hip flexion"
     id: kb-hip-flexion
     category: prehab-mobility
@@ -1972,7 +1878,6 @@ exercises:
     subgroup: "Hips (& glutes)"
     urls:
       - "https://www.youtube.com/watch?v=r86Kqq5klYc"
-    equipment: [kettlebell]
   - name: "Side steps & monster walks"
     id: side-steps-monster-walks
     category: prehab-mobility
@@ -1991,7 +1896,6 @@ exercises:
     category: prehab-mobility
     group: "Prehab/Mobility/Activation"
     subgroup: "Hips (& glutes)"
-    equipment: [band]
   - name: "SS knee rotations"
     id: ss-knee-rotations
     category: prehab-mobility
@@ -2009,7 +1913,6 @@ exercises:
     category: prehab-mobility
     group: "Prehab/Mobility/Activation"
     subgroup: "Hips (& glutes)"
-    equipment: [band]
   - name: "Variety 1"
     id: variety-1
     category: prehab-mobility
@@ -2041,7 +1944,6 @@ exercises:
     category: prehab-mobility
     group: "Prehab/Mobility/Activation"
     subgroup: "Knees (& quads)"
-    equipment: [sled]
   - name: "Banded jump drills"
     id: banded-jump-drills
     category: prehab-mobility
@@ -2049,7 +1951,6 @@ exercises:
     subgroup: "Knees (& quads)"
     urls:
       - "https://www.instagram.com/reel/DKepy2TM69d/?igsh=MWdkZnc2cjUxOXA4eQ=="
-    equipment: [band]
   - name: "Captain morgans"
     id: captain-morgans
     category: prehab-mobility
@@ -2130,7 +2031,6 @@ exercises:
     category: prehab-mobility
     group: "Prehab/Mobility/Activation"
     subgroup: "Knees (& quads)"
-    equipment: [sled]
   - name: "SL wall sit"
     id: sl-wall-sit
     category: prehab-mobility
@@ -2155,7 +2055,6 @@ exercises:
     subgroup: "Knees (& quads)"
     urls:
       - "https://www.instagram.com/p/DO52cORkQma/?img_index=1&igsh=MWhwb2VpdDg2bDRoMQ=="
-    equipment: [cable]
   - name: "Split stance SL calf raises"
     id: split-stance-sl-calf-raises
     category: prehab-mobility
@@ -2244,7 +2143,6 @@ exercises:
     subgroup: "Shoulder"
     urls:
       - "https://www.instagram.com/p/DNS22VrRdKo/?igsh=M3h3NXBnOWw0ZHdv"
-    equipment: [bosu]
   - name: "Bottom up windmill"
     id: bottom-up-windmill
     category: prehab-mobility
@@ -2278,7 +2176,6 @@ exercises:
     subgroup: "Shoulder"
     urls:
       - "https://www.instagram.com/p/DNS22VrRdKo/?igsh=M3h3NXBnOWw0ZHdv"
-    equipment: [med-ball]
     modifiers: [unilateral]
   - name: "Plank banded lateral steps"
     id: plank-banded-lateral-steps
@@ -2287,7 +2184,6 @@ exercises:
     subgroup: "Shoulder"
     urls:
       - "https://www.instagram.com/p/DNS22VrRdKo/?igsh=M3h3NXBnOWw0ZHdv"
-    equipment: [band]
   - name: "Plank plus to downward dog to toe taps"
     id: plank-plus-to-downward-dog-to-toe-taps
     category: prehab-mobility
@@ -2331,7 +2227,6 @@ exercises:
     subgroup: "Shoulder"
     urls:
       - "https://youtube.com/shorts/9L31eTEWiyk?si=po2hBn_FBQQwxLsG"
-    equipment: [kettlebell]
   - name: "Variety (Rehab)"
     id: variety-rehab
     category: prehab-mobility
@@ -2373,7 +2268,6 @@ exercises:
     id: ab-pushing-machine
     category: strength-hypertrophy
     group: "Abs"
-    equipment: [machine]
   - name: "Ab wheel"
     id: ab-wheel
     category: strength-hypertrophy
@@ -2382,12 +2276,10 @@ exercises:
     id: cable-crunches
     category: strength-hypertrophy
     group: "Abs"
-    equipment: [cable]
   - name: "Deadbugs w/ plate"
     id: deadbugs-w-plate
     category: strength-hypertrophy
     group: "Abs"
-    equipment: [plate]
   - name: "Decline crunches"
     id: decline-crunches
     category: strength-hypertrophy
@@ -2396,12 +2288,10 @@ exercises:
     id: kb-around-the-world
     category: strength-hypertrophy
     group: "Abs"
-    equipment: [kettlebell]
   - name: "KB Halo Chops"
     id: kb-halo-chops
     category: strength-hypertrophy
     group: "Abs"
-    equipment: [kettlebell]
   - name: "L-sit work"
     id: l-sit-work
     category: strength-hypertrophy
@@ -2418,7 +2308,6 @@ exercises:
     id: trx-v-ups
     category: strength-hypertrophy
     group: "Abs"
-    equipment: [trx]
   - name: "Woodchoppers"
     id: woodchoppers
     category: strength-hypertrophy
@@ -2428,13 +2317,11 @@ exercises:
     category: strength-hypertrophy
     group: "Arms"
     subgroup: "Biceps"
-    equipment: [cable]
   - name: "EZ bar curls"
     id: ez-bar-curls
     category: strength-hypertrophy
     group: "Arms"
     subgroup: "Biceps"
-    equipment: [ez-bar]
   - name: "Hammer curls"
     id: hammer-curls
     category: strength-hypertrophy
@@ -2466,13 +2353,11 @@ exercises:
     category: strength-hypertrophy
     group: "Arms"
     subgroup: "Triceps"
-    equipment: [cable]
   - name: "Cable tricep overhead extension"
     id: cable-tricep-overhead-extension
     category: strength-hypertrophy
     group: "Arms"
     subgroup: "Triceps"
-    equipment: [cable]
   - name: "Dips"
     id: dips
     category: strength-hypertrophy
@@ -2497,7 +2382,6 @@ exercises:
     id: barbell-row
     category: strength-hypertrophy
     group: "Back"
-    equipment: [barbell]
   - name: "Bent over row"
     id: bent-over-row
     category: strength-hypertrophy
@@ -2510,12 +2394,15 @@ exercises:
     id: db-rear-delt-fly
     category: strength-hypertrophy
     group: "Back"
-    equipment: [dumbbell]
   - name: "DB Y-raises"
     id: db-y-raises
     category: strength-hypertrophy
     group: "Back"
-    equipment: [dumbbell]
+  - name: "TRX Y-raises"
+    id: trx-y-raises
+    category: strength-hypertrophy
+    group: "Back"
+    note: "Suspension trainer; body angle sets the load."
   - name: "Deadlift"
     id: deadlift
     category: strength-hypertrophy
@@ -2532,7 +2419,6 @@ exercises:
     id: ghd-back-extension
     category: strength-hypertrophy
     group: "Back"
-    equipment: [ghd]
   - name: "Lat pullaround"
     id: lat-pullaround
     category: strength-hypertrophy
@@ -2563,12 +2449,10 @@ exercises:
     group: "Back"
     urls:
       - "https://youtube.com/shorts/PH1bMeBLVb4?si=clY8PFCnMUBUfFQO"
-    equipment: [cable]
   - name: "Single arm cable row"
     id: single-arm-cable-row
     category: strength-hypertrophy
     group: "Back"
-    equipment: [cable]
     modifiers: [unilateral]
   - name: "Single arm pulldown"
     id: single-arm-pulldown
@@ -2583,12 +2467,10 @@ exercises:
     id: cable-fly-low-to-high
     category: strength-hypertrophy
     group: "Chest"
-    equipment: [cable]
   - name: "DB flat bench"
     id: db-flat-bench
     category: strength-hypertrophy
     group: "Chest"
-    equipment: [dumbbell]
   - name: "Decline knuckle pushups"
     id: decline-knuckle-pushups
     category: strength-hypertrophy
@@ -2605,18 +2487,15 @@ exercises:
     id: machine-chest-press
     category: strength-hypertrophy
     group: "Chest"
-    equipment: [machine]
   - name: "SM incline press"
     id: sm-incline-press
     category: strength-hypertrophy
     group: "Chest"
-    equipment: [smith-machine]
   - name: "Adductors machine"
     id: adductors-machine
     category: strength-hypertrophy
     group: "Legs"
     subgroup: "Adductors"
-    equipment: [machine]
   - name: "Copenhagen planks"
     id: copenhagen-planks
     category: strength-hypertrophy
@@ -2632,7 +2511,6 @@ exercises:
     category: strength-hypertrophy
     group: "Legs"
     subgroup: "All"
-    equipment: [box]
   - name: "Bulgarian split squats"
     id: bulgarian-split-squats
     category: strength-hypertrophy
@@ -2661,7 +2539,6 @@ exercises:
     category: strength-hypertrophy
     group: "Legs"
     subgroup: "All"
-    equipment: [med-ball, sandbag]
   - name: "Kickstand goblet squat"
     id: kickstand-goblet-squat
     category: strength-hypertrophy
@@ -2669,19 +2546,16 @@ exercises:
     subgroup: "All"
     urls:
       - "https://www.instagram.com/reel/Das6u-JKmVL/?utm_source=ig_web_copy_link&igsh=NTc4MTIwNjQ2YQ=="
-    equipment: [dumbbell]
   - name: "LM curtsy lunge"
     id: lm-curtsy-lunge
     category: strength-hypertrophy
     group: "Legs"
     subgroup: "All"
-    equipment: [landmine]
   - name: "Slant board dragon squat"
     id: slant-board-dragon-squat
     category: strength-hypertrophy
     group: "Legs"
     subgroup: "All"
-    equipment: [slant-board]
   - name: "SL squats"
     id: sl-squats
     category: strength-hypertrophy
@@ -2693,7 +2567,6 @@ exercises:
     category: strength-hypertrophy
     group: "Legs"
     subgroup: "All"
-    equipment: [trap-bar]
   - name: "Walking lunges"
     id: walking-lunges
     category: strength-hypertrophy
@@ -2735,7 +2608,6 @@ exercises:
     subgroup: "Hamstrings"
     urls:
       - "https://www.instagram.com/reel/DKuOzPmuJ4T/?igsh=MWRicTJmNGxmM2F5cg=="
-    equipment: [stability-ball]
     modifiers: [unilateral]
   - name: "Front squat"
     id: front-squat
@@ -2781,13 +2653,11 @@ exercises:
     category: strength-hypertrophy
     group: "Legs"
     subgroup: "Quads"
-    equipment: [smith-machine]
   - name: "Abductors machine"
     id: abductors-machine
     category: strength-hypertrophy
     group: "Legs"
     subgroup: "Posterior chain"
-    equipment: [machine]
   - name: "Elevated stiff legged deadlift"
     id: elevated-stiff-legged-deadlift
     category: strength-hypertrophy
@@ -2852,32 +2722,26 @@ exercises:
     id: cable-front-raise
     category: strength-hypertrophy
     group: "Shoulders"
-    equipment: [cable]
   - name: "Cable lateral raise"
     id: cable-lateral-raise
     category: strength-hypertrophy
     group: "Shoulders"
-    equipment: [cable]
   - name: "DB lateral raise"
     id: db-lateral-raise
     category: strength-hypertrophy
     group: "Shoulders"
-    equipment: [dumbbell]
   - name: "DB rear delt fly"
     id: db-rear-delt-fly
     category: strength-hypertrophy
     group: "Shoulders"
-    equipment: [dumbbell]
   - name: "DB shoulder press"
     id: db-shoulder-press
     category: strength-hypertrophy
     group: "Shoulders"
-    equipment: [dumbbell]
   - name: "DB T-Raises"
     id: db-t-raises
     category: strength-hypertrophy
     group: "Shoulders"
-    equipment: [dumbbell]
   - name: "Overhead press"
     id: overhead-press
     category: strength-hypertrophy
@@ -2886,12 +2750,10 @@ exercises:
     id: reverse-cable-fly
     category: strength-hypertrophy
     group: "Shoulders"
-    equipment: [cable]
   - name: "Side lying db raise"
     id: side-lying-db-raise
     category: strength-hypertrophy
     group: "Shoulders"
-    equipment: [dumbbell]
   - name: "Upright row"
     id: upright-row
     category: strength-hypertrophy
@@ -2910,12 +2772,10 @@ exercises:
     id: assault-bike
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [bike]
   - name: "Battle Ropes"
     id: battle-ropes
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [battle-ropes]
   - name: "Bear Crawl"
     id: bear-crawl
     category: conditioning
@@ -2940,7 +2800,6 @@ exercises:
     id: carries-tb-dumbbells-suitcase-zercher-etc
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [dumbbell, trap-bar]
   - name: "Clean"
     id: clean
     category: conditioning
@@ -2961,19 +2820,16 @@ exercises:
     id: db-alt-bench
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [dumbbell]
   - name: "DB Bench"
     id: db-bench
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [dumbbell]
   - name: "DB Clean Into Squat"
     id: db-clean-into-squat
     category: conditioning
     group: "Plug-and-Play"
     urls:
       - "https://www.instagram.com/reel/DQMddY3kenu/?igsh=MXA3MW5kN2Exd2Ezag=="
-    equipment: [dumbbell]
   - name: "Deadbug Press"
     id: deadbug-press
     category: conditioning
@@ -2992,7 +2848,6 @@ exercises:
     id: endless-rope-horizontal-vertical
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [endless-rope]
   - name: "Fowler To Faris Throw"
     id: fowler-to-faris-throw
     category: conditioning
@@ -3001,7 +2856,6 @@ exercises:
     id: front-loaded-sandbag-pickup-to-press
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [sandbag]
   - name: "Goblet Squats"
     id: goblet-squats
     category: conditioning
@@ -3028,14 +2882,12 @@ exercises:
     group: "Plug-and-Play"
     urls:
       - "https://www.instagram.com/share/reel/BBy-ikggC5?fhid=QkJ5LWlrZ2dDNQ"
-    equipment: [kettlebell]
   - name: "Kettlebell Variety"
     id: kettlebell-variety
     category: conditioning
     group: "Plug-and-Play"
     urls:
       - "https://www.instagram.com/reel/DLbT2_0Js0-/?igsh=MTJmMHg3ajMwamhlMA=="
-    equipment: [kettlebell]
   - name: "Kneeling Press"
     id: kneeling-press
     category: conditioning
@@ -3052,30 +2904,25 @@ exercises:
     id: lm-curtsy-lunge-w-knee-drive
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [landmine]
   - name: "LM Jump Squat Clean To Thruster"
     id: lm-jump-squat-clean-to-thruster
     category: conditioning
     group: "Plug-and-Play"
     urls:
       - "https://www.instagram.com/reel/DPZVMtiiA9p/?igsh=d2V3eW55NGRnbTU1"
-    equipment: [landmine]
   - name: "LM Punch"
     id: lm-punch
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [landmine]
   - name: "LM Thruster To Calf Raise"
     id: lm-thruster-to-calf-raise
     category: conditioning
     group: "Plug-and-Play"
     note: "Instagram"
-    equipment: [landmine]
   - name: "LM Zercher Rebounds"
     id: lm-zercher-rebounds
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [landmine]
   - name: "Loaded Walking Lunges"
     id: loaded-walking-lunges
     category: conditioning
@@ -3126,7 +2973,6 @@ exercises:
     id: push-press-db-bb-etc
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [barbell, dumbbell]
   - name: "Reverse Crunches"
     id: reverse-crunches
     category: conditioning
@@ -3135,7 +2981,6 @@ exercises:
     id: rotational-med-ball-slam
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [med-ball]
   - name: "Renegade Row"
     id: renegade-row
     category: conditioning
@@ -3160,7 +3005,6 @@ exercises:
     id: sandbag-pickup-to-press
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [sandbag]
   - name: "SA Rack Tall Kneel To Stand"
     id: sa-rack-tall-kneel-to-stand
     category: conditioning
@@ -3189,7 +3033,6 @@ exercises:
     id: sled-push-pull-lateral
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [sled]
   - name: "Split Stance Press"
     id: split-stance-press
     category: conditioning
@@ -3200,7 +3043,6 @@ exercises:
     id: sprint-bike-row-run-sled-resisted
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [bike, sled]
   - name: "Sprinter Jumps"
     id: sprinter-jumps
     category: conditioning
@@ -3215,7 +3057,6 @@ exercises:
     id: stairclimber
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [stairclimber]
   - name: "Tuck Jumps"
     id: tuck-jumps
     category: conditioning
@@ -3228,7 +3069,6 @@ exercises:
     id: vertical-mb-slam
     category: conditioning
     group: "Plug-and-Play"
-    equipment: [med-ball]
   - name: "Weighted Step Ups"
     id: weighted-step-ups
     category: conditioning

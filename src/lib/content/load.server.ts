@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Content, Exercise, Program } from './types';
+import { bodyPartFor } from './body';
 import { buildResolver } from './resolve';
 import { parseBlock, parseExercises, parseProgram } from './parse';
 
@@ -8,7 +9,7 @@ import { parseBlock, parseExercises, parseProgram } from './parse';
  * Collapse same-id entries into a single library atom (FLOWS §1.2 wants
  * zero duplicate ids; the substrate cross-lists a move across sheet groups
  * under one id — see TAXONOMY.md "Dedup"). Same id ⇒ same identity, so we
- * keep the first occurrence and union its link/equipment arrays so nothing
+ * keep the first occurrence and union its link/modifier arrays so nothing
  * is lost. Returns the deduped list plus the ids that were merged (warned,
  * not fatal — the corpus normalizes over time). A genuine collision of two
  * DIFFERENT moves on one slug would show here as a merged id to review.
@@ -27,7 +28,6 @@ function dedupeExercises(list: Exercise[]): { exercises: Exercise[]; merged: str
 		}
 		merged.add(ex.id);
 		first.urls = union(first.urls, ex.urls);
-		first.equipment = union(first.equipment, ex.equipment);
 		first.modifiers = union(first.modifiers, ex.modifiers);
 	}
 	return { exercises: [...byId.values()], merged: [...merged] };
@@ -75,6 +75,9 @@ export function loadContent(): Content {
 		...parseExercises(readOptional('skills.yaml'))
 	];
 	const { exercises, merged } = dedupeExercises(rawExercises);
+	// Normalize the sheet's group/subgroup labels onto one body-part
+	// vocabulary so the library can be grouped by it (body.ts).
+	for (const ex of exercises) ex.body = bodyPartFor(ex);
 	const warnings: string[] = [];
 	if (merged.length) {
 		warnings.push(`Merged ${merged.length} cross-listed exercise id(s): ${merged.join(', ')}`);

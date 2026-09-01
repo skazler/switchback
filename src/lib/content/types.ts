@@ -3,6 +3,8 @@
 //   blocks/*.md     — molecules  (reusable literal or menu chunks)
 //   programs/*.md   — compositions (one file per program)
 
+import type { BodyPart } from './body';
+
 /** Ski-trail difficulty marker — intensity encoding (DESIGN.md). */
 export type Intensity = 'green' | 'blue' | 'black' | 'double-black';
 
@@ -14,8 +16,9 @@ export interface Exercise {
 	subgroup?: string;
 	note?: string;
 	urls?: string[];
-	equipment?: string[];
 	modifiers?: string[];
+	/** normalized body part — derived from group/subgroup at load (body.ts) */
+	body?: BodyPart;
 }
 
 export interface Block {
