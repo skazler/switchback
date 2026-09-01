@@ -66,7 +66,14 @@ let cache: Content | null = null;
  * on the fatal conditions in §1.2. Unresolved names are warnings only.
  */
 export function loadContent(): Content {
-	if (cache) return cache;
+	// Cached for the life of the process, which is right at build/prerender
+	// time: loadContent() runs once per route over a repo that cannot change
+	// under it. In dev the substrate is exactly what's being *edited*, and
+	// Vite has no way to invalidate this module when a program changes — the
+	// .md/.yaml are read through node:fs, never imported, so they aren't in
+	// its graph. Cache there and the server serves the corpus as it was when
+	// it booted until someone restarts it. Re-read every call instead.
+	if (cache && !import.meta.env.DEV) return cache;
 
 	// Atoms — the exercise library plus the sport-skill compilations
 	// (skills.yaml: snowboard / hockey), merged into one deduped catalog.
