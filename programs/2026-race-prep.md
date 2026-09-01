@@ -1,6 +1,6 @@
 ---
 id: 2026-race-prep
-title: "2026 Race Prep — Climbing Foundations & Prehab"
+title: "2026 Race Prep — Conditioning & Prehab"
 status: active
 purpose: Race prep
 level: build
@@ -14,13 +14,15 @@ phases:
   - {label: taper, weeks: [19, 20], load: 2, summit: true}
 ---
 
-# 2026 Race Prep — Climbing Foundations & Prehab
+# 2026 Race Prep — Conditioning & Prehab
 
-> Build to race day on a base of climbing and prehab-focused lifting.
+> Build to race day on a base of circuit conditioning and prehab-focused lifting.
 
 **Target** [Reveille Peak Ranch — 20-mile loop](/summits#reveille-peak-ranch), 14 NOV 2026
 
-A weekly microcycle: climb Mon/Wed/Fri, prehab lift Tue/Thu, the Zone 2
+A weekly microcycle: conditioning circuits Mon/Fri — upper-biased Monday,
+lower-biased Friday, each opened by a 30-minute bike — prehab lift Tue/Thu,
+Wednesday left open for the week's midweek intensity or R&R, the Zone 2
 endurance ride Saturday, a second ride Sunday — bike park most weeks, but
 tempo or an easy spin when the week calls for it (see the by-week table).
 
@@ -55,11 +57,21 @@ tempo or an easy spin when the week calls for it (see the by-week table).
 | 19 | taper | 90 min Z2 + 4×2 race pace | 40 min easy (no bike park) | — |
 | 20 | taper | **RACE (14 NOV)** | **celebrate!** | 25 min easy + 3×1 race pace (wk of) |
 
-## Monday — R&R / easy climb  <!-- m R&R / Climb -->
+## Monday — Upper conditioning  <!-- m Upper Conditioning -->
+
+Bike to open the legs, then five rounds of the circuit — upper-pull biased,
+so it doesn't tax Tuesday's lower lift. Run the circuit continuous: no rest
+between movements, and only as much between rounds as it takes to start the
+next one. Finish with one accessory of choice.
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
-|  | Easy climb or rest |  |  |  | listen to the body; unstructured |
+| Warm-up | Bike | 1 | 30 min |  | easy–moderate, Z2 |
+| Circuit ×5 | Pullups | 5 | AMRAP |  | to failure each round |
+| Circuit ×5 | Kettlebell Swings | 5 | 20 |  | russian, hips not shoulders |
+| Circuit ×5 | Burpees | 5 | 10 |  |  |
+| Circuit ×5 | TRX Y-raises | 5 | 10 |  | walk the feet in to add load |
+| Accessory | Lift choice | 2–3 | 8–12 |  | choice · anything upper or full-body |
 
 ## Tuesday — Lower lift  <!-- t Lower Lift -->
 
@@ -85,11 +97,16 @@ Alternates A / B by week; lateral raises added each session.
 | Core | MB throws |  |  |  |  |
 | | Hollow body hold prog |  |  |  | progression |
 
-## Wednesday — Climb (+ intensity)  <!-- w Climb -->
+## Wednesday — Optional / R&R  <!-- w Optional / R&R -->
+
+The float day. Take the week's midweek intensity here when one is listed,
+otherwise pick something off the library — climb, skills, prehab — or take
+the rest. Unstructured on purpose.
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
-|  | Hangboard warm-up + climbing |  |  |  | swapped for the week’s midweek intensity when one is listed — see progression |
+|  | Optional session choice |  |  |  | choice · climb, skills, prehab — or R&R |
+|  | Midweek intensity |  |  |  | takes priority when the week lists one — see progression |
 
 ## Thursday — Upper lift  <!-- th Upper Lift -->
 
@@ -118,11 +135,20 @@ Alternates A / B by week; lateral raises each session.
 | | Rear delt choice |  |  |  | choice |
 | | Front lever prog |  |  |  | progression |
 
-## Friday — Climb + laterals  <!-- f Climb -->
+## Friday — Lower conditioning  <!-- f Lower Conditioning -->
+
+Monday's shape, rotated onto the legs — hinge, squat, jump, then one
+core/upper piece to close the round. Continuous, same as Monday: no rest
+between movements. Keep it short of a grinder; Saturday is the long ride.
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
-|  | Hangboard warm-up + climbing |  |  |  | + lateral raises |
+| Warm-up | Bike | 1 | 30 min |  | easy–moderate, Z2 |
+| Circuit ×5 | Kettlebell Swings | 5 | 20 |  | russian |
+| Circuit ×5 | Goblet Squats | 5 | 10 |  |  |
+| Circuit ×5 | Squat Jumps | 5 | 10 |  | land quiet |
+| Circuit ×5 | Renegade Row | 5 | 10 |  | 5/side; hips square — core as much as pull |
+| Accessory | Upper accessory lift choice | 2–3 | 8–12 |  | choice · anything upper or full-body |
 
 ## Saturday — Endurance ride  <!-- sa Endurance (Z2) -->
 
