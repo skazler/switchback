@@ -28,18 +28,99 @@ export function isChoice(name: string): boolean {
 	return /\bchoice\b/i.test(name);
 }
 
-/** Best library query for a choice cell: the most specific non-generic word. */
+// A choice cell that names a body part ("LOWER ACCESSORY LIFT CHOICE",
+// "QUAD EXERCISE CHOICE") can filter the library exactly instead of running a
+// text search — so map the words it uses onto the body-part vocabulary first.
+// Keys are what programs actually write; values are BODY_PARTS members.
+const BODY_WORDS: Record<string, string> = {
+	upper: 'upper body',
+	lower: 'lower body',
+	chest: 'chest',
+	back: 'back',
+	lat: 'back',
+	lats: 'back',
+	shoulder: 'shoulders',
+	shoulders: 'shoulders',
+	delt: 'shoulders',
+	delts: 'shoulders',
+	arm: 'arms',
+	arms: 'arms',
+	bicep: 'arms',
+	biceps: 'arms',
+	tricep: 'arms',
+	triceps: 'arms',
+	wrist: 'wrists & forearms',
+	wrists: 'wrists & forearms',
+	forearm: 'wrists & forearms',
+	forearms: 'wrists & forearms',
+	core: 'core',
+	abs: 'core',
+	hip: 'hips & glutes',
+	hips: 'hips & glutes',
+	glute: 'hips & glutes',
+	glutes: 'hips & glutes',
+	quad: 'quads',
+	quads: 'quads',
+	hamstring: 'hamstrings',
+	hamstrings: 'hamstrings',
+	adductor: 'adductors',
+	adductors: 'adductors',
+	groin: 'adductors',
+	calf: 'calves & ankles',
+	calves: 'calves & ankles',
+	ankle: 'calves & ankles',
+	ankles: 'calves & ankles'
+};
+
+const CHOICE_STOP = new Set([
+	'choice', 'exercise', 'exercises', 'movement', 'work', 'the', 'a', 'of', 'and',
+	'focus', 'optional', 'accessory', 'lift', 'lifts', 'session', 'anything'
+]);
+
+/** Best library link for a choice cell — the body part it names, or failing
+ *  that a text search on its most specific non-generic word. */
 export function choiceHref(row: SessionRow): string {
-	const stop = new Set([
-		'choice', 'exercise', 'exercises', 'movement', 'work', 'the', 'a', 'of', 'and', 'focus', 'optional'
-	]);
 	const words = displayName(row.name)
 		.toLowerCase()
 		.replace(/[*()/&]/g, ' ')
 		.split(/\s+/)
-		.filter((w) => w && /^[a-z]/.test(w) && !stop.has(w));
-	const term = words[0] ?? (row.group ? stripMd(row.group).toLowerCase().split(/\s+/)[0] : '');
+		.filter((w) => w && /^[a-z]/.test(w));
+
+	const groupWords = row.group
+		? stripMd(row.group).toLowerCase().replace(/[*()/&]/g, ' ').split(/\s+/)
+		: [];
+
+	for (const w of [...words, ...groupWords]) {
+		const body = BODY_WORDS[w];
+		if (body) return `/library?body=${encodeURIComponent(body)}`;
+	}
+
+	// The group cell gets the same stop-word treatment as the name: falling
+	// back to it raw turned "Accessory | Lift choice" into ?q=accessory,
+	// which searches for the word "accessory" rather than showing the
+	// accessories. No specific term left ⇒ open the whole library.
+	const term = [...words, ...groupWords].find((w) => !CHOICE_STOP.has(w)) ?? '';
 	return term ? `/library?q=${encodeURIComponent(term)}` : '/library';
+}
+
+/**
+ * The Block label each row of a *session* belongs to, in order.
+ *
+ * A program table writes the Block cell once and leaves it blank down the
+ * rest of the block, so a blank carries the label forward — the same rule
+ * `toRenderItems` renders subheads by. A row added mid-session with no label
+ * is a bottom-added extra: it stands on its own rather than being absorbed
+ * into whichever block happened to come last.
+ */
+export function blockLabels(rows: { group?: string; extra?: boolean }[]): string[] {
+	const out: string[] = [];
+	let cur = '';
+	for (const r of rows) {
+		if (r.group) cur = r.group;
+		else if (r.extra) cur = '';
+		out.push(cur);
+	}
+	return out;
 }
 
 /**

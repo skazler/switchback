@@ -4,6 +4,8 @@
 	import { page } from '$app/state';
 	import { ulid } from '$lib/client/ulid';
 	import { inferFormat, buildPlanned } from '$lib/client/session';
+	import { blockLabels, isChoice } from '$lib/session-display';
+	import ExercisePicker from '$lib/components/ExercisePicker.svelte';
 	import { durationInputValue, formatDistance, formatDuration, parseDistance, parseDuration } from '$lib/set-input';
 	import { resolveToday, resolvePlan } from '$lib/today';
 	import type { ProgramDay } from '$lib/content/types';
@@ -43,8 +45,13 @@
 	let sessionNotes = $state('');
 	let sessionDate = $state('');
 	let planSuggestion = $state<{ day: ProgramDay; week: number } | null>(null);
-	let addingExercise = $state(false);
-	let newExName = $state('');
+	/** which block the "add exercise" picker is open for: a group label, or
+	 *  '' for the ungrouped tail. null = closed. */
+	let addingTo = $state<string | null>(null);
+	/** key of the "… choice" row whose picker is open, '' if none */
+	let pickingKey = $state('');
+	/** key of the row whose delete is waiting on a confirm (it has sets) */
+	let confirmDeleteKey = $state('');
 
 	const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 	const keyOf = (p: PlannedExercise) => p.exercise_id || `x-${slug(p.name)}`;
@@ -54,6 +61,23 @@
 	const visible = $derived(planned.filter((p) => !p.week || !weeks.length || p.week === selectedWeek));
 	const activeExercise = $derived(visible.find((p) => keyOf(p) === activeKey) ?? visible[0]);
 	const activeFmt = $derived<LogFormat>(activeExercise ? (fmtOverride[keyOf(activeExercise)] ?? activeExercise.format ?? 'strength') : 'strength');
+
+	/** Block label per planned row, blanks carried forward (session-display). */
+	const blockOf = $derived(blockLabels(planned));
+
+	// Rows render under one band per block, which also gives each circuit
+	// somewhere to hang its own "add" button.
+	const sections = $derived.by(() => {
+		const out: { group: string; items: PlannedExercise[] }[] = [];
+		planned.forEach((p, i) => {
+			if (p.week && weeks.length && p.week !== selectedWeek) return;
+			const g = blockOf[i];
+			const last = out[out.length - 1];
+			if (last && last.group === g) last.items.push(p);
+			else out.push({ group: g, items: [p] });
+		});
+		return out;
+	});
 
 	const setsByKey = $derived.by(() => {
 		const m = new Map<string, LocalSet[]>();
@@ -177,6 +201,15 @@
 			if (last.grade) grade = last.grade;
 		}
 		if (!reps) reps = (activeExercise.reps ?? '').replace(/[^0-9].*$/, '');
+		// A timed prescription ("30 min" on the warm-up bike) is a real
+		// default, not a placeholder — put it in the field so it's one tap to
+		// log and still editable when the ride ran long. Only when there's no
+		// last-set value to carry forward, same rule as reps above.
+		const fmt = fmtOverride[keyOf(activeExercise)] ?? activeExercise.format ?? 'strength';
+		if (!duration && (fmt === 'ride' || fmt === 'time')) {
+			const planned = parseDuration(activeExercise.reps ?? '');
+			if (planned != null) duration = durationInputValue(planned);
+		}
 	}
 
 	async function selectExercise(p: PlannedExercise) {
@@ -229,24 +262,104 @@
 		syncNow();
 	}
 
-	async function addExercise() {
+	/**
+	 * Add a move to the session. `group` places it inside that block — it
+	 * lands after the block's last row rather than at the bottom of the
+	 * screen, so a movement added to a circuit reads as part of the circuit.
+	 */
+	async function addExercise(choice: { name: string; entry?: { id: string } }, group = '') {
 		if (!session) return;
-		const name = newExName.trim();
-		if (!name) return;
-		const match = data.library.find((e) => e.name.toLowerCase() === name.toLowerCase());
 		const p: PlannedExercise = {
-			exercise_id: match?.id ?? '',
-			name: match?.name ?? name,
-			format: inferFormat(match?.name ?? name, session.day ?? ''),
+			exercise_id: choice.entry?.id ?? '',
+			name: choice.name,
+			group: group || undefined,
+			// Inherit the shown week, or a row added to Week A vanishes the
+			// moment the toggle is on Week B.
+			week: weeks.length ? selectedWeek : undefined,
+			format: inferFormat(choice.name, session.day ?? ''),
 			extra: true
 		};
 		const snap = $state.snapshot(session);
-		const updated = { ...snap, planned: [...snap.planned, p], synced: 0 as const };
+		const planned = [...snap.planned];
+		let at = planned.length;
+		if (group) {
+			// End of the block as it *renders* — blockOf, not the raw Block
+			// cell, or the row lands after the block's first line instead of
+			// its last.
+			const lastOfBlock = blockOf.findLastIndex((b) => b === group);
+			if (lastOfBlock >= 0) at = lastOfBlock + 1;
+		}
+		planned.splice(at, 0, p);
+		const updated = { ...snap, planned, synced: 0 as const };
 		await putSession(updated);
 		session = updated;
-		newExName = '';
-		addingExercise = false;
+		addingTo = null;
 		activeKey = keyOf(p);
+		await prefill();
+	}
+
+	/**
+	 * Drop a move from the session — a circuit movement you're skipping, a
+	 * planned lift the rack was busy for, a mis-added extra. Sets already
+	 * logged against it go too (they'd be unreachable otherwise), so that
+	 * case takes a second tap to confirm. A key shared with another planned
+	 * row keeps its sets: they belong to that row as much as this one.
+	 */
+	async function removeExercise(p: PlannedExercise) {
+		if (!session) return;
+		const at = planned.indexOf(p);
+		if (at < 0) return;
+		const key = keyOf(p);
+		const logged = setsByKey.get(key) ?? [];
+		if (logged.length && confirmDeleteKey !== key) {
+			confirmDeleteKey = key;
+			return;
+		}
+		const sharesKey = planned.some((x, i) => i !== at && keyOf(x) === key);
+		if (!sharesKey) for (const d of logged) await removeSet(d.id);
+
+		const snap = $state.snapshot(session);
+		const remaining = snap.planned.filter((_, i) => i !== at);
+		const updated = { ...snap, planned: remaining, synced: 0 as const };
+		await putSession(updated);
+		session = updated;
+		sets = await setsForSession(updated.id);
+		confirmDeleteKey = '';
+		if (activeKey === key) {
+			const next = remaining.find((x) => !x.week || !weeks.length || x.week === selectedWeek);
+			activeKey = next ? keyOf(next) : '';
+		}
+		await prefill();
+		syncNow();
+	}
+
+	/**
+	 * Resolve a "… choice" row (ACCESSORY LIFT CHOICE, QUAD EXERCISE CHOICE)
+	 * into the move you actually did. The prescription — group, sets, reps,
+	 * rest — carries over; the row it satisfies is kept in `choiceFor` so the
+	 * log still says what the plan asked for. Only offered before the first
+	 * set is logged against the row, so nothing can be orphaned by a re-pick.
+	 */
+	async function chooseFor(target: PlannedExercise, choice: { name: string; entry?: { id: string } }) {
+		if (!session) return;
+		const oldKey = keyOf(target);
+		const snap = $state.snapshot(session);
+		const resolved: PlannedExercise = {
+			...target,
+			exercise_id: choice.entry?.id ?? '',
+			name: choice.name,
+			choiceFor: target.choiceFor ?? target.name,
+			format: inferFormat(choice.name, session.day ?? '')
+		};
+		const updated = {
+			...snap,
+			planned: snap.planned.map((p) => (keyOf(p) === oldKey ? resolved : p)),
+			synced: 0 as const
+		};
+		await putSession(updated);
+		session = updated;
+		pickingKey = '';
+		activeKey = keyOf(resolved);
 		await prefill();
 	}
 
@@ -391,79 +504,120 @@
 		</div>
 	{/if}
 
-	<ul class="ex-list">
-		{#each visible as p (keyOf(p))}
-			{@const key = keyOf(p)}
-			{@const done = setsByKey.get(key) ?? []}
-			<li class="ex" class:active={key === activeKey}>
-				<button class="ex-head" onclick={() => selectExercise(p)}>
-					<div class="ex-name">
-						{#if p.extra}<span class="grp microlabel extra">extra</span>{:else if p.group}<span class="grp microlabel">{p.group}</span>{/if}
-						<span class="nm">{p.name}</span>
-					</div>
-					<div class="presc microlabel">{[p.sets && `${p.sets}×`, p.reps].filter(Boolean).join(' ')}</div>
-				</button>
-
-				{#if done.length}
-					<div class="pips">
-						{#each done as d (d.id)}
-							<span class="pip">{pip(d)}<button class="x" aria-label="Delete" onclick={() => del(d.id)}>×</button></span>
-						{/each}
-					</div>
-				{/if}
-
-				{#if key === activeKey}
-					<div class="entry">
-						<div class="fields">
-							{#if activeFmt === 'strength'}
-								<label>weight<input inputmode="decimal" bind:value={weight} /></label>
-								<span class="x2">×</span>
-								<label>reps<input inputmode="numeric" bind:value={reps} /></label>
-							{:else if activeFmt === 'ride'}
-								<label>time<input inputmode="text" placeholder="1:30" bind:value={duration} /></label>
-								<label>miles<input inputmode="decimal" placeholder="12.4" bind:value={distance} /></label>
-							{:else if activeFmt === 'climb'}
-								<label>grade<input class="grade" bind:value={grade} placeholder="V4" /></label>
-								<button class="sent" class:on={sent} onclick={() => (sent = !sent)}>{sent ? '✓ sent' : 'attempt'}</button>
-							{:else}
-								<label>time<input inputmode="text" placeholder="45" bind:value={duration} /></label>
-							{/if}
-							<button class="log" onclick={logSet}>Log</button>
-						</div>
-						{#if entryError}<p class="entryerr">{entryError}</p>{/if}
-						<button class="fmt-toggle microlabel" onclick={() => (showFormats = !showFormats)}>
-							{FORMATS.find((f) => f.id === activeFmt)?.label ?? activeFmt} ▾
-						</button>
-						{#if showFormats}
-							<div class="fmts">
-								{#each FORMATS as f}
-									<button class="fmt" class:on={activeFmt === f.id} onclick={() => setFormat(f.id)}>{f.label}</button>
-								{/each}
+	{#each sections as sec, si (`${si}/${sec.group}`)}
+		{#if sec.group}<p class="blockband microlabel">{sec.group}</p>{/if}
+		<ul class="ex-list">
+			{#each sec.items as p (keyOf(p))}
+				{@const key = keyOf(p)}
+				{@const done = setsByKey.get(key) ?? []}
+				<li class="ex" class:active={key === activeKey}>
+					<div class="ex-head">
+						<button class="ex-select" onclick={() => selectExercise(p)}>
+							<div class="ex-name">
+								{#if p.extra}<span class="grp microlabel extra">added</span>{/if}
+								<span class="nm">{p.name}</span>
+								{#if p.choiceFor}<span class="grp microlabel forchoice">for {p.choiceFor}</span>{/if}
 							</div>
-						{/if}
+							<div class="presc microlabel">{[p.sets && `${p.sets}×`, p.reps].filter(Boolean).join(' ')}</div>
+						</button>
+						<button class="ex-del" aria-label="Remove {p.name}" onclick={() => removeExercise(p)}>×</button>
 					</div>
-				{/if}
-			</li>
-		{/each}
-	</ul>
 
-	{#if addingExercise}
+					{#if confirmDeleteKey === key}
+						<div class="confirmdel">
+							<span>Remove this and its {done.length} logged set{done.length === 1 ? '' : 's'}?</span>
+							<button class="del-yes" onclick={() => removeExercise(p)}>Remove</button>
+							<button class="del-no" onclick={() => (confirmDeleteKey = '')}>Keep</button>
+						</div>
+					{/if}
+
+					{#if isChoice(p.name) && !done.length}
+						{#if pickingKey === key}
+							<div class="pickwrap">
+								<ExercisePicker
+									library={data.library}
+									placeholder="Search by name, category, body part…"
+									onpick={(c) => chooseFor(p, c)}
+									oncancel={() => (pickingKey = '')}
+								/>
+							</div>
+						{:else}
+							<button class="choose" onclick={() => (pickingKey = key)}>Choose from library →</button>
+						{/if}
+					{/if}
+
+					{#if done.length}
+						<div class="pips">
+							{#each done as d (d.id)}
+								<span class="pip">{pip(d)}<button class="x" aria-label="Delete" onclick={() => del(d.id)}>×</button></span>
+							{/each}
+						</div>
+					{/if}
+
+					{#if key === activeKey}
+						<div class="entry">
+							<div class="fields">
+								{#if activeFmt === 'strength'}
+									<label>weight<input inputmode="decimal" bind:value={weight} /></label>
+									<span class="x2">×</span>
+									<label>reps<input inputmode="numeric" bind:value={reps} /></label>
+								{:else if activeFmt === 'ride'}
+									<label>time<input inputmode="text" placeholder="1:30" bind:value={duration} /></label>
+									<label>miles<input inputmode="decimal" placeholder="12.4" bind:value={distance} /></label>
+								{:else if activeFmt === 'climb'}
+									<label>grade<input class="grade" bind:value={grade} placeholder="V4" /></label>
+									<button class="sent" class:on={sent} onclick={() => (sent = !sent)}>{sent ? '✓ sent' : 'attempt'}</button>
+								{:else}
+									<label>time<input inputmode="text" placeholder="45" bind:value={duration} /></label>
+								{/if}
+								<button class="log" onclick={logSet}>Log</button>
+							</div>
+							{#if entryError}<p class="entryerr">{entryError}</p>{/if}
+							<button class="fmt-toggle microlabel" onclick={() => (showFormats = !showFormats)}>
+								{FORMATS.find((f) => f.id === activeFmt)?.label ?? activeFmt} ▾
+							</button>
+							{#if showFormats}
+								<div class="fmts">
+									{#each FORMATS as f}
+										<button class="fmt" class:on={activeFmt === f.id} onclick={() => setFormat(f.id)}>{f.label}</button>
+									{/each}
+								</div>
+							{/if}
+						</div>
+					{/if}
+				</li>
+			{/each}
+		</ul>
+
+		{#if sec.group}
+			{#if addingTo === sec.group}
+				<div class="addex">
+					<ExercisePicker
+						library={data.library}
+						placeholder="Search by name, category, body part…"
+						onpick={(c) => addExercise(c, sec.group)}
+						oncancel={() => (addingTo = null)}
+					/>
+				</div>
+			{:else}
+				<button class="add-ex inblock" onclick={() => (addingTo = sec.group)}>
+					+ Add to {sec.group}
+				</button>
+			{/if}
+		{/if}
+	{/each}
+
+	{#if addingTo === ''}
 		<div class="addex">
-			<input
-				class="addex-input"
-				list="library-options"
-				bind:value={newExName}
-				placeholder="Exercise name…"
-				onkeydown={(e) => e.key === 'Enter' && addExercise()}
+			<ExercisePicker
+				library={data.library}
+				placeholder="Search by name, category, body part…"
+				onpick={(c) => addExercise(c)}
+				oncancel={() => (addingTo = null)}
 			/>
-			<datalist id="library-options">
-				{#each data.library as e}<option value={e.name}></option>{/each}
-			</datalist>
-			<button class="addex-go" onclick={addExercise}>Add</button>
-			<button class="btn-ghost" onclick={() => ((addingExercise = false), (newExName = ''))}>Cancel</button>
 		</div>
 	{:else}
-		<button class="add-ex" onclick={() => (addingExercise = true)}>+ Add exercise not on plan</button>
+		<button class="add-ex" onclick={() => (addingTo = '')}>+ Add exercise not on plan</button>
 	{/if}
 
 	<label class="notes-field">
@@ -565,6 +719,10 @@
 		border-color: var(--blaze);
 		color: var(--on-blaze, var(--field));
 	}
+	.blockband {
+		margin: 16px 0 6px;
+		color: var(--blaze);
+	}
 	.ex-list {
 		list-style: none;
 		margin: 0;
@@ -582,7 +740,12 @@
 		border-left-color: var(--blaze);
 	}
 	.ex-head {
-		width: 100%;
+		display: flex;
+		align-items: stretch;
+	}
+	.ex-select {
+		flex: 1;
+		min-width: 0;
 		background: none;
 		border: none;
 		color: inherit;
@@ -593,6 +756,41 @@
 		gap: 12px;
 		padding: 10px 14px;
 		cursor: pointer;
+	}
+	.ex-del {
+		flex: 0 0 auto;
+		width: var(--tap);
+		background: none;
+		border: none;
+		color: var(--muted);
+		font-size: 1.3rem;
+		line-height: 1;
+		cursor: pointer;
+	}
+	.ex-del:hover {
+		color: var(--blaze);
+	}
+	.confirmdel {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+		padding: 0 14px 10px;
+		font-size: 0.85rem;
+		color: var(--muted);
+	}
+	.confirmdel button {
+		background: none;
+		border: 1px solid var(--hairline);
+		color: var(--ink);
+		font-family: var(--font-body);
+		font-size: 0.85rem;
+		padding: 6px 12px;
+		cursor: pointer;
+	}
+	.del-yes {
+		border-color: var(--blaze) !important;
+		color: var(--blaze) !important;
 	}
 	.grp {
 		color: var(--muted);
@@ -616,32 +814,35 @@
 		border-color: var(--blaze);
 		color: var(--blaze);
 	}
+	.add-ex.inblock {
+		margin-top: 2px;
+		font-size: 0.8rem;
+		padding: 8px;
+	}
 	.addex {
 		margin-top: 10px;
-		display: flex;
-		gap: 8px;
 	}
-	.addex-input {
-		flex: 1;
-		background: var(--field);
-		border: 1px solid var(--hairline);
-		color: var(--ink);
+	.choose {
+		display: block;
+		width: calc(100% - 28px);
+		margin: 0 14px 12px;
+		background: none;
+		border: 1px dashed var(--blaze);
+		color: var(--blaze);
 		font-family: var(--font-body);
-		font-size: 0.95rem;
-		padding: 10px 12px;
-	}
-	.addex-input:focus {
-		border-color: var(--blaze);
-		outline: none;
-	}
-	.addex-go {
-		background: var(--blaze);
-		color: var(--field);
-		border: none;
-		font-family: var(--font-display);
-		font-weight: 600;
-		padding: 0 16px;
+		font-size: 0.85rem;
+		padding: 9px;
 		cursor: pointer;
+	}
+	.choose:hover {
+		background: var(--field);
+	}
+	.pickwrap {
+		padding: 0 14px 12px;
+	}
+	.grp.forchoice {
+		color: var(--muted);
+		text-transform: none;
 	}
 	.nm {
 		font-family: var(--font-display);

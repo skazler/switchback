@@ -12,6 +12,7 @@ export interface PlannedExercise {
 	rest?: string;
 	notes?: string;
 	week?: string; // "A" / "B" when the day has Week dividers
+	choiceFor?: string; // the "… choice" row this was picked to satisfy
 	format?: LogFormat; // inferred logging format
 	extra?: boolean; // added mid-session, not part of the day's prescription
 }
