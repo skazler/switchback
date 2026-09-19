@@ -54,7 +54,31 @@ sw.addEventListener('fetch', (event) => {
 		return;
 	}
 
-	// Stale-while-revalidate for navigations and everything else.
+	// Network-first for pages and the data payloads behind them. A deploy
+	// rewrites these, and they carry cross-references to OTHER urls: serving a
+	// stale /route hands back a days outline whose slugs the new build has
+	// renamed away (m-r-r-climb → m-upper-conditioning), so every link in it
+	// 404s. Keep the last good copy only as the offline fallback.
+	const isPage = request.mode === 'navigate';
+	const isData = url.pathname.endsWith('/__data.json');
+	if (isPage || isData) {
+		event.respondWith(
+			caches.open(CACHE).then(async (cache) => {
+				try {
+					const response = await fetch(request);
+					if (response.ok) cache.put(request, response.clone());
+					return response;
+				} catch {
+					// Offline — the last copy we hold beats nothing.
+					return (await cache.match(request)) ?? Response.error();
+				}
+			})
+		);
+		return;
+	}
+
+	// Stale-while-revalidate for everything else (hero photos and friends —
+	// content-addressed enough that a build behind does no harm).
 	event.respondWith(
 		caches.open(CACHE).then(async (cache) => {
 			const cached = await cache.match(request);
@@ -63,7 +87,7 @@ sw.addEventListener('fetch', (event) => {
 					if (response.ok) cache.put(request, response.clone());
 					return response;
 				})
-				.catch(() => cached);
+				.catch(() => cached ?? Response.error());
 			return cached ?? network;
 		})
 	);
