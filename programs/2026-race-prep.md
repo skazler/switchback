@@ -117,6 +117,7 @@ Alternates A / B by week; lateral raises each session.
 |  | Week A |  |  |  |  |
 | Prehab | Scapula |  |  |  |  |
 | | Wrists |  |  |  |  |
+| | Ulnar deviation raises |  |  |  |  |
 | | Half-kneeling windmill |  |  |  |  |
 | Push | (DB) bench — deep |  |  |  | deep range |
 | | Drop-explode pushups |  |  |  |  |
@@ -126,6 +127,7 @@ Alternates A / B by week; lateral raises each session.
 | | Rear delt choice |  |  |  | choice |
 |  | Week B |  |  |  |  |
 | Prehab | Wrists |  |  |  |  |
+| | Ulnar deviation raises |  |  |  |  |
 | | Scapula |  |  |  |  |
 | | Half-kneeling windmill |  |  |  |  |
 | Pull | Pullups |  |  |  |  |
@@ -156,8 +158,12 @@ between movements. Keep it short of a grinder; Saturday is the long ride.
 |---|---|---|---|---|---|
 |  | Zone 2 endurance ride |  |  |  | duration ramps by week — see progression |
 
-## Sunday — Bike park / skills  <!-- su Bike Park / Skills -->
+## Sunday — Second ride  <!-- su Second Ride -->
+
+The week's second ride, and its character changes with the block: bike park
+most weeks, tempo intervals when the by-week table lists them, an easy spin
+in a down week. Read the Sunday column, not the day name.
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
-|  | Bike park / skills |  |  |  | varies by week — see progression |
+|  | Second ride |  |  |  | varies by week — see progression |

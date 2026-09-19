@@ -2260,6 +2260,11 @@ exercises:
     subgroup: "Wrist"
     urls:
       - "https://www.instagram.com/p/DPB4fY8DWRa/?img_index=3&igsh=MTVnN3lkNnNnY3NkbQ=="
+  - name: "Ulnar deviation raises"
+    id: ulnar-deviation-raises
+    category: prehab-mobility
+    group: "Prehab/Mobility/Activation"
+    subgroup: "Wrist"
   - name: "45deg oblique crunches"
     id: 45deg-oblique-crunches
     category: strength-hypertrophy
