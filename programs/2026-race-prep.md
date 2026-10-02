@@ -20,8 +20,8 @@ phases:
 
 **Target** [Reveille Peak Ranch — 20-mile loop](/summits#reveille-peak-ranch), 14 NOV 2026
 
-A weekly microcycle: conditioning circuits Mon/Fri — upper-biased Monday,
-lower-biased Friday, each opened by a 30-minute bike — prehab lift Tue/Thu,
+A weekly microcycle: conditioning circuits Mon/Thu — upper-biased Monday,
+lower-biased Thursday, each opened by a 30-minute bike — prehab lift Tue/Fri,
 Wednesday left open for the week's midweek intensity or R&R, the Zone 2
 endurance ride Saturday, a second ride Sunday — bike park most weeks, but
 tempo or an easy spin when the week calls for it (see the by-week table).
@@ -108,7 +108,23 @@ the rest. Unstructured on purpose.
 |  | Optional session choice |  |  |  | choice · climb, skills, prehab — or R&R |
 |  | Midweek intensity |  |  |  | takes priority when the week lists one — see progression |
 
-## Thursday — Upper lift  <!-- th Upper Lift -->
+## Thursday — Lower conditioning  <!-- th Lower Conditioning -->
+
+Monday's shape, rotated onto the legs — hinge, squat, jump, then one
+core/upper piece to close the round. Continuous, same as Monday: no rest
+between movements. Keep it short of a grinder; Friday lifts and Saturday is
+the long ride.
+
+| Block | Exercise | Sets | Reps | Rest | Notes |
+|---|---|---|---|---|---|
+| Warm-up | Bike | 1 | 30 min |  | easy–moderate, Z2 |
+| Circuit ×5 | Kettlebell Swings | 5 | 20 |  | russian |
+| Circuit ×5 | Goblet Squats | 5 | 10 |  |  |
+| Circuit ×5 | Squat Jumps | 5 | 10 |  | land quiet |
+| Circuit ×5 | Renegade Row | 5 | 10 |  | 5/side; hips square — core as much as pull |
+| Accessory | Upper accessory lift choice | 2–3 | 8–12 |  | choice · anything upper or full-body |
+
+## Friday — Upper lift  <!-- f Upper Lift -->
 
 Alternates A / B by week; lateral raises each session.
 
@@ -136,21 +152,6 @@ Alternates A / B by week; lateral raises each session.
 | Shoulders | Lateral raises |  |  |  |  |
 | | Rear delt choice |  |  |  | choice |
 | | Front lever prog |  |  |  | progression |
-
-## Friday — Lower conditioning  <!-- f Lower Conditioning -->
-
-Monday's shape, rotated onto the legs — hinge, squat, jump, then one
-core/upper piece to close the round. Continuous, same as Monday: no rest
-between movements. Keep it short of a grinder; Saturday is the long ride.
-
-| Block | Exercise | Sets | Reps | Rest | Notes |
-|---|---|---|---|---|---|
-| Warm-up | Bike | 1 | 30 min |  | easy–moderate, Z2 |
-| Circuit ×5 | Kettlebell Swings | 5 | 20 |  | russian |
-| Circuit ×5 | Goblet Squats | 5 | 10 |  |  |
-| Circuit ×5 | Squat Jumps | 5 | 10 |  | land quiet |
-| Circuit ×5 | Renegade Row | 5 | 10 |  | 5/side; hips square — core as much as pull |
-| Accessory | Upper accessory lift choice | 2–3 | 8–12 |  | choice · anything upper or full-body |
 
 ## Saturday — Endurance ride  <!-- sa Endurance (Z2) -->
 
