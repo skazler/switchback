@@ -60,7 +60,7 @@ sw.addEventListener('fetch', (event) => {
 	// renamed away (m-r-r-climb → m-upper-conditioning), so every link in it
 	// 404s. Keep the last good copy only as the offline fallback.
 	const isPage = request.mode === 'navigate';
-	const isData = url.pathname.endsWith('/__data.json');
+	const isData = url.pathname.endsWith('/__data.json') || url.pathname === '/templates.json';
 	if (isPage || isData) {
 		event.respondWith(
 			caches.open(CACHE).then(async (cache) => {

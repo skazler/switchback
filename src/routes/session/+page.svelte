@@ -6,6 +6,8 @@
 	import { inferFormat, buildPlanned } from '$lib/client/session';
 	import { blockLabels, isChoice } from '$lib/session-display';
 	import ExercisePicker from '$lib/components/ExercisePicker.svelte';
+	import DayPicker from '$lib/components/DayPicker.svelte';
+	import { resolvePick, type TemplatePick } from '$lib/templates';
 	import { durationInputValue, formatDistance, formatDuration, parseDistance, parseDuration } from '$lib/set-input';
 	import { resolveToday, resolvePlan } from '$lib/today';
 	import type { ProgramDay } from '$lib/content/types';
@@ -402,17 +404,35 @@
 	}
 
 	// Re-snapshot planned exercises from the program day that actually
-	// matches the session's date. Sets already logged against exercises not
-	// in the new plan are kept, tagged "extra", so nothing is lost.
+	// matches the session's date.
 	async function swapPlan() {
-		if (!session || !planSuggestion || !data.program) return;
-		const resolvedRows = resolvePlan(planSuggestion.day, data.program, planSuggestion.week).rows;
-		const newPlanned = buildPlanned(planSuggestion.day.label, resolvedRows);
+		if (!planSuggestion || !data.program) return;
+		await swapTo(data.program.id, resolvePlan(planSuggestion.day, data.program, planSuggestion.week));
+	}
+
+	/** Week of the active program the session's date falls in (null outside it). */
+	function sessionWeek(): number | null {
+		if (!session || !data.program) return null;
+		const [y, m, d] = session.date.split('-').map(Number);
+		const r = resolveToday(data.program, new Date(y, m - 1, d, 12));
+		return r.status === 'session' || r.status === 'rest' ? r.week : null;
+	}
+
+	// "Swap day": replace the plan with any template day, from any program.
+	function swapDay(pick: TemplatePick) {
+		return swapTo(pick.program.id, resolvePick(pick, data.program?.id, sessionWeek()));
+	}
+
+	// Sets already logged against exercises not in the new plan are kept,
+	// tagged "extra", so nothing is lost.
+	async function swapTo(programId: string, day: ProgramDay) {
+		if (!session) return;
+		const newPlanned = buildPlanned(day.label, day.rows);
 		const newKeys = new Set(newPlanned.map(keyOf));
 		const keepOld = session.planned
 			.filter((p) => (setsByKey.get(keyOf(p))?.length ?? 0) > 0 && !newKeys.has(keyOf(p)))
 			.map((p) => ({ ...p, extra: true }));
-		const updated = { ...$state.snapshot(session), day: planSuggestion.day.label, planned: [...newPlanned, ...keepOld], synced: 0 as const };
+		const updated = { ...$state.snapshot(session), program_id: programId, day: day.label, planned: [...newPlanned, ...keepOld], synced: 0 as const };
 		await putSession(updated);
 		session = updated;
 		const wk = [...new Set(updated.planned.map((p) => p.week).filter(Boolean))] as string[];
@@ -495,6 +515,10 @@
 			<button class="dismiss" aria-label="Dismiss" onclick={() => (planSuggestion = null)}>×</button>
 		</div>
 	{/if}
+
+	<div class="swapday">
+		<DayPicker onpick={swapDay} />
+	</div>
 
 	{#if weeks.length > 1}
 		<div class="weeks">
@@ -657,6 +681,9 @@
 	}
 	.empty p {
 		margin: 0 0 10px;
+	}
+	.swapday {
+		margin-bottom: 14px;
 	}
 	.planhint {
 		display: flex;

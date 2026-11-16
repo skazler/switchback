@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte';
 	import SessionTable from '$lib/components/SessionTable.svelte';
 	import TrailMarker from '$lib/components/TrailMarker.svelte';
+	import DayPicker from '$lib/components/DayPicker.svelte';
+	import { resolvePick, type TemplatePick } from '$lib/templates';
 	import { goto } from '$app/navigation';
 	import { startSession, today } from '$lib/client/session';
 	import { allSessions, setsForSession, type LocalSession, type LocalSet } from '$lib/client/idb';
@@ -26,7 +28,18 @@
 		live ? live.status === 'session' && live.day.slug === data.slug : data.isToday
 	);
 	const rawDay = $derived(program.days.find((d) => d.slug === data.slug)!);
-	const day = $derived(resolvePlan(rawDay, program, week));
+
+	// Swap day: any other template day (this program or any other) can stand
+	// in for the scheduled one — the page shows it and Start logs it.
+	let swapped = $state<TemplatePick | null>(null);
+	const day = $derived(
+		swapped ? resolvePick(swapped, program.id, week) : resolvePlan(rawDay, program, week)
+	);
+	const dayProgramId = $derived(swapped?.program.id ?? program.id);
+	function swap(pick: TemplatePick | null) {
+		swapped = pick;
+		refreshExisting();
+	}
 
 	// Detect a session already started/logged for this day today.
 	let existing = $state<LocalSession | null>(null);
@@ -61,7 +74,7 @@
 		if (starting) return;
 		starting = true;
 		try {
-			const id = await startSession(program.id, day.label, day.rows);
+			const id = await startSession(dayProgramId, day.label, day.rows);
 			await goto(`/session?id=${id}`);
 		} finally {
 			starting = false;
@@ -82,6 +95,12 @@
 			<h1 class="display">{day.label}</h1>
 			<TrailMarker marker={day.marker} size={24} />
 		</div>
+		{#if swapped}
+			<p class="swapnote">
+				<span>Swapped in for <strong>{rawDay.label}</strong>{swapped.program.id !== program.id ? ` · from ${swapped.program.title}` : ''}</span>
+				<button class="undo" onclick={() => swap(null)}>Undo</button>
+			</p>
+		{/if}
 	</header>
 
 	<hr class="rule" />
@@ -116,6 +135,12 @@
 		<p class="muted empty">No prescription recorded for this day.</p>
 	{/if}
 
+	{#if !existing || existing.completed_at}
+		<div class="swaprow">
+			<DayPicker onpick={swap} exclude={{ programId: dayProgramId, slug: day.slug }} />
+		</div>
+	{/if}
+
 	<hr class="hairline foot" />
 	<div class="footrow">
 		<a class="back microlabel" href="/route">← Full route</a>
@@ -140,6 +165,35 @@
 	}
 	.empty {
 		padding: 20px 0;
+	}
+	.swapnote {
+		display: flex;
+		align-items: baseline;
+		gap: 10px;
+		margin: 10px 0 0;
+		padding: 8px 10px;
+		border-left: 3px solid var(--blaze);
+		background: var(--field-raised);
+		font-size: 0.85rem;
+	}
+	.swapnote span {
+		flex: 1;
+	}
+	.swapnote strong {
+		text-transform: capitalize;
+	}
+	.undo {
+		background: none;
+		border: none;
+		color: var(--blaze);
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.85rem;
+		cursor: pointer;
+		padding: 0;
+	}
+	.swaprow {
+		margin-top: 14px;
 	}
 	.start {
 		margin-top: 22px;

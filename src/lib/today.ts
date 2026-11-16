@@ -98,7 +98,7 @@ function isPlaceholder(value: string): boolean {
 
 /** Rows that say "see progression" instead of a fixed sets/reps get the
  *  current week's value from the program's progression table substituted in. */
-export function resolvePlan(day: ProgramDay, program: Program, week: number | null): ProgramDay {
+export function resolvePlan(day: ProgramDay, program: Pick<Program, 'progression'>, week: number | null): ProgramDay {
 	const progWeek = week != null ? program.progression?.find((p) => p.week === week) : undefined;
 	if (!progWeek || !progWeek.columns.length) return day;
 

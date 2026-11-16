@@ -59,6 +59,7 @@
 					Week {today.week}{today.phase ? ` · ${today.phase.label}` : ''} · {program?.title}
 				</p>
 				<a class="btn-primary go" href="/route/{today.day.slug}">View session →</a>
+				<a class="swaplink microlabel" href="/route/{today.day.slug}#swap">⇄ Swap for another day</a>
 			</div>
 		{:else if today.status === 'rest'}
 			<div class="card">
@@ -101,6 +102,14 @@
 	/* Full-bleed hero: breaks out of the padded content column and pulls up
 	   under the sticky header. The photo is atmosphere — a heavy scrim fades
 	   it into the page so the card stays legible. */
+	.swaplink {
+		display: inline-block;
+		margin-top: 12px;
+		color: var(--muted);
+	}
+	.swaplink:hover {
+		color: var(--blaze);
+	}
 	.hero {
 		position: relative;
 		isolation: isolate;
