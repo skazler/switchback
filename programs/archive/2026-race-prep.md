@@ -1,7 +1,7 @@
 ---
 id: 2026-race-prep
 title: "2026 Race Prep — Conditioning & Prehab"
-status: active
+status: archived
 purpose: Race prep
 level: build
 series: race-prep

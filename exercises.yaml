@@ -2488,6 +2488,11 @@ exercises:
     id: dips
     category: strength-hypertrophy
     group: "Chest"
+  - name: "Kettlebell pushups"
+    id: kettlebell-pushups
+    category: strength-hypertrophy
+    group: "Chest"
+    note: "Hands on KB handles for extra depth"
   - name: "Machine chest press"
     id: machine-chest-press
     category: strength-hypertrophy
