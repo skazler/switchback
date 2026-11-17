@@ -26,7 +26,7 @@ volume: low contacts, land quick, stop before anything gets grindy.
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
-| Ride | Bike | 1 | 30 min |  | easy–moderate, Z2 |
+| Ride | Bike | 1 | 15 min |  | easy–moderate, Z2 |
 | Warm-up | Ankle Work | 2 |  |  | weighted SL pogos, patterned hops |
 | | Open knee drives | 2 | 10–15 |  | groin |
 | | SL KB leg raise | 2 | 10–15 |  | hip flexors |
