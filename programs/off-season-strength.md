@@ -108,7 +108,7 @@ Push-led — deep DB bench is the anchor (old Week A).
 | | Half-kneeling windmill | 2 | 5/side |  |  |
 | Push | DB Bench | 3 | 3–5 | 3:00 | deep range, heavy — RPE 7–8 |
 | | Drop-explode pushups | 3 | 5 | 2:00 | fast, full reset each rep |
-| | DB flys | 3 | 8–12 | :90 | deep stretch |
+| | Push accessory choice | 3 | 8–12 | :90 | choice · optional · flys, dips, OHP, etc. |
 | Pull | Lats choice | 3 | 8–10 | :90 | choice · deep range |
 | Shoulders | DB lateral raise | 2 | 12–15 | :60 |  |
 | | Rear delt choice | 2 | 12–15 | :60 | choice |
