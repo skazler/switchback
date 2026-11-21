@@ -16,8 +16,8 @@ start: 2026-11-16        # ISO date, a Monday — the Monday after RPR (14 NOV)
   the strength days, each opened by prehab.
 - **Mon — bike + athleticism**: fast feet, explosiveness, core.
 - **Thu — bike**, then optional lower conditioning.
-- **Saturday** — a short run; strides if the legs feel good.
-- **Sunday** — R&R.
+- **Saturday** — R&R.
+- **Sunday** — a short run; strides if the legs feel good.
 
 ## Monday — Bike + athleticism  <!-- M Bike + Athleticism -->
 
@@ -113,7 +113,15 @@ Push-led — deep DB bench is the anchor (old Week A).
 | Shoulders | DB lateral raise | 2 | 12–15 | :60 |  |
 | | Rear delt choice | 2 | 12–15 | :60 | choice |
 
-## Saturday — Short run  <!-- Sa Short Run -->
+## Saturday — R&R  <!-- Sa R&R -->
+
+Rest and recover. Walk, mobility, sauna — or nothing at all.
+
+| Block | Exercise | Sets | Reps | Rest | Notes |
+|---|---|---|---|---|---|
+|  | Rest & recovery |  |  |  | walk, mobility |
+
+## Sunday — Short run  <!-- Su Short Run -->
 
 A short run; strides if the legs feel good.
 
@@ -121,11 +129,3 @@ A short run; strides if the legs feel good.
 |---|---|---|---|---|---|
 | Run | Easy run | 1 | 20–30 min |  | conversational, Z2 |
 | | Strides | 4–6 | 20s | :60 | optional · relaxed fast, full recovery |
-
-## Sunday — R&R  <!-- Su R&R -->
-
-Rest and recover. Walk, mobility, sauna — or nothing at all.
-
-| Block | Exercise | Sets | Reps | Rest | Notes |
-|---|---|---|---|---|---|
-|  | Rest & recovery |  |  |  | walk, mobility |
