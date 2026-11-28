@@ -49,7 +49,7 @@ Pull-led — weighted pullups are the anchor (old Week B).
 | | Ulnar deviation raises | 2 | 15 |  |  |
 | | Scapula Work | 2 | 10–15 |  |  |
 | | Half-kneeling windmill | 2 | 5/side |  |  |
-| Pull | Pullups | 3 | 3–5 | 3:00 | weighted, heavy — RPE 7–8 |
+| Pull | Pullups | 3 | 3–5 | 3:00 | weighted, heavy |
 | | SA lats | 3 | 8–10 | :90 | deep range |
 | | Face pulls | 2 | 15 | :60 | deep range |
 | Push | Kettlebell pushups | 3 | 8–12 | :90 | deep range |
@@ -58,29 +58,20 @@ Pull-led — weighted pullups are the anchor (old Week B).
 
 ## Wednesday — Legs  <!-- W Legs -->
 
-Week A or Week B — your pick each time.
+One session: power, then the hinge, a heavy lift, and quads, with
+prehab at both ends.
 
 | Block | Exercise | Sets | Reps | Rest | Notes |
 |---|---|---|---|---|---|
-|  | Week A |  |  |  |  |
 | Prehab | Ankle Work | 2 |  |  | weighted SL pogos, patterned hops |
 | | Tibialis raises | 2 | 15–20 |  |  |
-| Power | SL box cleans | 3 | 5/leg | 2:00 | fast, crisp |
-| Posterior chain | SL RDL | 3 | 5–6/leg | 2:00 | heavy — RPE 7–8 |
-| | Lunge pattern | 3 | 6–8/leg | 2:00 | any lunge |
-| | Reverse nordics | 2 | 8–10 | :90 |  |
-| | Zercher jefferson curls | 2 | 10–15 | :60 |  |
+| Power | SL box cleans | 3 | 3/leg | 2:00 | fast, crisp |
+| Posterior chain | SL RDL | 3 | 6–8/leg | 2:00 | heavy |
+| Heavy lift | Deadlift or box squat | 3 | 3–5 | 3:00 | choice · heavy |
+| Quads | SL lunge pattern | 3 | 8–12/leg | 2:00 | any single-leg lunge |
+| | Quad Exercise Choice | 3 | 8–12 | :90 | choice · optional |
+| Prehab | Zercher jefferson curls | 2 | 10–15 | :60 |  |
 | Core | Bosu pikes + tucks | 2 | AMRAP |  |  |
-| | Dragon flags | 2 | 5–8 | :60 |  |
-|  | Week B |  |  |  |  |
-| Plyos (prehab) | Ankles | 2 |  |  |  |
-| | Knees | 2 |  |  |  |
-| | Hip flexors | 2 |  |  |  |
-| Power | SL box cleans | 3 | 5/leg | 2:00 | fast, crisp |
-| Quads | Kickstand goblet squat | 3 | 6–8/leg | 2:00 | https://www.instagram.com/reel/Das6u-JKmVL/?utm_source=ig_web_copy_link&igsh=NTc4MTIwNjQ2YQ== |
-| | DL squat pattern | 3 | 3–5 | 3:00 | heavy — RPE 7–8 |
-| Core | MB throws | 3 | 5 | :60 |  |
-| | Hollow body hold prog | 3 | 20–30s | :60 | progression |
 
 ## Thursday — Bike + lower conditioning  <!-- Th Bike + Lower Conditioning -->
 
@@ -106,7 +97,7 @@ Push-led — deep DB bench is the anchor (old Week A).
 | | Wrist Work | 2 | 15–20 |  |  |
 | | Ulnar deviation raises | 2 | 15 |  |  |
 | | Half-kneeling windmill | 2 | 5/side |  |  |
-| Push | DB Bench | 3 | 3–5 | 3:00 | deep range, heavy — RPE 7–8 |
+| Push | DB Bench | 3 | 3–5 | 3:00 | deep range, heavy |
 | | Drop-explode pushups | 3 | 5 | 2:00 | fast, full reset each rep |
 | | Push accessory choice | 3 | 8–12 | :90 | choice · optional · flys, dips, OHP, etc. |
 | Pull | Lats choice | 3 | 8–10 | :90 | choice · deep range |
